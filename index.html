@@ -398,6 +398,10 @@ table.gtbl{width:100%;border-collapse:collapse;font-size:13px}
   </div>
   <span class="cnt-lbl" id="cntLbl"></span>
   <div class="srch-wrap"><i class="ti ti-search srch-ico"></i><input class="srch" id="srch" placeholder="Search name, room or ref..." oninput="renderRes()"></div>
+  <button class="add-btn" id="pasteResBtn" onclick="pasteResFromClaude()" style="display:none;background:linear-gradient(135deg,#3d1a6e,#5c3d8f);position:relative">
+    <i class="ti ti-clipboard-check"></i> Paste from Claude
+    <span id="pasteResBadge" style="position:absolute;top:-5px;right:-5px;background:#f5a623;color:#fff;font-size:8px;font-weight:700;padding:2px 6px;border-radius:8px"></span>
+  </button>
   <button class="add-btn" onclick="openAdd()"><i class="ti ti-plus"></i> Add Reservation</button>
 </div>
 
@@ -1003,6 +1007,27 @@ function showToast(msg,type){const t=document.getElementById('toast');t.textCont
 
 document.getElementById('groomDate').value=new Date().toISOString().split('T')[0];
 renderStats();renderRes();
+window.RES_CLAUDE_DATA = [];
+window.setResData = function(data) {
+  window.RES_CLAUDE_DATA = data;
+  const btn = document.getElementById('pasteResBtn');
+  const badge = document.getElementById('pasteResBadge');
+  if(btn) { btn.style.display='flex'; badge.textContent=data.length+' ready'; }
+  showToast(data.length+' reservations ready — click Paste from Claude!','s');
+};
+function pasteResFromClaude(){
+  if(!window.RES_CLAUDE_DATA||!window.RES_CLAUDE_DATA.length){showToast('No data loaded yet','w');return;}
+  const ex=new Set(RES.map(r=>r.ref));
+  let added=0,skipped=0;
+  window.RES_CLAUDE_DATA.forEach(row=>{
+    if(ex.has(row.ref))skipped++;
+    else{RES.push({...row});ex.add(row.ref);added++;}
+  });
+  sv();renderRes();
+  showToast(added+' imported'+(skipped?' — '+skipped+' duplicates':''),'s');
+  document.getElementById('pasteResBtn').style.display='none';
+}
+
 window.CLAUDE_DATA = [];
 window.setGroomData = function(data) {
   window.CLAUDE_DATA = data;
