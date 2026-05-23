@@ -683,6 +683,7 @@ table.gtbl{width:100%;border-collapse:collapse;font-size:13px}
       <div class="rev-hdr-ico"><i class="ti ti-brand-tripadvisor"></i></div>
       <div><div class="rev-hdr-t">TripAdvisor Reviews</div><div class="rev-hdr-s">Paste reviews &rarr; AI extracts score, highlights &amp; improvements</div></div>
     </div>
+    <div class="sbar hidden" id="ta-stats-bar" style="border-radius:12px;margin-bottom:14px;border:1px solid var(--border);box-shadow:var(--sh)"></div>
     <div class="rev-input-card">
       <h3><i class="ti ti-clipboard-text" style="color:var(--sea)"></i> Paste TripAdvisor Reviews</h3>
       <div class="rev-period">
@@ -744,6 +745,7 @@ table.gtbl{width:100%;border-collapse:collapse;font-size:13px}
       <div class="rev-hdr-ico"><i class="ti ti-brand-google"></i></div>
       <div><div class="rev-hdr-t">Google Reviews</div><div class="rev-hdr-s">Paste reviews &rarr; AI extracts score, highlights &amp; improvements</div></div>
     </div>
+    <div class="sbar hidden" id="goo-stats-bar" style="border-radius:12px;margin-bottom:14px;border:1px solid var(--border);box-shadow:var(--sh)"></div>
     <div class="rev-input-card">
       <h3><i class="ti ti-clipboard-text" style="color:var(--sea)"></i> Paste Google Reviews</h3>
       <div class="rev-period">
@@ -1390,6 +1392,25 @@ function saveReview(src){
 function renderRevHistory(src){
   const history=src==='ta'?taHistory:gooHistory;
   const el=document.getElementById(src+'-history-list');
+  // Update stats bar
+  const statsEl=document.getElementById(src+'-stats-bar');
+  if(statsEl){
+    if(history.length){
+      const latest=history[0];
+      const totalReviews=history.reduce((s,r)=>s+r.count,0);
+      const avgScore=(history.reduce((s,r)=>s+r.score*r.count,0)/totalReviews).toFixed(1);
+      const color=src==='ta'?'#2d9c68':'#4285f4';
+      statsEl.innerHTML=
+        '<div class="stat"><div class="slbl2">Latest period</div><div class="sval" style="color:'+color+'">'+latest.period+'</div></div>'+
+        '<div class="stat"><div class="slbl2">Latest score</div><div class="sval" style="color:'+color+'">'+latest.score.toFixed(1)+'/5</div></div>'+
+        '<div class="stat"><div class="slbl2">Total reviews</div><div class="sval">'+totalReviews+'</div></div>'+
+        '<div class="stat"><div class="slbl2">Overall avg</div><div class="sval star">'+avgScore+'</div></div>'+
+        '<div class="stat"><div class="slbl2">Periods saved</div><div class="sval">'+history.length+'</div></div>';
+      statsEl.classList.remove('hidden');
+    } else {
+      statsEl.classList.add('hidden');
+    }
+  }
   if(!history.length){
     el.innerHTML=`<div class="rev-empty"><i class="ti ti-${src==='ta'?'brand-tripadvisor':'brand-google'}"></i>No saved reviews yet</div>`;
     return;
