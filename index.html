@@ -2151,6 +2151,30 @@ fbdb.ref('grooms').on('value', snap => {
 // Load review history from Firebase
 fbdb.ref('ta_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){taHistory=d;localStorage.setItem('ta_reviews',JSON.stringify(d));renderRevHistory('ta');}});
 fbdb.ref('goo_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){gooHistory=d;localStorage.setItem('goo_reviews',JSON.stringify(d));renderRevHistory('goo');}});
+
+// Real-time sync for Gym bookings
+fbdb.ref('gym_bookings').on('value', snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(gymBookings)){
+    gymBookings=d;
+    try{localStorage.setItem('gym_bookings',JSON.stringify(d));}catch(e){}
+    const gymTab=document.getElementById('tab-gym');
+    if(gymTab&&!gymTab.classList.contains('hidden'))renderGym();
+  }
+});
+
+// Real-time sync for Yoga & Pilates
+fbdb.ref('cls_data').on('value', snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(clsData)){
+    clsData=d;
+    try{localStorage.setItem('cls_data',JSON.stringify(d));}catch(e){}
+    const yogaTab=document.getElementById('tab-yoga');
+    const pilatesTab=document.getElementById('tab-pilates');
+    if(yogaTab&&!yogaTab.classList.contains('hidden'))renderCls('yoga');
+    if(pilatesTab&&!pilatesTab.classList.contains('hidden'))renderCls('pilates');
+  }
+});
 </script>
 
 </body>
