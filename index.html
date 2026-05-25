@@ -561,6 +561,39 @@ canvas.an-chart{width:100%!important;height:220px!important}
 .bk-guest-name{font-weight:600;color:var(--ink)}
 .bk-guest-score{font-weight:700;color:#0069ff;font-family:var(--serif);font-size:14px}
 
+
+/* ═══════════════════════════
+   MASSAGE
+═══════════════════════════ */
+.ms-hdr{background:linear-gradient(135deg,#7c4a00,#b45309);border-radius:var(--r);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)}
+.ms-hdr-ico{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ms-hdr-ico i{font-size:22px;color:#fff}
+.ms-hdr-t{font-family:var(--serif);font-size:19px;font-weight:600;color:#fff}
+.ms-hdr-s{font-size:12px;color:rgba(255,255,255,.7);margin-top:3px}
+.ms-day-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;box-shadow:var(--sh)}
+.ms-day-hdr{background:linear-gradient(135deg,#7c4a00,#b45309);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+.ms-day-title{font-family:var(--serif);font-size:15px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px}
+.ms-day-count{background:rgba(255,255,255,.25);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;color:#fff}
+.ms-slot{display:grid;grid-template-columns:90px 1fr 1fr 1fr 80px 34px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border2)}
+.ms-slot:last-child{border-bottom:none}
+.ms-slot:hover{background:var(--amber-light)}
+.ms-time{font-size:13px;font-weight:700;color:#b45309;white-space:nowrap}
+.ms-inp{padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:12px;color:var(--ink);background:var(--bg);outline:none;width:100%}
+.ms-inp:focus{border-color:#b45309;background:var(--white)}
+.ms-inp.cost{font-weight:700;color:#b45309;text-align:center}
+.ms-inp.booked{background:#fef7e6;border-color:rgba(180,83,9,.3)}
+.ms-dur-sel{padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:12px;color:var(--ink);background:var(--bg);outline:none}
+.ms-dur-sel:focus{border-color:#b45309}
+.ms-del{width:28px;height:28px;background:#fce8e8;border:none;border-radius:7px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center}
+.ms-del:hover{background:var(--coral);color:#fff}
+.ms-slot-empty{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border2)}
+.ms-slot-empty:last-child{border-bottom:none}
+.ms-add-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;width:100%;background:none;border:none;border-top:1px solid var(--border2);cursor:pointer;font-family:var(--sans);font-size:12px;color:#b45309;font-weight:600}
+.ms-add-btn:hover{background:var(--amber-light)}
+.ms-stats{display:flex;gap:10px;padding:10px 16px;background:var(--amber-light);flex-wrap:wrap;border-top:1px solid rgba(180,83,9,.15)}
+.ms-stat{font-size:11px;color:#92400e;display:flex;align-items:center;gap:5px}
+.ms-stat strong{color:#b45309;font-size:13px}
+
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 /* ═══ PRINT ═══ */
 @media print{
@@ -646,6 +679,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <div class="dd-item" id="ddi-gym" onclick="ddGo('gym','Gym')"><i class="ti ti-barbell" style="color:#2563aa"></i> Gym</div>
         <div class="dd-item" id="ddi-yoga" onclick="ddGo('yoga','Yoga')"><i class="ti ti-yin-yang" style="color:#9c4dcc"></i> Yoga</div>
         <div class="dd-item" id="ddi-pilates" onclick="ddGo('pilates','Pilates')"><i class="ti ti-stretching" style="color:#c0395a"></i> Pilates</div>
+        <div class="dd-item" id="ddi-massage" onclick="ddGo('massage','Massage')"><i class="ti ti-heart-handshake" style="color:#b45309"></i> Massage</div>
       </div>
     </div>
   </div>
@@ -669,6 +703,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
   <div class="tab" id="nt-gym" onclick="goTab('gym')" style="color:#2563aa"><i class="ti ti-barbell"></i> Gym</div>
   <div class="tab" id="nt-yoga" onclick="goTab('yoga')" style="color:#9c4dcc"><i class="ti ti-yin-yang"></i> Yoga</div>
   <div class="tab" id="nt-pilates" onclick="goTab('pilates')" style="color:#c0395a"><i class="ti ti-stretching"></i> Pilates</div>
+  <div class="tab" id="nt-massage" onclick="goTab('massage')" style="color:#b45309"><i class="ti ti-heart-handshake"></i> Massage</div>
 </div>
 
 <div class="sbar" id="sbar"></div>
@@ -1230,6 +1265,18 @@ canvas.an-chart{width:100%!important;height:220px!important}
   </div>
 </div>
 
+
+<!-- ─── MASSAGE ─── -->
+<div id="tab-massage" class="hidden">
+  <div class="fit-wrap">
+    <div class="ms-hdr">
+      <div class="ms-hdr-ico"><i class="ti ti-heart-handshake"></i></div>
+      <div><div class="ms-hdr-t">Massage Bookings</div><div class="ms-hdr-s">Ώρες ανά session &middot; Δωμάτιο, Όνομα &amp; Κόστος</div></div>
+    </div>
+    <div id="massageContent"></div>
+  </div>
+</div>
+
 </div><!-- end .app -->
 
 <!-- ADD MODAL -->
@@ -1308,7 +1355,7 @@ function ddGo(tab,lbl){
 }
 
 function goTab(t){
-  ['res','rooms','day3','report','grooms','import','ta','goo','analytics','gym','yoga','pilates'].forEach(x=>{
+  ['res','rooms','day3','report','grooms','import','ta','goo','analytics','gym','yoga','pilates','massage'].forEach(x=>{
     const el=document.getElementById('tab-'+x);
     const nt=document.getElementById('nt-'+x);
     if(el)el.classList.toggle('hidden',x!==t);
@@ -1325,6 +1372,7 @@ function goTab(t){
   if(t==='analytics')renderAnalytics();
   if(t==='yoga'){initClsDates('yoga');renderCls('yoga');}
   if(t==='pilates'){initClsDates('pilates');renderCls('pilates');}
+  if(t==='massage')renderMassage();
 }
 
 function renderStats(){
@@ -2603,6 +2651,155 @@ function clsAddRow(type,dateKey){
 function clsDelRow(type,dateKey,idx){
   clsData[type][dateKey].splice(idx,1);
   svCls();renderCls(type);showToast('Row removed','w');
+}
+
+
+/* ═══════════════════════════════
+   MASSAGE
+═══════════════════════════════ */
+let massageData = JSON.parse(localStorage.getItem('massage_data') || '{}');
+
+function svMassage(){
+  try{localStorage.setItem('massage_data',JSON.stringify(massageData));}catch(e){}
+  if(typeof fbdb!=='undefined') fbdb.ref('massage_data').set(massageData);
+}
+
+// Schedule: date -> array of {start, end} available windows
+const MASSAGE_SCHEDULE = {
+  '2026-05-28': [{start:'11:00',end:'13:00'},{start:'17:30',end:'19:00'}],
+  '2026-05-29': [{start:'15:00',end:'18:00'}],
+  '2026-05-30': [{start:'12:30',end:'16:30'}],
+  '2026-05-31': [{start:'10:00',end:'13:00'}],
+  '2026-06-01': [{start:'10:00',end:'12:00'}],
+  '2026-06-02': [{start:'11:00',end:'15:00'}],
+  '2026-06-03': [{start:'10:00',end:'13:00'}],
+  '2026-06-04': [{start:'11:00',end:'15:00'}],
+  '2026-06-05': [{start:'12:00',end:'14:00'},{start:'17:00',end:'19:00'}],
+  '2026-06-06': [{start:'12:30',end:'15:30'}],
+  '2026-06-07': [{start:'11:00',end:'13:00'}],
+};
+
+function timeToMins(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
+function minsToTime(m){ return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); }
+
+function getSlots(dateKey){
+  const windows = MASSAGE_SCHEDULE[dateKey] || [];
+  const slots = [];
+  windows.forEach(w => {
+    let cur = timeToMins(w.start);
+    const end = timeToMins(w.end);
+    while(cur + 60 <= end){ // min slot is 1hr
+      slots.push(minsToTime(cur));
+      cur += 60;
+    }
+  });
+  return slots;
+}
+
+function renderMassage(){
+  const el = document.getElementById('massageContent');
+  if(!el) return;
+
+  const DAY_GR = ['Κυριακή','Δευτέρα','Τρίτη','Τετάρτη','Πέμπτη','Παρασκευή','Σάββατο'];
+  const MON_GR = ['Ιαν','Φεβ','Μαρ','Απρ','Μαΐ','Ιουν','Ιουλ','Αυγ','Σεπ','Οκτ','Νοε','Δεκ'];
+
+  let html2 = '';
+  Object.entries(MASSAGE_SCHEDULE).sort().forEach(([dateKey, windows]) => {
+    const d = new Date(dateKey);
+    const dayName = DAY_GR[d.getDay()];
+    const dateLbl = dayName+' '+d.getDate()+' '+MON_GR[d.getMonth()]+' '+d.getFullYear();
+    const slots = getSlots(dateKey);
+    const bookings = massageData[dateKey] || {};
+    const bookedCount = Object.values(bookings).filter(b=>b.name||b.room).length;
+    const totalRevenue = Object.values(bookings).reduce((s,b)=>s+(parseFloat(b.cost)||0),0);
+
+    let slotsHtml = '';
+    // Header row
+    slotsHtml += `<div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr 80px 34px;gap:8px;padding:7px 16px;background:var(--amber-light);border-bottom:1px solid rgba(180,83,9,.15)">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Time</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Room</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Guest Name</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Duration</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e;text-align:center">€ Cost</div>
+      <div></div>
+    </div>`;
+
+    slots.forEach(slotTime => {
+      const b = bookings[slotTime] || {};
+      const isBooked = b.name || b.room;
+      slotsHtml += `<div class="ms-slot${isBooked?' ms-slot-booked':''}">
+        <div class="ms-time"><i class="ti ti-clock" style="font-size:11px;margin-right:3px"></i>${slotTime}</div>
+        <input class="ms-inp${isBooked?' booked':''}" placeholder="Δωμάτιο" value="${esc(b.room||'')}" 
+          onchange="msUpdate('${dateKey}','${slotTime}','room',this.value)">
+        <input class="ms-inp${isBooked?' booked':''}" placeholder="Όνομα επισκέπτη" value="${esc(b.name||'')}"
+          onchange="msUpdate('${dateKey}','${slotTime}','name',this.value)">
+        <select class="ms-dur-sel" onchange="msUpdate('${dateKey}','${slotTime}','dur',this.value)">
+          <option value="60" ${(b.dur||60)==60?'selected':''}>1 ώρα</option>
+          <option value="90" ${b.dur==90?'selected':''}>1.5 ώρα</option>
+        </select>
+        <input class="ms-inp cost${isBooked?' booked':''}" placeholder="0" value="${esc(b.cost||'')}" type="number" min="0"
+          onchange="msUpdate('${dateKey}','${slotTime}','cost',this.value)">
+        <button class="ms-del" onclick="msClear('${dateKey}','${slotTime}')" title="Clear"><i class="ti ti-x" style="font-size:12px"></i></button>
+      </div>`;
+    });
+
+    // Stats row
+    const statsHtml = `<div class="ms-stats">
+      <span class="ms-stat">Slots: <strong>${slots.length}</strong></span>
+      <span class="ms-stat">Booked: <strong>${bookedCount}</strong></span>
+      <span class="ms-stat">Available: <strong>${slots.length-bookedCount}</strong></span>
+      ${totalRevenue>0?`<span class="ms-stat" style="margin-left:auto">Revenue: <strong>€${totalRevenue.toFixed(0)}</strong></span>`:''}
+    </div>`;
+
+    // Available windows info
+    const windowsInfo = windows.map(w=>`${w.start}–${w.end}`).join(' &nbsp;|&nbsp; ');
+
+    html2 += `<div class="ms-day-card">
+      <div class="ms-day-hdr">
+        <div class="ms-day-title"><i class="ti ti-calendar"></i>${dateLbl}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:rgba(255,255,255,.7)">${windowsInfo}</span>
+          <span class="ms-day-count">${bookedCount}/${slots.length}</span>
+        </div>
+      </div>
+      ${slotsHtml}
+      ${statsHtml}
+    </div>`;
+  });
+
+  el.innerHTML = html2;
+}
+
+function msUpdate(dateKey, slotTime, field, val){
+  if(!massageData[dateKey]) massageData[dateKey]={};
+  if(!massageData[dateKey][slotTime]) massageData[dateKey][slotTime]={room:'',name:'',dur:60,cost:''};
+  massageData[dateKey][slotTime][field] = field==='dur' ? parseInt(val) : val;
+  svMassage();
+  // Re-render just the stats without full re-render for performance
+}
+
+function msClear(dateKey, slotTime){
+  if(!massageData[dateKey]) return;
+  delete massageData[dateKey][slotTime];
+  svMassage();
+  renderMassage();
+  showToast('Cleared','w');
+}
+
+// Load from Firebase
+if(typeof fbdb!=='undefined'){
+  fbdb.ref('massage_data').once('value').then(snap=>{
+    const d=snap.val();
+    if(d&&typeof d==='object'){massageData=d;try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}}
+  });
+  fbdb.ref('massage_data').on('value',snap=>{
+    const d=snap.val();
+    if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(massageData)){
+      massageData=d;
+      const msTab=document.getElementById('tab-massage');
+      if(msTab&&!msTab.classList.contains('hidden'))renderMassage();
+    }
+  });
 }
 
 // Load fitness data from Firebase
