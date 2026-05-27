@@ -3093,27 +3093,7 @@ setInterval(()=>{
   if(alertTab && !alertTab.classList.contains('hidden')) renderAlerts();
 }, 60000);
 
-// Load from Firebase
-if(typeof fbdb!=='undefined'){
-  fbdb.ref('alerts_data').once('value').then(snap=>{
-    const d=snap.val();
-    if(d&&typeof d==='object'){
-      alertsData=d;
-      try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}
-      checkOverdueTasks();
-    }
-  });
-  fbdb.ref('alerts_data').on('value',snap=>{
-    const d=snap.val();
-    if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(alertsData)){
-      alertsData=d;
-      const alTab=document.getElementById('tab-alerts');
-      if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();
-      checkOverdueTasks();
-    }
-  });
-}
-// Initial check
+// Initial check after Firebase loads
 setTimeout(checkOverdueTasks, 2000);
 
 // Load fitness data from Firebase
@@ -3261,6 +3241,47 @@ fbdb.ref('grooms').on('value', snap => {
 // Load review history from Firebase
 fbdb.ref('ta_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){taHistory=d;localStorage.setItem('ta_reviews',JSON.stringify(d));renderRevHistory('ta');}});
 fbdb.ref('goo_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){gooHistory=d;localStorage.setItem('goo_reviews',JSON.stringify(d));renderRevHistory('goo');}});
+
+// Alerts Firebase sync
+fbdb.ref('alerts_data').once('value').then(snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'){
+    alertsData=d;
+    try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}
+    checkOverdueTasks();
+    const alTab=document.getElementById('tab-alerts');
+    if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();
+  }
+});
+fbdb.ref('alerts_data').on('value',snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(alertsData)){
+    alertsData=d;
+    try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}
+    checkOverdueTasks();
+    const alTab=document.getElementById('tab-alerts');
+    if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();
+  }
+});
+
+// Massage Firebase sync
+fbdb.ref('massage_data').once('value').then(snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'){
+    massageData=d;
+    try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}
+    const msTab=document.getElementById('tab-massage');
+    if(msTab&&!msTab.classList.contains('hidden'))renderMassage();
+  }
+});
+fbdb.ref('massage_data').on('value',snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(massageData)){
+    massageData=d;
+    const msTab=document.getElementById('tab-massage');
+    if(msTab&&!msTab.classList.contains('hidden'))renderMassage();
+  }
+});
 
 // Real-time sync for Gym bookings
 fbdb.ref('gym_bookings').on('value', snap=>{
