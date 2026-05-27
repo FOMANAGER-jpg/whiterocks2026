@@ -2658,6 +2658,9 @@ function renderCls(type){
   const color=type==='yoga'?'yoga':'pilates';
   const attended=entries.filter(e=>e.attended).length;
   const isFull=entries.length>=15;
+  if(!clsData[type+'_wl']) clsData[type+'_wl']={};
+  if(!clsData[type+'_wl'][dateKey]) clsData[type+'_wl'][dateKey]=[];
+  const waitList=clsData[type+'_wl'][dateKey];
   
   const html=`
     <div class="cls-card">
@@ -2694,6 +2697,38 @@ function renderCls(type){
       </table>`:
       '<div class="cls-empty">No bookings yet for this session</div>'}
       ${!isFull?`<button class="cls-add-row" onclick="clsAddRow('${type}','${dateKey}')"><i class="ti ti-plus"></i> Add guest</button>`:''}
+    </div>
+    
+    <!-- WAITING LIST -->
+    <div class="cls-card" style="margin-top:10px">
+      <div class="cls-card-hdr ${color}" style="opacity:.8">
+        <div class="cls-card-title"><i class="ti ti-clock-hour-4"></i> Waiting List</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="cls-card-count">${(waitList.length)} waiting</span>
+        </div>
+      </div>
+      ${waitList.length?`
+      <table class="cls-tbl">
+        <thead><tr>
+          <th style="width:30px">#</th>
+          <th>Guest Name</th>
+          <th style="width:90px;text-align:center">Room</th>
+          <th style="width:110px;text-align:center">Action</th>
+          <th style="width:38px"></th>
+        </tr></thead>
+        <tbody>
+          ${waitList.map((e,i)=>`<tr>
+            <td style="padding:6px 10px;color:var(--muted2);font-size:11px;text-align:center">${i+1}</td>
+            <td><input class="cls-inp" value="${esc(e.name||'')}" placeholder="Guest name" onchange="wlUpdate('${type}','${dateKey}',${i},'name',this.value)"></td>
+            <td><input class="cls-inp room" value="${esc(e.room||'')}" placeholder="309" onchange="wlUpdate('${type}','${dateKey}',${i},'room',this.value)"></td>
+            <td style="text-align:center;padding:4px">
+              ${isFull?'':`<button onclick="wlPromote('${type}','${dateKey}',${i})" style="padding:4px 10px;background:var(--olive);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-arrow-up"></i> Move up</button>`}
+            </td>
+            <td><button class="del-row-btn" onclick="wlDelRow('${type}','${dateKey}',${i})"><i class="ti ti-x"></i></button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`:'<div class="cls-empty" style="padding:16px">No one on waiting list</div>'}
+      <button class="cls-add-row" onclick="wlAddRow('${type}','${dateKey}')"><i class="ti ti-plus"></i> Add to waiting list</button>
     </div>`;
   
   document.getElementById(type+'-sessions').innerHTML=html;
@@ -2774,6 +2809,41 @@ function clsAddRow(type,dateKey){
 function clsDelRow(type,dateKey,idx){
   clsData[type][dateKey].splice(idx,1);
   svCls();renderCls(type);showToast('Row removed','w');
+}
+
+/* WAITING LIST */
+function wlAddRow(type,dateKey){
+  if(!clsData[type+'_wl']) clsData[type+'_wl']={};
+  if(!clsData[type+'_wl'][dateKey]) clsData[type+'_wl'][dateKey]=[];
+  clsData[type+'_wl'][dateKey].push({name:'',room:''});
+  svCls();renderCls(type);
+  setTimeout(()=>{
+    const rows=document.querySelectorAll('#'+type+'-sessions .cls-inp');
+    if(rows.length)rows[rows.length-2].focus();
+  },60);
+}
+
+function wlDelRow(type,dateKey,idx){
+  clsData[type+'_wl'][dateKey].splice(idx,1);
+  svCls();renderCls(type);showToast('Removed from waiting list','w');
+}
+
+function wlUpdate(type,dateKey,idx,field,val){
+  clsData[type+'_wl'][dateKey][idx][field]=val;
+  svCls();
+}
+
+function wlPromote(type,dateKey,idx){
+  const entries=clsData[type][dateKey]||[];
+  if(entries.length>=15){showToast('Class is still full!','w');return;}
+  const wl=clsData[type+'_wl'][dateKey]||[];
+  const guest=wl[idx];
+  if(!guest)return;
+  // Move from waiting list to class
+  clsData[type][dateKey].push({name:guest.name,room:guest.room,attended:false});
+  clsData[type+'_wl'][dateKey].splice(idx,1);
+  svCls();renderCls(type);
+  showToast(guest.name+' moved to class!','s');
 }
 
 
