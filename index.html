@@ -6,74 +6,11 @@
 <title>White Rocks Hotel &amp; Bungalows</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
-/* ─────────────────────────────────
-   CHANGE 1: Add this CSS inside <style> before </style>
-───────────────────────────────── */
-
+<style>
 .print-rev-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--white);color:var(--olive);border:1.5px solid var(--olive);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)}
 .print-rev-btn:hover{background:#f0fdf4}
-
-@media print{
-  /* hide everything except the review print area */
-  body > *:not(#rev-print-area){display:none!important}
-  #rev-print-area{display:block!important}
-  #rev-print-area{font-family:'Outfit',Arial,sans-serif;padding:20px;color:#1a2535}
-}
 #rev-print-area{display:none}
-
-
-/* ─────────────────────────────────
-   CHANGE 2: Add print buttons to each review history section
-
-   A) TripAdvisor — find:
-      <h3><i class="ti ti-history" style="color:var(--sea)"></i> Review History</h3>
-      inside id="ta-history-wrap"
-   Replace with:
-───────────────────────────────── */
-
-<h3 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-  <span><i class="ti ti-history" style="color:var(--sea)"></i> Review History</span>
-  <button class="print-rev-btn" onclick="printRevHistory('ta')"><i class="ti ti-printer"></i> Print History</button>
-</h3>
-
-/* ─────────────────────────────────
-   B) Google Reviews — find:
-      <h3><i class="ti ti-history" style="color:var(--sea)"></i> Review History</h3>
-      inside id="goo-history-wrap"
-   Replace with:
-───────────────────────────────── */
-
-<h3 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-  <span><i class="ti ti-history" style="color:var(--sea)"></i> Review History</span>
-  <button class="print-rev-btn" onclick="printRevHistory('goo')"><i class="ti ti-printer"></i> Print History</button>
-</h3>
-
-/* ─────────────────────────────────
-   C) Booking.com — find:
-      <h3><i class="ti ti-history" style="color:#0069ff"></i> Review History</h3>
-      inside tab-import
-   Replace with:
-───────────────────────────────── */
-
-<h3 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-  <span><i class="ti ti-history" style="color:#0069ff"></i> Review History</span>
-  <button class="print-rev-btn" onclick="printRevHistory('bk')"><i class="ti ti-printer"></i> Print History</button>
-</h3>
-
-
-/* ─────────────────────────────────
-   CHANGE 3: Add this HTML just before </body>
-───────────────────────────────── */
-
-<!-- REVIEW PRINT AREA -->
-<div id="rev-print-area"></div>
-
-
-/* ─────────────────────────────────
-   CHANGE 4: Add this JavaScript before the closing </script> of the LAST script tag
-───────────────────────────────── */
-
-function printRevHistory(src){
+@media print{body>*:not(#rev-print-area){display:none!important}#rev-print-area{display:block!important}}
   const MN={ta:'TripAdvisor',goo:'Google Reviews',bk:'Booking.com'};
   const COLOR={ta:'#2d9c68',goo:'#4285f4',bk:'#0069ff'};
   const ICON={ta:'🌿',goo:'🔍',bk:'🏨'};
@@ -1218,7 +1155,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
 
     <!-- HISTORY -->
     <div class="rev-history">
-      <h3><i class="ti ti-history" style="color:#0069ff"></i> Review History</h3>
+      <h3 style="display:flex;align-items:center;justify-content:space-between"><span><i class="ti ti-history" style="color:#0069ff"></i> Review History</span><button class="print-rev-btn" onclick="printRevHistory('bk')"><i class="ti ti-printer"></i> Print</button></h3>
       <div id="bk-history-list"><div class="rev-empty"><i class="ti ti-brand-booking"></i>Δεν υπάρχουν αποθηκευμένες περίοδοι ακόμα</div></div>
     </div>
   </div>
@@ -1281,7 +1218,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <button class="rev-save-btn" onclick="saveReview('ta')"><i class="ti ti-device-floppy"></i> Save to history</button>
     </div>
     <div class="rev-history" id="ta-history-wrap">
-      <h3><i class="ti ti-history" style="color:var(--sea)"></i> Review History</h3>
+      <h3 style="display:flex;align-items:center;justify-content:space-between"><span><i class="ti ti-history" style="color:var(--sea)"></i> Review History</span><button class="print-rev-btn" onclick="printRevHistory('ta')"><i class="ti ti-printer"></i> Print</button></h3>
       <div id="ta-history-list"><div class="rev-empty"><i class="ti ti-brand-tripadvisor"></i>No saved reviews yet</div></div>
     </div>
   </div>
@@ -1343,7 +1280,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <button class="rev-save-btn" onclick="saveReview('goo')"><i class="ti ti-device-floppy"></i> Save to history</button>
     </div>
     <div class="rev-history" id="goo-history-wrap">
-      <h3><i class="ti ti-history" style="color:var(--sea)"></i> Review History</h3>
+      <h3 style="display:flex;align-items:center;justify-content:space-between"><span><i class="ti ti-history" style="color:var(--sea)"></i> Review History</span><button class="print-rev-btn" onclick="printRevHistory('goo')"><i class="ti ti-printer"></i> Print</button></h3>
       <div id="goo-history-list"><div class="rev-empty"><i class="ti ti-brand-google"></i>No saved reviews yet</div></div>
     </div>
   </div>
@@ -4047,8 +3984,9 @@ fbdb.ref('cls_data').on('value', snap=>{
     if(pilatesTab&&!pilatesTab.classList.contains('hidden'))renderCls('pilates');
   }
 });
-printRevHistory()
+function printRevHistory(src){   const MN={ta:'TripAdvisor',goo:'Google Reviews',bk:'Booking.com'};   const COLOR={ta:'#2d9c68',goo:'#4285f4',bk:'#0069ff'};   const ICON={ta:'🌿',goo:'🔍',bk:'🏨'};   const platform=MN[src],color=COLOR[src],icon=ICON[src];   let history=[];   if(src==='ta')history=taHistory;   else if(src==='goo')history=gooHistory;   else if(src==='bk')history=bkHistory;   if(!history.length){showToast('No history to print','w');return;}   const sorted=[...history].reverse();   const totalReviews=history.reduce((s,r)=>s+r.count,0);   const avgScore=src==='bk'?(history.reduce((s,r)=>s+r.score*r.count,0)/totalReviews).toFixed(1)+'/10':(history.reduce((s,r)=>s+r.score*r.count,0)/totalReviews).toFixed(2)+'/5';   let trend='';   if(history.length>=2){const last=history[0].score,prev=history[1].score,diff=(last-prev).toFixed(2);const arrow=diff>0?'▲':diff<0?'▼':'→';const tcolor=diff>0?'#2d9c68':diff<0?'#e05a4e':'#888';trend=`<span style="font-size:14px;font-weight:700;color:${tcolor};margin-left:12px">${arrow} ${diff>0?'+':''}${diff} vs previous</span>`;}   const rows=sorted.map(r=>{     const score=src==='bk'?r.score.toFixed(1)+'/10 ('+(r.score/2).toFixed(1)+'/5)':r.score.toFixed(1)+'/5';     let extras='';     if(src!=='bk'&&r.positives&&r.positives.length)extras+=`<tr><td colspan="3" style="padding:4px 12px;color:#2e7d32;font-size:11px">✓ ${r.positives.slice(0,3).join(' · ')}</td></tr>`;     if(src!=='bk'&&r.improvements&&r.improvements.length)extras+=`<tr><td colspan="3" style="padding:4px 12px 10px;color:#c0392b;font-size:11px;border-bottom:1px solid #eee">↑ ${r.improvements.slice(0,2).join(' · ')}</td></tr>`;     if(src==='bk'&&r.topGuests&&r.topGuests.length)extras+=`<tr><td colspan="3" style="padding:4px 12px 10px;font-size:11px;color:#555;border-bottom:1px solid #eee">Top: ${r.topGuests.map(g=>g.name+' ('+g.rating+')').join(' · ')}</td></tr>`;     return `<tr style="background:#fafafa"><td style="padding:10px 12px;font-weight:600;font-size:13px;border-bottom:1px solid #eee;width:140px">${r.period}</td><td style="padding:10px 12px;font-weight:700;font-size:16px;color:${color};border-bottom:1px solid #eee;width:110px">${score}</td><td style="padding:10px 12px;font-size:12px;color:#555;border-bottom:1px solid #eee">${r.count} reviews</td></tr>${extras}`;   }).join('');   const html=`<div style="max-width:700px;margin:0 auto;font-family:Arial,sans-serif">     <div style="background:${color};padding:18px 24px;border-radius:12px;margin-bottom:20px;color:#fff;display:flex;align-items:center;gap:14px">       <div style="font-size:32px">${icon}</div>       <div><div style="font-size:20px;font-weight:700">${platform} — Review History</div><div style="font-size:12px;opacity:.8;margin-top:3px">White Rocks Hotel &amp; Bungalows · Kefalonia 2026</div></div>       <div style="margin-left:auto;font-size:11px;opacity:.75">Printed: ${new Date().toLocaleDateString('el-GR',{day:'2-digit',month:'2-digit',year:'numeric'})}</div>     </div>     <div style="display:flex;gap:16px;margin-bottom:18px;flex-wrap:wrap">       <div style="background:#f5f5f5;border-radius:9px;padding:12px 18px;flex:1;text-align:center"><div style="font-size:10px;text-transform:uppercase;color:#888;font-weight:700;margin-bottom:4px">Periods Saved</div><div style="font-size:24px;font-weight:700">${history.length}</div></div>       <div style="background:#f5f5f5;border-radius:9px;padding:12px 18px;flex:1;text-align:center"><div style="font-size:10px;text-transform:uppercase;color:#888;font-weight:700;margin-bottom:4px">Total Reviews</div><div style="font-size:24px;font-weight:700">${totalReviews}</div></div>       <div style="background:#f5f5f5;border-radius:9px;padding:12px 18px;flex:1;text-align:center"><div style="font-size:10px;text-transform:uppercase;color:#888;font-weight:700;margin-bottom:4px">Overall Average</div><div style="font-size:24px;font-weight:700;color:${color}">${avgScore}</div>${trend}</div>     </div>     <table style="width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">       <thead><tr style="background:${color}"><th style="padding:10px 12px;text-align:left;color:#fff;font-size:11px;letter-spacing:.8px;text-transform:uppercase">Period</th><th style="padding:10px 12px;text-align:left;color:#fff;font-size:11px;letter-spacing:.8px;text-transform:uppercase">Score</th><th style="padding:10px 12px;text-align:left;color:#fff;font-size:11px;letter-spacing:.8px;text-transform:uppercase">Reviews</th></tr></thead>       <tbody>${rows}</tbody>     </table>     <div style="margin-top:16px;font-size:11px;color:#aaa;text-align:center">White Rocks Hotel &amp; Bungalows · Lixouri, Kefalonia · Season 2026</div>   </div>`;   const area=document.getElementById('rev-print-area');   area.innerHTML=html;area.style.display='block';window.print();   setTimeout(()=>{area.style.display='none';},1000); }
 </script>
 
+<div id="rev-print-area"></div>
 </body>
 </html>
