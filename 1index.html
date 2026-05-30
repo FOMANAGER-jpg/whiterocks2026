@@ -18,7 +18,7 @@
   --sh:0 1px 3px rgba(27,108,168,.08),0 4px 16px rgba(27,108,168,.06);
 }
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh}
-.app{max-width:1400px;margin:0 auto;background:var(--bg);position:relative}
+.app{width:100%;background:var(--bg);position:relative}
 
 /* HEADER */
 .hdr{background:linear-gradient(135deg,var(--sea-dark),var(--sea));padding:10px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
@@ -389,17 +389,19 @@ table.gtbl{width:100%;border-collapse:collapse;font-size:13px}
 .gym-nav-btn:hover{background:var(--sea);color:#fff}
 .gym-month-lbl{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);flex:1;text-align:center}
 .gym-tbl-wrap{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:auto;max-height:72vh}
-table.gym-tbl{border-collapse:collapse;font-size:12px;min-width:100%}
-.gym-tbl th{background:linear-gradient(180deg,#f0f7ff,#e0eefa);padding:8px 10px;text-align:center;font-size:10px;color:var(--sea-dark);font-weight:700;letter-spacing:.7px;text-transform:uppercase;border:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:10}
-.gym-tbl th.time-col{min-width:60px;background:linear-gradient(180deg,#f7fbff,#edf4fb);position:sticky;left:0;z-index:20}
-.gym-tbl td{padding:0;border:1px solid var(--border2);min-width:90px;height:32px;vertical-align:middle;position:relative}
-.gym-tbl td.time-cell{background:linear-gradient(180deg,#f7fbff,#edf4fb);font-size:11px;font-weight:700;color:var(--muted);text-align:center;padding:0 8px;white-space:nowrap;position:sticky;left:0;z-index:5;min-width:60px}
+table.gym-tbl{border-collapse:collapse;font-size:12px}
+.gym-tbl th{background:linear-gradient(180deg,#f0f7ff,#e0eefa);padding:8px 6px;text-align:center;font-size:10px;color:var(--sea-dark);font-weight:700;letter-spacing:.7px;text-transform:uppercase;border:1px solid var(--border);white-space:nowrap;min-width:72px}
+.gym-tbl th.time-col{min-width:58px;width:58px;background:linear-gradient(180deg,#f7fbff,#edf4fb)}
+.gym-tbl td{padding:0;border:1px solid var(--border2);min-width:72px;height:32px;vertical-align:middle}
+.gym-tbl td.time-cell{background:linear-gradient(180deg,#f7fbff,#edf4fb);font-size:11px;font-weight:700;color:var(--muted);text-align:center;padding:0 8px;white-space:nowrap;min-width:58px;width:58px}
 .gym-tbl td.time-cell.half{color:var(--muted2);font-weight:400}
 .gym-slot{width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .1s;font-size:11px;font-weight:600;padding:2px 4px;text-align:center}
 .gym-slot.empty{background:rgba(74,124,89,.04)}.gym-slot.empty:hover{background:var(--sea-light)}
 .gym-slot.booked{background:linear-gradient(135deg,#e05a4e,#c0392b);color:#fff;border-radius:4px}
 .gym-slot.booked:hover{background:linear-gradient(135deg,#c0392b,#a93226)}
 .gym-slot.booked-half{background:linear-gradient(135deg,#f5a623,#d4860a);color:#fff;border-radius:4px}
+.gym-slot.booked-1hr{background:linear-gradient(135deg,#e05a4e,#c0392b);color:#fff;border-radius:4px 4px 0 0;border-bottom:2px dashed rgba(255,255,255,.4)!important}
+.gym-slot.booked-cont{background:linear-gradient(135deg,#c0392b,#a93226);color:#fff;border-radius:0 0 4px 4px;opacity:.9}
 .gym-slot.today{background:rgba(27,108,168,.07)}
 .gym-slot.weekend{background:rgba(92,61,143,.04)}
 .gym-today-lbl{font-size:9px;display:block;opacity:.7}
@@ -461,6 +463,68 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .del-row-btn:hover{background:var(--coral);color:#fff}
 .del-row-btn i{font-size:13px}
 
+/* ═══ EXPERIENCES ═══ */
+.tab.exp-tab{color:#1a6644}.tab.exp-tab.on{color:#1a6644;border-bottom-color:#1a6644}
+.dd-item.exp i{color:#1a6644}.dd-item.exp:hover,.dd-item.exp.on{background:#e8f5ee;color:#1a6644}
+.exp-wrap{padding:16px 20px 40px}
+.exp-hdr{background:linear-gradient(135deg,#0d4a2f,#1a6644);border-radius:var(--r);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)}
+.exp-hdr-ico{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.exp-hdr-ico i{font-size:22px;color:#fff}
+.exp-hdr-t{font-family:var(--serif);font-size:19px;font-weight:600;color:#fff}
+.exp-hdr-s{font-size:12px;color:rgba(255,255,255,.7);margin-top:3px}
+.exp-subnav{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:8px 16px;margin-bottom:16px;display:flex;gap:6px;box-shadow:var(--sh)}
+.exp-subtab{padding:8px 18px;border-radius:9px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px;transition:all .15s}
+.exp-subtab:hover{border-color:#1a6644;color:#1a6644;background:#e8f5ee}
+.exp-subtab.on{background:#1a6644;color:#fff;border-color:#1a6644}
+.car-toolbar{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:12px 18px;margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;box-shadow:var(--sh)}
+.car-add-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;background:#1a6644;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.car-add-btn:hover{background:#0d4a2f}
+.car-print-btn{display:flex;align-items:center;gap:7px;padding:9px 16px;background:var(--white);color:#1a6644;border:1.5px solid #a8d5b8;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.car-print-btn:hover{background:#e8f5ee}
+.car-mpill{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.car-mpill:hover:not(.on){border-color:#1a6644;color:#1a6644;background:#e8f5ee}
+.car-mpill.on{background:#1a6644;color:#fff;border-color:#1a6644}
+.car-tbl-wrap{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;overflow-x:auto;margin-bottom:14px}
+table.car-tbl{width:100%;border-collapse:collapse;font-size:12px;min-width:1000px}
+.car-tbl thead{background:linear-gradient(180deg,#f0fff4,#e0f7e9);border-bottom:2px solid #a8d5b8}
+.car-tbl th{padding:9px 11px;text-align:left;font-size:9px;color:#0d4a2f;font-weight:700;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap;border-right:1px solid #a8d5b8}
+.car-tbl th:last-child{border-right:none}
+.car-tbl tbody tr{border-bottom:1px solid var(--border2);transition:background .12s}
+.car-tbl tbody tr:hover{background:#f0fff4}
+.car-tbl td{padding:0;vertical-align:middle;border-right:1px solid var(--border2)}
+.car-tbl td:last-child{border-right:none}
+.car-ci{width:100%;padding:8px 9px;border:none;background:transparent;font-family:var(--sans);font-size:12px;color:var(--ink);outline:none}
+.car-ci:focus{background:rgba(26,102,68,.06)}
+.car-ci.room{font-weight:700;color:#1a6644;text-align:center}
+.car-ci.mono{font-family:monospace;font-size:11px;color:var(--muted2)}
+.car-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:var(--sans)}
+.car-badge.confirmed{background:#e8f5ee;color:#1a6644}
+.car-badge.waiting{background:#fef7e6;color:#b45309}
+.car-badge.cancelled{background:#fce8e8;color:#c0392b}
+.car-rc{border-left:3px solid #1a6644!important}
+.car-rw{border-left:3px solid #b45309!important}
+.car-rx{border-left:3px solid #c0392b!important;opacity:.72}
+.car-ep td{padding:14px 16px;background:#e8f5ee;border-bottom:2px solid #a8d5b8}
+.car-epg{display:flex;flex-direction:column;gap:3px}
+.car-epg label{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:#0d4a2f;font-weight:700}
+.car-epg input,.car-epg select{font-size:12px;padding:6px 9px;border:1.5px solid #a8d5b8;border-radius:8px;background:var(--white);color:var(--ink);font-family:var(--sans);outline:none;width:100%}
+.car-epg input:focus,.car-epg select:focus{border-color:#1a6644}
+.car-pbox{background:var(--white);border:2px solid #a8d5b8;border-radius:10px;padding:11px 14px;text-align:center;min-width:130px}
+.car-pbox .cpl{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:#0d4a2f;font-weight:700;margin-bottom:3px}
+.car-pbox .cpv{font-size:24px;font-weight:700;color:#1a6644;font-family:var(--serif)}
+.car-pbox .cpi{font-size:10px;color:var(--muted);margin-top:2px}
+.car-pbox .cpt{font-size:15px;font-weight:700;color:#0d4a2f;border-top:1px solid #a8d5b8;margin-top:6px;padding-top:6px;font-family:var(--serif)}
+.car-sbtns{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.car-sbtn{padding:6px 12px;border-radius:8px;border:1.5px solid var(--border);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);background:var(--white);color:var(--muted)}
+.car-sbtn.sc{background:#1a6644;color:#fff;border-color:#1a6644}
+.car-sbtn.sw{background:#b45309;color:#fff;border-color:#b45309}
+.car-sbtn.sx{background:#c0392b;color:#fff;border-color:#c0392b}
+.car-sum-card{background:#e8f5ee;border:1px solid #a8d5b8;border-radius:10px;padding:11px 13px}
+.car-sum-month{font-size:10px;font-weight:700;text-transform:uppercase;color:#0d4a2f;margin-bottom:2px}
+.car-sum-count{font-size:20px;font-weight:700;color:#1a6644;font-family:var(--serif)}
+.car-sum-rev{font-size:12px;color:#0d4a2f;font-weight:600;margin-top:1px}
+.car-empty{padding:36px;text-align:center;color:var(--muted2)}
+.car-empty i{font-size:34px;display:block;margin-bottom:8px;opacity:.3}
 
 /* PASSWORD SCREEN */
 .pwd-screen{position:fixed;inset:0;background:linear-gradient(135deg,var(--sea-dark),var(--sea));z-index:9999;display:flex;align-items:center;justify-content:center}
@@ -478,6 +542,180 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .pwd-btn:hover{opacity:.92}
 .pwd-err{background:#fce8e8;color:var(--coral);border-radius:8px;padding:9px 14px;font-size:13px;margin-bottom:12px;display:none}
 .pwd-footer{font-size:11px;color:var(--muted2);margin-top:18px}
+
+
+/* ═══════════════════════════
+   ANALYTICS & AI RESPONSES
+═══════════════════════════ */
+.an-wrap{padding:16px 20px 40px}
+.an-hdr{background:linear-gradient(135deg,#1a3a6e,#2563aa);border-radius:var(--r);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)}
+.an-hdr-ico{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.an-hdr-ico i{font-size:22px;color:#fff}
+.an-hdr-t{font-family:var(--serif);font-size:19px;font-weight:600;color:#fff}
+.an-hdr-s{font-size:12px;color:rgba(255,255,255,.7);margin-top:3px}
+
+/* CHART */
+.an-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:16px;box-shadow:var(--sh)}
+.an-card h3{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.an-card h3 i{font-size:16px;color:var(--sea)}
+.chart-wrap{position:relative;height:220px;width:100%}
+canvas.an-chart{width:100%!important;height:220px!important}
+.an-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.an-leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.an-leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* STATS GRID */
+.an-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.an-stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh);text-align:center}
+.an-stat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:6px}
+.an-stat-val{font-size:28px;font-weight:700;font-family:var(--serif);line-height:1}
+.an-stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* TOP THEMES */
+.an-themes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.an-theme-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.an-theme-card h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.an-theme-card h4.pos{color:var(--olive)}.an-theme-card h4.neg{color:var(--coral)}
+.an-theme-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border2);font-size:12px;color:var(--ink2)}
+.an-theme-item:last-child{border-bottom:none}
+.an-theme-bar{height:6px;border-radius:3px;flex-shrink:0;transition:width .4s}
+.an-theme-bar.pos{background:var(--olive)}.an-theme-bar.neg{background:var(--coral)}
+.an-theme-count{font-size:10px;color:var(--muted);margin-left:auto;flex-shrink:0;font-weight:700}
+
+/* AI RESPONSE */
+.ai-resp-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;box-shadow:var(--sh)}
+.ai-resp-card h3{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ai-src-tabs{display:flex;gap:6px;margin-bottom:12px}
+.ai-src-tab{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.ai-src-tab.on{background:var(--sea);color:#fff;border-color:var(--sea)}
+.ai-rev-list{max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:9px;margin-bottom:10px}
+.ai-rev-item{padding:10px 14px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .12s;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ai-rev-item:last-child{border-bottom:none}
+.ai-rev-item:hover{background:var(--sea-light)}
+.ai-rev-item.sel{background:var(--sea-light);border-left:3px solid var(--sea)}
+.ai-rev-period{font-size:13px;font-weight:600;color:var(--ink)}
+.ai-rev-score{font-size:13px;font-weight:700;color:var(--sea);font-family:var(--serif)}
+.ai-rev-count{font-size:11px;color:var(--muted)}
+.ai-gen-btn{padding:10px 20px;background:linear-gradient(135deg,var(--sea-dark),var(--sea));color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px;margin-bottom:12px}
+.ai-gen-btn:hover{opacity:.9}.ai-gen-btn:disabled{background:var(--muted2);cursor:not-allowed}
+.ai-resp-out{background:var(--sea-light);border:1px solid var(--sea-mid);border-radius:9px;padding:14px;font-size:13px;color:var(--ink2);line-height:1.7;white-space:pre-wrap;min-height:80px;display:none}
+.ai-resp-out.show{display:block}
+.ai-resp-acts{display:flex;gap:8px;margin-top:10px}
+.ai-copy-btn{padding:8px 16px;background:var(--olive);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px}
+.ai-regen-btn{padding:8px 14px;background:var(--white);color:var(--sea);border:1.5px solid var(--sea-mid);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px}
+.ai-style-sel{padding:7px 11px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:12px;color:var(--ink);background:var(--bg);outline:none}
+.ai-style-sel:focus{border-color:var(--sea)}
+.an-empty{padding:40px;text-align:center;color:var(--muted2);font-size:13px}
+.an-empty i{font-size:36px;display:block;margin-bottom:10px;opacity:.3}
+
+
+/* BOOKING.COM REVIEWS */
+.bk-score-big{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#e8f0ff,#ddeeff);border-radius:11px;padding:14px 18px;margin-bottom:14px}
+.bk-score-num{font-family:var(--serif);font-size:48px;font-weight:700;color:#0069ff;line-height:1}
+.bk-score-bar{height:8px;border-radius:4px;background:#0069ff;transition:width .4s}
+.bk-dist-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px}
+.bk-dist-lbl{width:30px;color:var(--muted);font-weight:600;text-align:right;flex-shrink:0}
+.bk-dist-track{flex:1;height:8px;background:var(--border2);border-radius:4px;overflow:hidden}
+.bk-dist-fill{height:100%;background:#0069ff;border-radius:4px;transition:width .4s}
+.bk-dist-cnt{width:28px;font-weight:700;color:var(--ink2);font-size:11px;flex-shrink:0}
+.bk-top-guests{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.bk-guest-chip{background:var(--sea-light);border-radius:8px;padding:8px 12px;font-size:12px;display:flex;align-items:center;justify-content:space-between}
+.bk-guest-name{font-weight:600;color:var(--ink)}
+.bk-guest-score{font-weight:700;color:#0069ff;font-family:var(--serif);font-size:14px}
+
+
+/* ═══════════════════════════
+   MASSAGE
+═══════════════════════════ */
+.ms-hdr{background:linear-gradient(135deg,#7c4a00,#b45309);border-radius:var(--r);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)}
+.ms-hdr-ico{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ms-hdr-ico i{font-size:22px;color:#fff}
+.ms-hdr-t{font-family:var(--serif);font-size:19px;font-weight:600;color:#fff}
+.ms-hdr-s{font-size:12px;color:rgba(255,255,255,.7);margin-top:3px}
+.ms-day-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;box-shadow:var(--sh)}
+.ms-day-hdr{background:linear-gradient(135deg,#7c4a00,#b45309);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+.ms-day-title{font-family:var(--serif);font-size:15px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px}
+.ms-day-count{background:rgba(255,255,255,.25);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;color:#fff}
+.ms-slot{display:grid;grid-template-columns:90px 1fr 1fr 1fr 80px 34px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border2)}
+.ms-slot:last-child{border-bottom:none}
+.ms-slot:hover{background:var(--amber-light)}
+.ms-time{font-size:13px;font-weight:700;color:#b45309;white-space:nowrap}
+.ms-inp{padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:12px;color:var(--ink);background:var(--bg);outline:none;width:100%}
+.ms-inp:focus{border-color:#b45309;background:var(--white)}
+.ms-inp.cost{font-weight:700;color:#b45309;text-align:center}
+.ms-inp.booked{background:#fef7e6;border-color:rgba(180,83,9,.3)}
+.ms-dur-sel{padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:12px;color:var(--ink);background:var(--bg);outline:none}
+.ms-dur-sel:focus{border-color:#b45309}
+.ms-del{width:28px;height:28px;background:#fce8e8;border:none;border-radius:7px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center}
+.ms-del:hover{background:var(--coral);color:#fff}
+.ms-slot-empty{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border2)}
+.ms-slot-empty:last-child{border-bottom:none}
+.ms-add-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;width:100%;background:none;border:none;border-top:1px solid var(--border2);cursor:pointer;font-family:var(--sans);font-size:12px;color:#b45309;font-weight:600}
+.ms-add-btn:hover{background:var(--amber-light)}
+.ms-stats{display:flex;gap:10px;padding:10px 16px;background:var(--amber-light);flex-wrap:wrap;border-top:1px solid rgba(180,83,9,.15)}
+.ms-stat{font-size:11px;color:#92400e;display:flex;align-items:center;gap:5px}
+.ms-stat strong{color:#b45309;font-size:13px}
+
+
+/* ═══════════════════════════
+   ALERTS / DAILY TASKS
+═══════════════════════════ */
+.al-wrap{padding:16px 20px 40px}
+.al-hdr{background:linear-gradient(135deg,#991b1b,#dc2626);border-radius:var(--r);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)}
+.al-hdr-ico{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.al-hdr-ico i{font-size:22px;color:#fff}
+.al-hdr-t{font-family:var(--serif);font-size:19px;font-weight:600;color:#fff}
+.al-hdr-s{font-size:12px;color:rgba(255,255,255,.7);margin-top:3px}
+
+/* ADD FORM */
+.al-add-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:16px;box-shadow:var(--sh)}
+.al-add-card h3{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.al-form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.al-form-group{display:flex;flex-direction:column;gap:4px}
+.al-form-group label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted)}
+.al-inp{padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--sans);font-size:13px;color:var(--ink);background:var(--bg);outline:none}
+.al-inp:focus{border-color:#dc2626;background:var(--white)}
+.al-pri-sel{padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--sans);font-size:13px;color:var(--ink);background:var(--bg);outline:none}
+.al-pri-sel:focus{border-color:#dc2626}
+.al-save-btn{padding:9px 20px;background:#dc2626;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px;white-space:nowrap}
+.al-save-btn:hover{background:#991b1b}
+
+/* DATE NAV */
+.al-nav{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:11px 16px;margin-bottom:14px;display:flex;gap:10px;align-items:center;box-shadow:var(--sh)}
+.al-nav-btn{width:32px;height:32px;background:var(--sea-light);border:none;border-radius:8px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center;font-size:15px}
+.al-nav-btn:hover{background:var(--sea);color:#fff}
+.al-date-lbl{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);flex:1;text-align:center}
+.al-today-btn{padding:6px 14px;background:var(--sea);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+
+/* TASK CARDS */
+.al-list{display:flex;flex-direction:column;gap:8px}
+.al-task{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh);transition:all .2s;border-left:4px solid var(--border)}
+.al-task.pri-high{border-left-color:#dc2626}
+.al-task.pri-mid{border-left-color:#f5a623}
+.al-task.pri-low{border-left-color:#4a7c59}
+.al-task.done{background:#f0fdf4;border-color:#bbf7d0;opacity:.75}
+.al-task.overdue{background:#fef2f2;border-color:#fecaca;animation:alertPulse 2s infinite}
+@keyframes alertPulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.3)}50%{box-shadow:0 0 0 6px rgba(220,38,38,.0)}}
+.al-chk{width:22px;height:22px;cursor:pointer;accent-color:#16a34a;flex-shrink:0}
+.al-task-time{font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;min-width:50px}
+.al-task-time.overdue{color:#dc2626}
+.al-task-desc{flex:1;font-size:13px;color:var(--ink2);line-height:1.4}
+.al-task-desc.done{text-decoration:line-through;color:var(--muted)}
+.al-pri-badge{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;flex-shrink:0}
+.al-pri-badge.high{background:#fef2f2;color:#dc2626}
+.al-pri-badge.mid{background:#fef7e6;color:#b45309}
+.al-pri-badge.low{background:#f0fdf4;color:#16a34a}
+.al-task-who{font-size:11px;color:var(--muted);white-space:nowrap}
+.al-task-del{width:28px;height:28px;background:none;border:none;cursor:pointer;color:var(--muted);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.al-task-del:hover{background:#fef2f2;color:#dc2626}
+.al-empty{padding:40px;text-align:center;color:var(--muted2)}
+.al-empty i{font-size:36px;display:block;margin-bottom:10px;opacity:.3}
+.al-stats-row{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.al-stat-pill{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:12px;display:flex;align-items:center;gap:6px;box-shadow:var(--sh)}
+
+/* TAB PULSE for overdue */
+@keyframes tabPulse{0%,100%{color:#dc2626}50%{color:#ff6b6b;text-shadow:0 0 8px rgba(220,38,38,.5)}}
+.tab-alert-pulse{animation:tabPulse 1.2s infinite!important;font-weight:700!important}
 
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 /* ═══ PRINT ═══ */
@@ -544,8 +782,8 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
       </button>
       <div class="dd-menu" id="ddMenu">
         <div class="dd-sec-lbl">Hotel</div>
-        <div class="dd-item on" id="ddi-res" onclick="ddGo('res','Reservations')"><i class="ti ti-list-details"></i> Reservations</div>
-        <div class="dd-item" id="ddi-rooms" onclick="ddGo('rooms','Room Assignment')"><i class="ti ti-door"></i> Room Assignment</div>
+        <div class="dd-item on" id="ddi-res" onclick="ddGo('res','Reservations')"><i class="ti ti-list-details"></i> Reservations</div>       
+        <div class="dd-item" id="ddi-alerts" onclick="ddGo('alerts','Alerts')"><i class="ti ti-bell-ringing" style="color:#dc2626"></i> Alerts</div>
         <div class="dd-item" id="ddi-day3" onclick="ddGo('day3','Day 1 &amp; Day 3')"><i class="ti ti-calendar-check"></i> Day 1 &amp; Day 3</div>
         <div class="dd-item" id="ddi-report" onclick="ddGo('report','Report')"><i class="ti ti-chart-bar"></i> Report</div>
         <div class="dd-divider"></div>
@@ -553,16 +791,18 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
         <div class="dd-item pur" id="ddi-grooms" onclick="ddGo('grooms','Grooms Daily List')"><i class="ti ti-luggage"></i> Grooms Daily List</div>
         <div class="dd-divider"></div>
         <div class="dd-sec-lbl">Tools</div>
-        <div class="dd-item amb" id="ddi-import" onclick="ddGo('import','Import')"><i class="ti ti-file-import"></i> Import Reservations</div>
+        <div class="dd-item amb" id="ddi-import" onclick="ddGo('import','Booking.com')"><i class="ti ti-brand-booking"></i> Booking.com Reviews</div>
         <div style="height:1px;background:var(--border);margin:2px 0"></div>
         <div class="dd-sec-lbl">Reviews</div>
         <div class="dd-item" id="ddi-ta" onclick="ddGo('ta','TripAdvisor')" style="color:#2d9c68"><i class="ti ti-brand-tripadvisor" style="color:#2d9c68"></i> TripAdvisor</div>
         <div class="dd-item" id="ddi-goo" onclick="ddGo('goo','Google Reviews')" style="color:#4285f4"><i class="ti ti-brand-google" style="color:#4285f4"></i> Google Reviews</div>
+        <div class="dd-item" id="ddi-analytics" onclick="ddGo('analytics','Analytics & AI')"><i class="ti ti-chart-dots" style="color:#2563aa"></i> Analytics & AI Responses</div>
         <div class="dd-divider"></div>
         <div class="dd-sec-lbl">Fitness</div>
         <div class="dd-item" id="ddi-gym" onclick="ddGo('gym','Gym')"><i class="ti ti-barbell" style="color:#2563aa"></i> Gym</div>
         <div class="dd-item" id="ddi-yoga" onclick="ddGo('yoga','Yoga')"><i class="ti ti-yin-yang" style="color:#9c4dcc"></i> Yoga</div>
         <div class="dd-item" id="ddi-pilates" onclick="ddGo('pilates','Pilates')"><i class="ti ti-stretching" style="color:#c0395a"></i> Pilates</div>
+        <div class="dd-item" id="ddi-massage" onclick="ddGo('massage','Massage')"><i class="ti ti-heart-handshake" style="color:#b45309"></i> Massage</div>
       </div>
     </div>
   </div>
@@ -574,17 +814,20 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
 
 <!-- ─── TABS ─── -->
 <div class="tabs">
-  <div class="tab on" id="nt-res" onclick="goTab('res')"><i class="ti ti-list-details"></i> Reservations</div>
-  <div class="tab" id="nt-rooms" onclick="goTab('rooms')"><i class="ti ti-door"></i> Room Assignment</div>
+  <div class="tab on" id="nt-res" onclick="goTab('res')"><i class="ti ti-list-details"></i> Reservations</div> 
+  <div class="tab" id="nt-alerts" onclick="goTab('alerts')"><i class="ti ti-bell-ringing"></i> Alerts</div>
   <div class="tab" id="nt-day3" onclick="goTab('day3')"><i class="ti ti-calendar-check"></i> Day 1 &amp; Day 3</div>
   <div class="tab" id="nt-report" onclick="goTab('report')"><i class="ti ti-chart-bar"></i> Report</div>
   <div class="tab pur-tab" id="nt-grooms" onclick="goTab('grooms')"><i class="ti ti-luggage"></i> Grooms Daily List</div>
-  <div class="tab amb-tab" id="nt-import" onclick="goTab('import')"><i class="ti ti-file-import"></i> Import</div>
+  <div class="tab amb-tab" id="nt-import" onclick="goTab('import')"><i class="ti ti-brand-booking"></i> Booking.com</div>
   <div class="tab" id="nt-ta" onclick="goTab('ta')" style="color:#2d9c68"><i class="ti ti-brand-tripadvisor"></i> TripAdvisor</div>
   <div class="tab" id="nt-goo" onclick="goTab('goo')" style="color:#4285f4"><i class="ti ti-brand-google"></i> Google Reviews</div>
+  <div class="tab" id="nt-analytics" onclick="goTab('analytics')" style="color:#2563aa"><i class="ti ti-chart-dots"></i> Analytics</div>
   <div class="tab" id="nt-gym" onclick="goTab('gym')" style="color:#2563aa"><i class="ti ti-barbell"></i> Gym</div>
   <div class="tab" id="nt-yoga" onclick="goTab('yoga')" style="color:#9c4dcc"><i class="ti ti-yin-yang"></i> Yoga</div>
   <div class="tab" id="nt-pilates" onclick="goTab('pilates')" style="color:#c0395a"><i class="ti ti-stretching"></i> Pilates</div>
+  <div class="tab" id="nt-massage" onclick="goTab('massage')" style="color:#b45309"><i class="ti ti-heart-handshake"></i> Massage</div>
+  <div class="tab exp-tab" id="nt-experiences" onclick="goTab('experiences')"><i class="ti ti-map-pin"></i> Experiences</div>
 </div>
 
 <div class="sbar" id="sbar"></div>
@@ -759,57 +1002,41 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
   </div>
 </div>
 
-<!-- ─── IMPORT ─── -->
+<!-- ─── BOOKING.COM ─── -->
 <div id="tab-import" class="hidden">
-  <div class="imp-wrap">
-    <div class="imp-hdr">
-      <div class="imp-hdr-ico"><i class="ti ti-file-import"></i></div>
-      <div><div class="imp-hdr-title">Import Reservations</div><div class="imp-hdr-sub">Paste protel text or upload HTML &mdash; AI parses automatically</div></div>
+  <div class="rev-wrap">
+    <div class="rev-hdr" style="background:linear-gradient(135deg,#00358e,#0069ff)">
+      <div class="rev-hdr-ico"><i class="ti ti-brand-booking"></i></div>
+      <div><div class="rev-hdr-t">Booking.com Reviews</div><div class="rev-hdr-s">Αυτόματη ανάλυση από τα ratings των κρατήσεων</div></div>
     </div>
-    <div class="imp-grid">
-      <div class="imp-card">
-        <h3><i class="ti ti-clipboard-text"></i> Paste from protel</h3>
-        <p>Copy reservation lines from the protel report and paste here.</p>
-        <textarea class="imp-ta" id="imp-text" placeholder="SMITH  407  DBLS  21/5/26  28/5/26  2  BB  PREPAID  7  2835.00  6560099799..."></textarea>
-        <button class="imp-parse-btn" id="parseBtn" onclick="parseResText()"><i class="ti ti-sparkles"></i> Parse with AI</button>
-        <div class="imp-status" id="imp-status"></div>
+    <div class="sbar hidden" id="bk-stats-bar" style="border-radius:12px;margin-bottom:14px;border:1px solid var(--border);box-shadow:var(--sh)"></div>
+
+    <!-- PERIOD SELECTOR -->
+    <div class="rev-input-card">
+      <h3><i class="ti ti-calendar" style="color:#0069ff"></i> Επέλεξε Περίοδο</h3>
+      <div class="rev-period">
+        <label>Μήνας:</label>
+        <select id="bk-period-m" onchange="renderBKStats()">
+          <option value="all">Όλη η σεζόν</option>
+          <option value="05">Μάιος</option>
+          <option value="06">Ιούνιος</option>
+          <option value="07">Ιούλιος</option>
+          <option value="08">Αύγουστος</option>
+          <option value="09">Σεπτέμβριος</option>
+          <option value="10">Οκτώβριος</option>
+        </select>
+        <button class="rev-parse-btn" style="background:#0069ff;margin-top:0;padding:8px 18px" onclick="saveBKReview()">
+          <i class="ti ti-device-floppy"></i> Save to history
+        </button>
       </div>
-      <div class="imp-card">
-        <h3><i class="ti ti-file-upload"></i> Upload file</h3>
-        <p>Upload the protel HTML export. AI extracts all reservations.</p>
-        <div class="drop-zone" onclick="document.getElementById('resFileInp').click()" ondragover="event.preventDefault()" ondrop="handleResDrop(event)">
-          <i class="ti ti-cloud-upload"></i>
-          <div class="drop-lbl" id="dropLbl">Drop HTML or TXT here</div>
-          <div class="drop-sub">or click to browse</div>
-        </div>
-        <input type="file" id="resFileInp" class="file-inp-res" accept=".html,.htm,.txt" onchange="handleResFile(this)">
-        <div style="background:var(--sea-light);border-radius:8px;padding:11px;font-size:12px;color:var(--sea-dark);margin-top:10px;line-height:1.6">
-          <strong>Tip:</strong> In protel go to Reports &rarr; Elegchos Kratiseon, select range, export as HTML or copy-paste.
-        </div>
-      </div>
+      <!-- LIVE STATS FROM RESERVATIONS -->
+      <div id="bk-live-results"></div>
     </div>
-    <div class="prev-wrap hidden" id="prevWrap">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <i class="ti ti-table-check" style="color:var(--olive);font-size:16px"></i>
-        <span style="font-size:14px;font-weight:700;color:var(--ink)">Preview &mdash; <span id="prevTitle">0 found</span></span>
-      </div>
-      <div class="prev-stats" id="prevStats"></div>
-      <div style="overflow-x:auto">
-        <table class="prev-tbl">
-          <thead><tr>
-            <th><input type="checkbox" class="prev-chk" id="chkAll" onchange="toggleAll(this)" checked></th>
-            <th>Ref</th><th>Name</th><th>Room</th><th>Type</th><th>Arrival</th><th>Departure</th><th>Adults</th><th>Status</th>
-          </tr></thead>
-          <tbody id="prevTbody"></tbody>
-        </table>
-      </div>
-      <div class="imp-actions">
-        <button class="imp-import-btn" onclick="doImport()"><i class="ti ti-check"></i> Import selected</button>
-        <button class="imp-skip-btn" onclick="clearPreview()">Cancel</button>
-        <span class="sel-all" onclick="selectAll(true)">Select all</span>
-        <span class="sel-all" onclick="selectAll(false)" style="color:var(--coral)">Deselect all</span>
-        <span id="selCount" style="font-size:12px;color:var(--muted);margin-left:8px"></span>
-      </div>
+
+    <!-- HISTORY -->
+    <div class="rev-history">
+      <h3><i class="ti ti-history" style="color:#0069ff"></i> Review History</h3>
+      <div id="bk-history-list"><div class="rev-empty"><i class="ti ti-brand-booking"></i>Δεν υπάρχουν αποθηκευμένες περίοδοι ακόμα</div></div>
     </div>
   </div>
 </div>
@@ -947,6 +1174,39 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
       <div class="fit-hdr-ico"><i class="ti ti-barbell"></i></div>
       <div><div class="fit-hdr-t">Gym Bookings</div><div class="fit-hdr-s">30-min slots &middot; 1 room per slot &middot; 07:00 &rarr; 20:30 daily</div></div>
     </div>
+
+    <!-- ADD BOOKING FORM -->
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;box-shadow:var(--sh)">
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+        <i class="ti ti-plus" style="color:var(--sea)"></i> Add Gym Booking
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+        <div>
+          <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Room</label>
+          <input id="gym-add-room" class="tr-inp" style="width:90px" placeholder="309" maxlength="5">
+        </div>
+        <div>
+          <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Date</label>
+          <input type="date" id="gym-add-date" class="tr-inp">
+        </div>
+        <div>
+          <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Time</label>
+          <select id="gym-add-time" class="tr-inp" style="width:100px"></select>
+        </div>
+        <div>
+          <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Duration</label>
+          <select id="gym-add-dur" class="tr-inp" style="width:100px">
+            <option value="30">30 min</option>
+            <option value="60">1 hour</option>
+          </select>
+        </div>
+        <button onclick="addGymBookingSimple()" style="padding:9px 18px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px;height:38px">
+          <i class="ti ti-check"></i> Save
+        </button>
+      </div>
+    </div>
+
+    <!-- MONTH CALENDAR -->
     <div class="gym-nav">
       <button class="gym-nav-btn" onclick="gymPrevMonth()"><i class="ti ti-chevron-left"></i></button>
       <div class="gym-month-lbl" id="gymMonthLbl"></div>
@@ -1027,7 +1287,319 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
   </div>
 </div>
 
+
+<!-- ─── ANALYTICS & AI RESPONSES ─── -->
+<div id="tab-analytics" class="hidden">
+  <div class="an-wrap">
+    <div class="an-hdr">
+      <div class="an-hdr-ico"><i class="ti ti-chart-dots"></i></div>
+      <div><div class="an-hdr-t">Analytics & AI Responses</div><div class="an-hdr-s">Σύγκριση περιόδων &middot; Trends &middot; AI απαντήσεις σε reviews</div></div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="an-grid" id="an-stats-grid">
+      <div class="an-stat-card"><div class="an-stat-lbl">TA Periods</div><div class="an-stat-val" id="an-ta-periods" style="color:#2d9c68">-</div><div class="an-stat-sub">αποθηκευμένες</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">TA Overall Avg</div><div class="an-stat-val" id="an-ta-avg" style="color:#2d9c68">-</div><div class="an-stat-sub">/ 5.0</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">Google Periods</div><div class="an-stat-val" id="an-goo-periods" style="color:#4285f4">-</div><div class="an-stat-sub">αποθηκευμένες</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">Google Overall Avg</div><div class="an-stat-val" id="an-goo-avg" style="color:#4285f4">-</div><div class="an-stat-sub">/ 5.0</div></div>
+    </div>
+
+    <!-- CHART -->
+    <div class="an-card">
+      <h3><i class="ti ti-chart-line"></i> Score Trend ανά περίοδο</h3>
+      <div class="chart-wrap">
+        <canvas id="anChart"></canvas>
+      </div>
+      <div class="an-legend">
+        <div class="an-leg-item"><div class="an-leg-dot" style="background:#2d9c68"></div> TripAdvisor</div>
+        <div class="an-leg-item"><div class="an-leg-dot" style="background:#4285f4"></div> Google Reviews</div>
+      </div>
+    </div>
+
+    <!-- TOP THEMES -->
+    <div class="an-themes" id="an-themes">
+      <div class="an-theme-card">
+        <h4 class="pos"><i class="ti ti-thumb-up"></i> Top Positives (όλη η σεζόν)</h4>
+        <div id="an-pos-list"><div class="an-empty"><i class="ti ti-chart-bar"></i>Δεν υπάρχουν δεδομένα ακόμα</div></div>
+      </div>
+      <div class="an-theme-card">
+        <h4 class="neg"><i class="ti ti-arrow-up-circle"></i> Top Improvements (όλη η σεζόν)</h4>
+        <div id="an-neg-list"><div class="an-empty"><i class="ti ti-chart-bar"></i>Δεν υπάρχουν δεδομένα ακόμα</div></div>
+      </div>
+    </div>
+
+    <!-- AI RESPONSE GENERATOR -->
+    <div class="ai-resp-card">
+      <h3><i class="ti ti-sparkles" style="color:var(--sea)"></i> AI Response Generator</h3>
+
+      <!-- MODE TABS -->
+      <div class="ai-src-tabs" style="margin-bottom:14px">
+        <button class="ai-src-tab on" id="ai-mode-json" onclick="setAIMode('json')"><i class="ti ti-file-text"></i> Paste Review JSON</button>
+        <button class="ai-src-tab" id="ai-mode-period" onclick="setAIMode('period')"><i class="ti ti-history"></i> From History</button>
+      </div>
+
+      <!-- JSON PASTE MODE -->
+      <div id="ai-json-mode">
+        <div style="background:#e8f5e9;border-radius:9px;padding:10px 14px;font-size:12px;color:#2e7d32;margin-bottom:10px;line-height:1.6">
+          <strong>Πώς λειτουργεί:</strong> Στείλε το review screenshot στο Claude chat &rarr; Εγώ σου δίνω JSON &rarr; Paste εδώ &rarr; Κλικ Generate!
+        </div>
+        <textarea class="rev-ta" id="ai-json-inp" style="min-height:100px;margin-bottom:10px;font-size:12px" 
+          placeholder='Paste review JSON από το Claude, π.χ.:&#10;{&#10;  "reviewer": "derek l",&#10;  "score": 4,&#10;  "platform": "TripAdvisor",&#10;  "text": "We love White Rocks...",&#10;  "date": "24 May 2026"&#10;}'></textarea>
+      </div>
+
+      <!-- HISTORY MODE -->
+      <div id="ai-period-mode" style="display:none">
+        <div class="ai-src-tabs" style="margin-bottom:8px">
+          <button class="ai-src-tab on" id="ai-tab-ta" onclick="setAISrc('ta')"><i class="ti ti-brand-tripadvisor"></i> TripAdvisor</button>
+          <button class="ai-src-tab" id="ai-tab-goo" onclick="setAISrc('goo')"><i class="ti ti-brand-google"></i> Google</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Επέλεξε περίοδο:</div>
+        <div class="ai-rev-list" id="ai-rev-list"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+        <select class="ai-style-sel" id="ai-style">
+          <option value="professional">Επαγγελματικό & Ζεστό</option>
+          <option value="personal">Προσωπικό & Ευχαριστώ</option>
+          <option value="concise">Σύντομο & Ευγενικό</option>
+          <option value="detailed">Αναλυτικό με αντιμετώπιση παραπόνων</option>
+        </select>
+        <select class="ai-style-sel" id="ai-lang">
+          <option value="english">English</option>
+          <option value="greek">Ελληνικά</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="ai-gen-btn" id="ai-gen-btn" onclick="openInClaude()">
+          <i class="ti ti-brand-claude"></i> Open in Claude &rarr;
+        </button>
+        <button class="ai-regen-btn" onclick="copyPromptToClipboard()" style="padding:10px 16px;background:var(--white);color:var(--sea);border:1.5px solid var(--sea-mid);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px">
+          <i class="ti ti-clipboard"></i> Copy prompt
+        </button>
+      </div>
+      <div style="background:#fff3e0;border-radius:9px;padding:10px 14px;font-size:12px;color:#b45309;margin-top:8px;line-height:1.5">
+        <i class="ti ti-info-circle"></i> Κλικ <strong>Open in Claude</strong> → ανοίγει νέο παράθυρο με το review έτοιμο → το AI γράφει απάντηση → copy-paste στο TripAdvisor/Google!
+      </div>
+      <div class="ai-resp-out" id="ai-resp-out"></div>
+      <div class="ai-resp-acts" id="ai-resp-acts" style="display:none">
+        <button class="ai-copy-btn" onclick="copyAIResponse()"><i class="ti ti-copy"></i> Copy</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ─── MASSAGE ─── -->
+<div id="tab-massage" class="hidden">
+  <div class="fit-wrap">
+    <div class="ms-hdr">
+      <div class="ms-hdr-ico"><i class="ti ti-heart-handshake"></i></div>
+      <div><div class="ms-hdr-t">Massage Bookings</div><div class="ms-hdr-s">Ώρες ανά session &middot; Δωμάτιο, Όνομα &amp; Κόστος</div></div>
+    </div>
+    <div id="massageContent"></div>
+  </div>
+</div>
+
+
+<!-- ─── ALERTS ─── -->
+<div id="tab-alerts" class="hidden">
+  <div class="al-wrap">
+    <div class="al-hdr">
+      <div class="al-hdr-ico"><i class="ti ti-bell-ringing"></i></div>
+      <div>
+        <div class="al-hdr-t">Daily Alerts & Tasks</div>
+        <div class="al-hdr-s">Πρόσθεσε tasks το βράδυ &bull; Το προσωπικό τα τικάρει την επόμενη μέρα</div>
+      </div>
+    </div>
+
+    <!-- ADD TASK FORM -->
+    <div class="al-add-card">
+      <h3><i class="ti ti-plus" style="color:#dc2626"></i> Add Task</h3>
+      <div class="al-form-row">
+        <div class="al-form-group">
+          <label>Date</label>
+          <input type="date" id="al-add-date" class="al-inp">
+        </div>
+        <div class="al-form-group">
+          <label>Time</label>
+          <input type="time" id="al-add-time" class="al-inp" style="width:110px">
+        </div>
+        <div class="al-form-group" style="flex:1;min-width:200px">
+          <label>Task Description</label>
+          <input id="al-add-desc" class="al-inp" placeholder="π.χ. SMITH/407 late checkout, λουλούδια για VIP...">
+        </div>
+        <div class="al-form-group">
+          <label>Priority</label>
+          <select id="al-add-pri" class="al-pri-sel">
+            <option value="high">🔴 Urgent</option>
+            <option value="mid" selected>🟡 Normal</option>
+            <option value="low">🟢 Low</option>
+          </select>
+        </div>
+        <button class="al-save-btn" onclick="addAlert()">
+          <i class="ti ti-bell-plus"></i> Add
+        </button>
+      </div>
+    </div>
+
+    <!-- DATE NAVIGATION -->
+    <div class="al-nav">
+      <button class="al-nav-btn" onclick="alNavDay(-1)"><i class="ti ti-chevron-left"></i></button>
+      <div class="al-date-lbl" id="al-date-lbl"></div>
+      <button class="al-nav-btn" onclick="alNavDay(1)"><i class="ti ti-chevron-right"></i></button>
+      <button class="al-today-btn" onclick="alSetToday()">Today</button>
+    </div>
+
+    <!-- STATS -->
+    <div class="al-stats-row" id="al-stats"></div>
+
+    <!-- TASK LIST -->
+    <div class="al-list" id="al-list"></div>
+
+  </div>
+</div>
+
 </div><!-- end .app -->
+
+<!-- ═══ EXPERIENCES TAB ═══ -->
+<div id="tab-experiences" class="hidden">
+  <div class="exp-wrap">
+    <div class="exp-hdr">
+      <div class="exp-hdr-ico"><i class="ti ti-map-pin"></i></div>
+      <div>
+        <div class="exp-hdr-t">Experiences</div>
+        <div class="exp-hdr-s">Car Rentals &middot; ACE Rent a Car &middot; Kefalonia 2026</div>
+      </div>
+    </div>
+    <div class="exp-subnav">
+      <button class="exp-subtab on" id="expsub-cars"><i class="ti ti-car"></i> Car Rentals</button>
+    </div>
+    <div class="car-toolbar">
+      <button class="car-add-btn" onclick="carAdd()"><i class="ti ti-plus"></i> Add Car Booking</button>
+      <button class="car-print-btn" onclick="window.print()"><i class="ti ti-printer"></i> Print</button>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="car-mpill on" onclick="setCarM('all',this)">All</button>
+        <button class="car-mpill" onclick="setCarM('05',this)">May</button>
+        <button class="car-mpill" onclick="setCarM('06',this)">June</button>
+        <button class="car-mpill" onclick="setCarM('07',this)">July</button>
+        <button class="car-mpill" onclick="setCarM('08',this)">Aug</button>
+        <button class="car-mpill" onclick="setCarM('09',this)">Sep</button>
+        <button class="car-mpill" onclick="setCarM('10',this)">Oct</button>
+      </div>
+      <span id="car-cnt" style="font-size:12px;color:var(--muted);margin-left:auto"></span>
+    </div>
+    <div class="car-tbl-wrap">
+      <table class="car-tbl">
+        <thead><tr>
+          <th style="width:28px">#</th>
+          <th style="width:95px">Ref No</th>
+          <th style="min-width:130px">Full Name</th>
+          <th style="width:60px">T.O.</th>
+          <th style="width:52px">Room</th>
+          <th style="width:105px">Day of Booking</th>
+          <th style="width:105px">Day of Rental</th>
+          <th style="width:70px">Time</th>
+          <th style="width:145px">Car Type</th>
+          <th style="width:46px">Days</th>
+          <th style="width:85px">Base Price</th>
+          <th style="width:78px">Insurance</th>
+          <th style="width:90px">Total</th>
+          <th style="width:105px">Status</th>
+          <th style="width:58px"></th>
+        </tr></thead>
+        <tbody id="carTbody"></tbody>
+      </table>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh)">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px">
+        <i class="ti ti-chart-bar" style="font-size:14px;color:#1a6644"></i> Monthly Summary
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px" id="carSumGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CAR ADD MODAL ── -->
+<div class="modal-bg" id="carModal">
+  <div class="modal" style="width:560px;max-width:96vw">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+      <div style="width:38px;height:38px;background:#e8f5ee;border-radius:10px;display:flex;align-items:center;justify-content:center">
+        <i class="ti ti-car" style="font-size:19px;color:#1a6644"></i>
+      </div>
+      <div style="font-family:var(--serif);font-size:18px;color:var(--ink);font-weight:600">New Car Booking</div>
+      <button onclick="carModalClose()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center"><i class="ti ti-x"></i></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Ref No</label>
+        <input class="tr-inp" style="width:100%" id="cm-ref" placeholder="Ref κράτησης"></div>
+      <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Room</label>
+        <input class="tr-inp" style="width:100%" id="cm-room" placeholder="407"></div>
+    </div>
+
+    <div style="margin-bottom:10px"><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Full Name</label>
+      <input class="tr-inp" style="width:100%" id="cm-name" placeholder="ΕΠΩΝΥΜΟ ΟΝΟΜΑ"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Tour Operator</label>
+        <input class="tr-inp" style="width:100%" id="cm-to" placeholder="TUI, JET2..."></div>
+      <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Pick-up Time</label>
+        <input class="tr-inp" style="width:100%" id="cm-time" type="time"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Day of Booking</label>
+        <input class="tr-inp" style="width:100%" id="cm-bookdate" type="date" onchange="carModalUpdatePrice()"></div>
+      <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Day of Rental</label>
+        <input class="tr-inp" style="width:100%" id="cm-rentaldate" type="date" onchange="carModalUpdatePrice()"></div>
+    </div>
+
+    <div style="margin-bottom:10px"><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Car Type</label>
+      <select class="tr-inp" style="width:100%" id="cm-type" onchange="carModalUpdatePrice()">
+        <option value="A-M">A Manual — KIA Picanto / Toyota Aygo / Hyundai i10</option>
+        <option value="A-A">A Automatic — Skoda Citigo / KIA Picanto Auto</option>
+        <option value="B-M">B Manual — Ford Fiesta / Seat Ibiza / Opel Corsa</option>
+        <option value="B1-M">B1 Manual — Toyota Aygo Convertible</option>
+        <option value="B-A">B Automatic — Seat Ibiza / Mazda 2 Auto</option>
+        <option value="C-M">C Manual — Ford Focus / Citroen C-Elysee</option>
+        <option value="C1-M">C1 Manual — Citroen C3 Aircross (SUV)</option>
+        <option value="D-M">D Manual — Fiat Doblo 7-Seater</option>
+        <option value="J-M">J Manual — Jeep Renegade / Nissan Qashqai</option>
+        <option value="J-A">J Automatic — Dacia Sandero Stepway Auto</option>
+        <option value="J-E">J Electric — Jeep Avenger Electric Auto</option>
+        <option value="T">T — Tesla Model 3 (On Request)</option>
+      </select>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;align-items:end">
+      <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Rental Days</label>
+        <input class="tr-inp" style="width:100%" id="cm-days" type="number" min="1" max="60" value="1" onchange="carModalUpdatePrice()"></div>
+      <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Status</label>
+        <select class="tr-inp" style="width:100%" id="cm-status">
+          <option value="waiting">⏳ Waiting</option>
+          <option value="confirmed">✓ Confirmed</option>
+          <option value="cancelled">✕ Cancelled</option>
+        </select></div>
+      <div style="display:flex;align-items:center;gap:8px;padding-bottom:2px">
+        <input type="checkbox" id="cm-ins" style="width:17px;height:17px;cursor:pointer;accent-color:#1a6644" onchange="carModalUpdatePrice()">
+        <label for="cm-ins" style="font-size:12px;cursor:pointer;color:var(--ink);font-weight:500">Full Insurance</label>
+      </div>
+    </div>
+
+    <!-- PRICE BOX -->
+    <div id="cm-pricebox" style="background:#e8f5ee;border:2px solid #a8d5b8;border-radius:10px;padding:12px 16px;text-align:center;margin-bottom:16px;min-height:52px">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:#0d4a2f;font-weight:700">Επέλεξε ημερομηνία και τύπο αυτοκινήτου</div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="carModalClose()" style="padding:10px 18px;background:var(--bg);color:var(--muted);border:1.5px solid var(--border);border-radius:9px;font-size:13px;cursor:pointer;font-family:var(--sans)">Cancel</button>
+      <button onclick="carModalSave()" style="padding:10px 22px;background:#1a6644;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:7px">
+        <i class="ti ti-check"></i> Add
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- ADD MODAL -->
 <div class="modal-bg" id="ov">
@@ -1105,7 +1677,7 @@ function ddGo(tab,lbl){
 }
 
 function goTab(t){
-  ['res','rooms','day3','report','grooms','import','ta','goo','gym','yoga','pilates'].forEach(x=>{
+  ['res','day3','report','grooms','import','ta','goo','analytics','gym','yoga','pilates','massage','alerts','experiences'].forEach(x=>{
     const el=document.getElementById('tab-'+x);
     const nt=document.getElementById('nt-'+x);
     if(el)el.classList.toggle('hidden',x!==t);
@@ -1117,9 +1689,14 @@ function goTab(t){
   if(t==='rooms')renderRA();
   if(t==='report')renderReport();
   if(t==='grooms')renderGrooms();
+  if(t==='import'){renderBKStats();renderBKHistory();}
   if(t==='gym')renderGym();
+  if(t==='analytics')renderAnalytics();
   if(t==='yoga'){initClsDates('yoga');renderCls('yoga');}
   if(t==='pilates'){initClsDates('pilates');renderCls('pilates');}
+  if(t==='massage')renderMassage();
+  if(t==='alerts')renderAlerts();
+  if(t==='experiences')renderCars();
 }
 
 function renderStats(){
@@ -1693,17 +2270,389 @@ function importReviewJSON(src, inp) {
 }
 
 
+
+
+/* ═══════════════════════════════
+   BOOKING.COM REVIEWS
+═══════════════════════════════ */
+let bkHistory = JSON.parse(localStorage.getItem('bk_reviews') || '[]');
+const svBK = () => {
+  try{localStorage.setItem('bk_reviews', JSON.stringify(bkHistory));}catch(e){}
+  if(typeof fbdb!=='undefined') fbdb.ref('bk_reviews').set(bkHistory);
+};
+
+function getBKRated(monthFilter){
+  return RES.filter(r => {
+    if(!r.rating || r.rating === 0) return false;
+    if(monthFilter && monthFilter !== 'all'){
+      const m = am(r);
+      return m === monthFilter;
+    }
+    return true;
+  });
+}
+
+function renderBKStats(){
+  const mFilter = document.getElementById('bk-period-m')?.value || 'all';
+  const rated = getBKRated(mFilter);
+  const el = document.getElementById('bk-live-results');
+  const statsEl = document.getElementById('bk-stats-bar');
+
+  if(!rated.length){
+    el.innerHTML = '<div class="rev-empty"><i class="ti ti-star"></i>Δεν υπάρχουν αξιολογήσεις για αυτή την περίοδο</div>';
+    if(statsEl) statsEl.classList.add('hidden');
+    return;
+  }
+
+  const avg = (rated.reduce((s,r)=>s+r.rating,0)/rated.length);
+  const avgOut10 = avg.toFixed(1);
+  const avgOut5 = (avg/2).toFixed(1);
+
+  // Distribution
+  const dist = {10:0,9:0,8:0,7:0,6:0,5:0,4:0,3:0,2:0,1:0};
+  rated.forEach(r=>{ dist[Math.round(r.rating)] = (dist[Math.round(r.rating)]||0)+1; });
+  const maxDist = Math.max(...Object.values(dist));
+
+  // Top rated guests
+  const topGuests = [...rated].sort((a,b)=>b.rating-a.rating).slice(0,6);
+
+  // Month name
+  const mNames = {'05':'Μάιος','06':'Ιούνιος','07':'Ιούλιος','08':'Αύγουστος','09':'Σεπτέμβριος','10':'Οκτώβριος','all':'Σεζόν 2026'};
+  const periodLbl = mNames[mFilter] || 'Σεζόν 2026';
+
+  // Stats bar
+  if(statsEl){
+    const allRated = getBKRated('all');
+    const allAvg = allRated.length ? (allRated.reduce((s,r)=>s+r.rating,0)/allRated.length).toFixed(1) : '--';
+    statsEl.innerHTML =
+      '<div class="stat"><div class="slbl2">Περίοδος</div><div class="sval" style="color:#0069ff">'+periodLbl+'</div></div>'+
+      '<div class="stat"><div class="slbl2">Μέσος όρος</div><div class="sval" style="color:#0069ff">'+avgOut10+'/10</div></div>'+
+      '<div class="stat"><div class="slbl2">Αξιολογήσεις</div><div class="sval">'+rated.length+'</div></div>'+
+      '<div class="stat"><div class="slbl2">Σεζόν avg</div><div class="sval star">'+allAvg+'/10</div></div>'+
+      '<div class="stat"><div class="slbl2">Σύνολο κρατήσεων</div><div class="sval">'+RES.length+'</div></div>';
+    statsEl.classList.remove('hidden');
+  }
+
+  // Distribution rows (10 down to 1, only scores that exist or top 5)
+  const distRows = [10,9,8,7,6,5,4,3,2,1].map(score=>{
+    const cnt = dist[score]||0;
+    if(!cnt) return '';
+    return `<div class="bk-dist-row">
+      <span class="bk-dist-lbl">${score}</span>
+      <div class="bk-dist-track"><div class="bk-dist-fill" style="width:${maxDist?Math.round(cnt/maxDist*100):0}%"></div></div>
+      <span class="bk-dist-cnt">${cnt}</span>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="bk-score-big">
+      <div>
+        <div class="bk-score-num">${avgOut10}</div>
+        <div style="font-size:12px;color:#0069ff;font-weight:600;margin-top:2px">${avgOut5}/5 · ${rated.length} reviews</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">${periodLbl}</div>
+      </div>
+      <div style="flex:1">
+        ${distRows}
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px">Κορυφαίες αξιολογήσεις</div>
+      <div class="bk-top-guests">
+        ${topGuests.map(r=>`<div class="bk-guest-chip"><span class="bk-guest-name">${esc(r.name)}<small style="display:block;font-size:10px;color:var(--muted);font-weight:400">${r.room||'TBA'} · ${fd(r.arr)}</small></span><span class="bk-guest-score">${r.rating}</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function saveBKReview(){
+  const mFilter = document.getElementById('bk-period-m')?.value || 'all';
+  const rated = getBKRated(mFilter);
+  if(!rated.length){showToast('Δεν υπάρχουν αξιολογήσεις','w');return;}
+  const avg = (rated.reduce((s,r)=>s+r.rating,0)/rated.length);
+  const mNames = {'05':'Μάιος 2026','06':'Ιούνιος 2026','07':'Ιούλιος 2026','08':'Αύγουστος 2026','09':'Σεπτέμβριος 2026','10':'Οκτώβριος 2026','all':'Σεζόν 2026'};
+  const period = mNames[mFilter] || 'Σεζόν 2026';
+  const entry = {period, score: parseFloat(avg.toFixed(2)), count: rated.length, date: new Date().toISOString(),
+    topGuests: rated.sort((a,b)=>b.rating-a.rating).slice(0,3).map(r=>({name:r.name,room:r.room,rating:r.rating}))};
+  bkHistory = bkHistory.filter(r=>r.period!==period);
+  bkHistory.unshift(entry);
+  svBK();
+  renderBKHistory();
+  showToast('Αποθηκεύτηκε!','s');
+}
+
+function renderBKHistory(){
+  const el = document.getElementById('bk-history-list');
+  if(!bkHistory.length){
+    el.innerHTML='<div class="rev-empty"><i class="ti ti-brand-booking"></i>Δεν υπάρχουν αποθηκευμένες περίοδοι ακόμα</div>';
+    return;
+  }
+  el.innerHTML = bkHistory.map((r,i)=>`
+    <div class="rev-hist-item">
+      <div>
+        <div class="rev-hist-period">${r.period}</div>
+        <div class="rev-hist-count">${r.count} αξιολογήσεις</div>
+      </div>
+      <div style="text-align:right">
+        <div class="rev-hist-score" style="color:#0069ff">${r.score.toFixed(1)}/10</div>
+        <div style="font-size:11px;color:var(--muted)">${(r.score/2).toFixed(1)}/5</div>
+      </div>
+    </div>`).join('');
+}
+
+// Load from Firebase
+if(typeof fbdb!=='undefined'){
+  fbdb.ref('bk_reviews').once('value').then(snap=>{
+    const d=snap.val();
+    if(d&&Array.isArray(d)){bkHistory=d;try{localStorage.setItem('bk_reviews',JSON.stringify(d));}catch(e){}renderBKHistory();}
+  });
+}
+renderBKHistory();
+
+/* ═══════════════════════════════
+   ANALYTICS & AI RESPONSES
+═══════════════════════════════ */
+let aiSrc = 'ta';
+let aiSelectedPeriod = null;
+let anChartInstance = null;
+let aiMode = 'json';
+
+function setAIMode(mode){
+  aiMode = mode;
+  document.getElementById('ai-mode-json').classList.toggle('on', mode==='json');
+  document.getElementById('ai-mode-period').classList.toggle('on', mode==='period');
+  document.getElementById('ai-json-mode').style.display = mode==='json'?'block':'none';
+  document.getElementById('ai-period-mode').style.display = mode==='period'?'block':'none';
+  document.getElementById('ai-resp-out').classList.remove('show');
+  document.getElementById('ai-resp-acts').style.display='none';
+}
+
+function setAISrc(src){
+  aiSrc = src;
+  aiSelectedPeriod = null;
+  document.getElementById('ai-tab-ta').classList.toggle('on', src==='ta');
+  document.getElementById('ai-tab-goo').classList.toggle('on', src==='goo');
+  document.getElementById('ai-resp-out').classList.remove('show');
+  document.getElementById('ai-resp-acts').style.display='none';
+  renderAIRevList();
+}
+
+function renderAIRevList(){
+  const history = aiSrc==='ta' ? taHistory : gooHistory;
+  const el = document.getElementById('ai-rev-list');
+  if(!history.length){
+    el.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted2);font-size:12px">Δεν υπάρχουν αποθηκευμένα reviews</div>';
+    return;
+  }
+  el.innerHTML = history.map((r,i) => `
+    <div class="ai-rev-item${aiSelectedPeriod===i?' sel':''}" onclick="selectAIPeriod(${i})">
+      <div>
+        <div class="ai-rev-period">${r.period}</div>
+        <div class="ai-rev-count">${r.count} reviews</div>
+      </div>
+      <div class="ai-rev-score">${r.score.toFixed(1)}/5</div>
+    </div>`).join('');
+}
+
+function selectAIPeriod(idx){
+  aiSelectedPeriod = idx;
+  document.getElementById('ai-gen-btn').disabled = false;
+  document.getElementById('ai-resp-out').classList.remove('show');
+  document.getElementById('ai-resp-acts').style.display='none';
+  renderAIRevList();
+}
+
+function buildPrompt(){
+  const style = document.getElementById('ai-style').value;
+  const lang = document.getElementById('ai-lang').value;
+  const styleGuide = {
+    professional: 'Write a professional yet warm response. Thank the guests, highlight the positives mentioned, address improvements diplomatically.',
+    personal: 'Write a personal, heartfelt thank-you response. Mention specific staff or details from the review.',
+    concise: 'Write a short, polite and concise response in 2-3 sentences.',
+    detailed: 'Write a detailed response addressing both positives and each improvement point specifically.'
+  }[style];
+  const langStr = lang === 'greek' ? 'Greek (Modern Greek)' : 'English';
+
+  if(aiMode === 'json'){
+    const raw = document.getElementById('ai-json-inp').value.trim();
+    if(!raw){showToast('Paste ένα review JSON πρώτα','w');return null;}
+    let review;
+    try{ review = JSON.parse(raw); }
+    catch(e){ showToast('Μη έγκυρο JSON','w');return null;}
+    const platform = review.platform || 'TripAdvisor';
+    const reviewer = review.reviewer || review.name || 'Guest';
+    const score = review.score || review.rating || '5';
+    const text = review.text || review.review || review.content || '';
+    const date = review.date || '';
+    return `You are the Front Office Manager of White Rocks Hotel & Bungalows in Kefalonia, Greece.
+Write a ${platform} management response to the following individual guest review.
+Style: ${styleGuide}
+Language: ${langStr}
+
+Reviewer: ${reviewer}
+Score: ${score}/5
+Date: ${date}
+Review text: ${text}
+
+Write ONLY the response text, starting with "Dear ${reviewer}," — no quotes, no explanation. Sign off as "White Rocks Hotel & Bungalows Team".`;
+  } else {
+    if(aiSelectedPeriod === null){showToast('Επέλεξε μια περίοδο πρώτα','w');return null;}
+    const history = aiSrc==='ta' ? taHistory : gooHistory;
+    const r = history[aiSelectedPeriod];
+    const platform = aiSrc==='ta' ? 'TripAdvisor' : 'Google Reviews';
+    return `You are the Front Office Manager of White Rocks Hotel & Bungalows in Kefalonia, Greece.
+Write a ${platform} management response for the following review period summary.
+Style: ${styleGuide}
+Language: ${langStr}
+
+Review Period: ${r.period}
+Score: ${r.score}/5
+Number of reviews: ${r.count}
+Summary: ${r.summary}
+Key positives: ${(r.positives||[]).join('; ')}
+Points to improve: ${(r.improvements||[]).join('; ')}
+
+Write ONLY the response text, no quotes, no explanation. Sign off as "White Rocks Hotel & Bungalows Team".`;
+  }
+}
+
+function openInClaude(){
+  const prompt = buildPrompt();
+  if(!prompt) return;
+  const encoded = encodeURIComponent(prompt);
+  window.open('https://claude.ai/new?q=' + encoded, '_blank');
+}
+
+function copyPromptToClipboard(){
+  const prompt = buildPrompt();
+  if(!prompt) return;
+  navigator.clipboard.writeText(prompt).then(()=>showToast('Prompt copied! Paste it in Claude.ai','s'));
+}
+
+async function generateAIResponse(){
+  // kept for compatibility
+}
+
+function copyAIResponse(){
+  const text = document.getElementById('ai-resp-out').textContent;
+  navigator.clipboard.writeText(text).then(()=>showToast('Copied to clipboard!','s'));
+}
+
+function renderAnalytics(){
+  // Stats
+  const taAvg = taHistory.length ? (taHistory.reduce((s,r)=>s+r.score*r.count,0)/taHistory.reduce((s,r)=>s+r.count,0)).toFixed(2) : '-';
+  const gooAvg = gooHistory.length ? (gooHistory.reduce((s,r)=>s+r.score*r.count,0)/gooHistory.reduce((s,r)=>s+r.count,0)).toFixed(2) : '-';
+  document.getElementById('an-ta-periods').textContent = taHistory.length || '-';
+  document.getElementById('an-ta-avg').textContent = taAvg;
+  document.getElementById('an-goo-periods').textContent = gooHistory.length || '-';
+  document.getElementById('an-goo-avg').textContent = gooAvg;
+
+  // Chart
+  renderAnChart();
+
+  // Top themes
+  renderTopThemes();
+
+  // AI list
+  renderAIRevList();
+}
+
+function renderAnChart(){
+  const canvas = document.getElementById('anChart');
+  if(!canvas) return;
+
+  // Gather all periods from both sources
+  const allPeriods = [...new Set([...taHistory.map(r=>r.period), ...gooHistory.map(r=>r.period)])];
+  // Sort by date
+  const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  allPeriods.sort((a,b)=>{
+    const [am,ay] = a.split(' '); const [bm,by] = b.split(' ');
+    return (parseInt(ay)-parseInt(by))||monthOrder.indexOf(am)-monthOrder.indexOf(bm);
+  });
+
+  if(!allPeriods.length){
+    canvas.parentElement.innerHTML='<div class="an-empty"><i class="ti ti-chart-line"></i>Δεν υπάρχουν δεδομένα για γράφημα</div>';
+    return;
+  }
+
+  const taScores = allPeriods.map(p=>{ const r=taHistory.find(x=>x.period===p); return r?r.score:null; });
+  const gooScores = allPeriods.map(p=>{ const r=gooHistory.find(x=>x.period===p); return r?r.score:null; });
+
+  if(anChartInstance) anChartInstance.destroy();
+
+  const ctx = canvas.getContext('2d');
+  anChartInstance = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: allPeriods,
+      datasets:[
+        {label:'TripAdvisor', data:taScores, borderColor:'#2d9c68', backgroundColor:'rgba(45,156,104,.1)', tension:.3, fill:true, spanGaps:true, pointRadius:5, pointBackgroundColor:'#2d9c68'},
+        {label:'Google', data:gooScores, borderColor:'#4285f4', backgroundColor:'rgba(66,133,244,.1)', tension:.3, fill:true, spanGaps:true, pointRadius:5, pointBackgroundColor:'#4285f4'}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.y.toFixed(1)+'/5'}}},
+      scales:{
+        y:{min:3.5, max:5.0, ticks:{callback:v=>v.toFixed(1)}, grid:{color:'rgba(0,0,0,.05)'}},
+        x:{grid:{color:'rgba(0,0,0,.04)'}}
+      }
+    }
+  });
+}
+
+function renderTopThemes(){
+  // Collect all positives and improvements across all history
+  const allPos = {}; const allNeg = {};
+  [...taHistory, ...gooHistory].forEach(r=>{
+    (r.positives||[]).forEach(p=>{
+      const key = p.toLowerCase().slice(0,40);
+      allPos[p] = (allPos[p]||0)+1;
+    });
+    (r.improvements||[]).forEach(p=>{
+      allNeg[p] = (allNeg[p]||0)+1;
+    });
+  });
+
+  const topPos = Object.entries(allPos).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topNeg = Object.entries(allNeg).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxPos = topPos[0]?.[1]||1;
+  const maxNeg = topNeg[0]?.[1]||1;
+
+  const posList = document.getElementById('an-pos-list');
+  const negList = document.getElementById('an-neg-list');
+
+  if(!topPos.length){
+    posList.innerHTML='<div class="an-empty"><i class="ti ti-thumb-up"></i>Δεν υπάρχουν δεδομένα</div>';
+  } else {
+    posList.innerHTML = topPos.map(([text,count])=>`
+      <div class="an-theme-item">
+        <div class="an-theme-bar pos" style="width:${Math.round(count/maxPos*60)}px"></div>
+        <span style="flex:1;font-size:11px">${text.slice(0,60)}${text.length>60?'...':''}</span>
+        <span class="an-theme-count">${count}x</span>
+      </div>`).join('');
+  }
+
+  if(!topNeg.length){
+    negList.innerHTML='<div class="an-empty"><i class="ti ti-arrow-up-circle"></i>Δεν υπάρχουν δεδομένα</div>';
+  } else {
+    negList.innerHTML = topNeg.map(([text,count])=>`
+      <div class="an-theme-item">
+        <div class="an-theme-bar neg" style="width:${Math.round(count/maxNeg*60)}px"></div>
+        <span style="flex:1;font-size:11px">${text.slice(0,60)}${text.length>60?'...':''}</span>
+        <span class="an-theme-count">${count}x</span>
+      </div>`).join('');
+  }
+}
+
 /* ═══════════════════════════════
    GYM BOOKINGS
 ═══════════════════════════════ */
 let gymBookings = JSON.parse(localStorage.getItem('gym_bookings') || '{}');
-let gymMonth = new Date().getMonth(); // 0-indexed
+let gymMonth = new Date().getMonth();
 let gymYear = new Date().getFullYear();
-let gymModalData = null;
 let gymDuration = 30;
 
 const GYM_MONTHS = ['May','June','July','August','September','October'];
-const GYM_MONTH_NUMS = [4,5,6,7,8,9]; // 0-indexed
+const GYM_MONTH_NUMS = [4,5,6,7,8,9];
 
 function svGym(){
   try{localStorage.setItem('gym_bookings', JSON.stringify(gymBookings));}catch(e){}
@@ -1713,125 +2662,144 @@ function svGym(){
 function gymSlots(){
   const slots=[];
   for(let h=7;h<21;h++){slots.push(h*60);slots.push(h*60+30);}
-  slots.push(20*60+30); // 20:30 last start (30min goes to 21:00, 1hr would be 21:30 -- we allow up to 20:30 start)
+  slots.push(20*60+30);
   return slots;
 }
 function minToStr(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
 
 function gymPrevMonth(){
   const idx=GYM_MONTH_NUMS.indexOf(gymMonth);
-  if(idx>0){gymMonth=GYM_MONTH_NUMS[idx-1];gymYear=2026;}
+  if(idx>0){gymMonth=GYM_MONTH_NUMS[idx-1];}
   renderGym();
 }
 function gymNextMonth(){
   const idx=GYM_MONTH_NUMS.indexOf(gymMonth);
-  if(idx<GYM_MONTH_NUMS.length-1){gymMonth=GYM_MONTH_NUMS[idx+1];gymYear=2026;}
+  if(idx<GYM_MONTH_NUMS.length-1){gymMonth=GYM_MONTH_NUMS[idx+1];}
   renderGym();
 }
 
 function renderGym(){
-  // Clamp to valid months
   if(!GYM_MONTH_NUMS.includes(gymMonth)){gymMonth=GYM_MONTH_NUMS[0];}
   const mName=GYM_MONTHS[GYM_MONTH_NUMS.indexOf(gymMonth)];
   document.getElementById('gymMonthLbl').textContent=mName+' '+gymYear;
-  
+
+  // Populate add form selects
+  const timeSel=document.getElementById('gym-add-time');
+  if(timeSel&&!timeSel.options.length){
+    gymSlots().forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=minToStr(s);timeSel.appendChild(o);});
+  }
+  const dateInp=document.getElementById('gym-add-date');
+  if(dateInp&&!dateInp.value) dateInp.value=new Date().toISOString().split('T')[0];
+
   const daysInMonth=new Date(gymYear,gymMonth+1,0).getDate();
   const today=new Date();today.setHours(0,0,0,0);
   const slots=gymSlots();
   const DAY_S=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  
-  // Build header
+
   let hdr='<thead><tr><th class="time-col">Time</th>';
   for(let d=1;d<=daysInMonth;d++){
     const dt=new Date(gymYear,gymMonth,d);
     const dow=DAY_S[dt.getDay()];
     const isToday=dt.getTime()===today.getTime();
-    hdr+=`<th style="${isToday?'background:linear-gradient(180deg,#e8f3fb,#c5dff2);color:var(--sea-dark)':''}">${dow}<br><span style="font-size:11px;font-weight:400">${d}</span></th>`;
+    const isWe=dt.getDay()===0||dt.getDay()===6;
+    hdr+=`<th style="${isToday?'background:linear-gradient(180deg,#e8f3fb,#c5dff2);color:var(--sea-dark)':isWe?'background:#f5f0ff':''}">${dow}<br><span style="font-size:11px;font-weight:400">${d}</span></th>`;
   }
   hdr+='</tr></thead>';
-  
-  // Build body
+
   let body='<tbody>';
   slots.forEach(slot=>{
     const timeStr=minToStr(slot);
     const isHalf=slot%60===30;
-    body+=`<tr>`;
-    body+=`<td class="time-cell${isHalf?' half':''}">${timeStr}</td>`;
+    body+=`<tr><td class="time-cell${isHalf?' half':''}">${timeStr}</td>`;
     for(let d=1;d<=daysInMonth;d++){
       const dateKey=`${gymYear}-${String(gymMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const slotKey=`${dateKey}_${slot}`;
       const booking=gymBookings[slotKey];
       const dt=new Date(gymYear,gymMonth,d);dt.setHours(0,0,0,0);
-      const isToday=dt.getTime()===today.getTime();
-      const isWe=dt.getDay()===0||dt.getDay()===6;
+      const isToday2=dt.getTime()===today.getTime();
+      const isWe2=dt.getDay()===0||dt.getDay()===6;
       if(booking){
-        body+=`<td><div class="gym-slot booked" onclick="openGymModal('${dateKey}',${slot},true)">${booking.room}<span class="gym-today-lbl">${booking.dur===60?'1hr':'30m'}</span></div></td>`;
+        if(booking.isTail){
+          body+=`<td><div class="gym-slot booked" style="background:linear-gradient(135deg,#c0392b,#a93226)" onclick="deleteGymByKey('${slotKey}')">${booking.room}<span class="gym-today-lbl">▼</span></div></td>`;
+        } else {
+          body+=`<td><div class="gym-slot booked" onclick="deleteGymByKey('${slotKey}')">${booking.room}<span class="gym-today-lbl">${booking.dur===60?'1hr':'30m'}</span></div></td>`;
+        }
       } else {
-        body+=`<td class="${isToday?'gym-slot today':isWe?'gym-slot weekend':''}"><div class="gym-slot empty" onclick="openGymModal('${dateKey}',${slot},false)">&nbsp;</div></td>`;
+        body+=`<td style="${isToday2?'background:rgba(27,108,168,.05)':isWe2?'background:rgba(92,61,143,.03)':''}"><div class="gym-slot empty">&nbsp;</div></td>`;
       }
     }
-    body+=`</tr>`;
+    body+='</tr>';
   });
   body+='</tbody>';
-  
+
   document.getElementById('gymTbl').innerHTML=hdr+body;
 }
 
-function openGymModal(dateKey, slot, isEdit){
-  gymModalData={dateKey,slot,isEdit};
-  gymDuration=30;
-  document.getElementById('dur30').classList.add('on');
-  document.getElementById('dur60').classList.remove('on');
-  
-  // Populate time select
-  const sel=document.getElementById('gm-time');
-  sel.innerHTML=gymSlots().map(s=>`<option value="${s}" ${s===slot?'selected':''}>${minToStr(s)}</option>`).join('');
-  
-  document.getElementById('gm-date').value=dateKey;
-  document.getElementById('gm-room').value=isEdit?(gymBookings[`${dateKey}_${slot}`]?.room||''):'';
-  document.getElementById('gymModalTitle').textContent=isEdit?'Edit Booking':'New Booking';
-  document.getElementById('gmDelBtn').classList.toggle('hidden',!isEdit);
-  document.getElementById('gymOv').classList.add('open');
-  setTimeout(()=>document.getElementById('gm-room').focus(),100);
-}
-function closeGymModal(){document.getElementById('gymOv').classList.remove('open');}
-document.getElementById('gymOv').addEventListener('click',function(e){if(e.target===this)closeGymModal();});
+function addGymBookingSimple(){
+  const room=document.getElementById('gym-add-room').value.trim();
+  const dateKey=document.getElementById('gym-add-date').value;
+  const slot=parseInt(document.getElementById('gym-add-time').value);
+  const dur=parseInt(document.getElementById('gym-add-dur').value);
 
-function setDur(m){
-  gymDuration=m;
-  document.getElementById('dur30').classList.toggle('on',m===30);
-  document.getElementById('dur60').classList.toggle('on',m===60);
-}
+  if(!room){showToast('Βάλε αριθμό δωματίου','w');return;}
+  if(!dateKey){showToast('Επέλεξε ημερομηνία','w');return;}
 
-function saveGymBooking(){
-  const room=document.getElementById('gm-room').value.trim();
-  if(!room){alert('Please enter a room number.');return;}
-  const dateKey=document.getElementById('gm-date').value;
-  const slot=parseInt(document.getElementById('gm-time').value);
   const slotKey=`${dateKey}_${slot}`;
-  
-  // If 1hr, also book next slot
-  if(gymDuration===60){
-    const next=slot+30;
-    const nextKey=`${dateKey}_${next}`;
-    if(gymBookings[nextKey]&&gymBookings[nextKey].room!==room){
-      if(!confirm(`Slot ${minToStr(next)} is already booked by room ${gymBookings[nextKey].room}. Continue anyway?`))return;
-    }
-    gymBookings[nextKey]={room,dur:30,linked:slotKey};
+  if(gymBookings[slotKey]){
+    if(!confirm('Αυτό το slot έχει ήδη κρατηθεί από δωμάτιο '+gymBookings[slotKey].room+'. Αντικατάσταση;'))return;
+    // Remove old tail if exists
+    const oldTailKey=`${dateKey}_${slot+30}`;
+    if(gymBookings[slotKey].dur===60 && gymBookings[oldTailKey]?.isTail) delete gymBookings[oldTailKey];
   }
-  gymBookings[slotKey]={room,dur:gymDuration};
-  svGym();renderGym();closeGymModal();showToast('Gym booking saved','s');
+
+  gymBookings[slotKey]={room,dur,date:dateKey,slot};
+  if(dur===60){
+    const nextSlot=slot+30;
+    const nextKey=`${dateKey}_${nextSlot}`;
+    if(gymBookings[nextKey]&&!gymBookings[nextKey].isTail){
+      if(!confirm('Το slot '+minToStr(nextSlot)+' είναι ήδη κλεισμένο. Συνέχεια;'))return;
+    }
+    gymBookings[nextKey]={room,dur:30,isTail:true,headKey:slotKey,date:dateKey,slot:nextSlot};
+  }
+
+  svGym();
+  renderGym();
+  document.getElementById('gym-add-room').value='';
+  showToast('Booking saved! ✓','s');
+
+  // Navigate to the correct month
+  const bkDate=new Date(dateKey);
+  const bkMonth=bkDate.getMonth();
+  if(bkMonth!==gymMonth){
+    gymMonth=bkMonth;
+    renderGym();
+  }
 }
 
-function deleteGymBooking(){
-  const dateKey=document.getElementById('gm-date').value;
-  const slot=parseInt(document.getElementById('gm-time').value);
-  const slotKey=`${dateKey}_${slot}`;
-  const b=gymBookings[slotKey];
-  if(b&&b.dur===60){delete gymBookings[`${dateKey}_${slot+30}`];}
-  delete gymBookings[slotKey];
-  svGym();renderGym();closeGymModal();showToast('Booking deleted','w');
+function deleteGymByKey(key){
+  const b=gymBookings[key];
+  if(!b)return;
+  const label=b.isTail?'(part of 1hr booking)':'';
+  if(!confirm('Delete booking for room '+b.room+'? '+label))return;
+  if(b.isTail&&b.headKey) delete gymBookings[b.headKey];
+  if(!b.isTail&&b.dur===60){
+    const tailKey=b.date+'_'+(b.slot+30);
+    if(gymBookings[tailKey]?.isTail) delete gymBookings[tailKey];
+  }
+  delete gymBookings[key];
+  svGym();renderGym();showToast('Deleted','w');
 }
+
+// Stubs for compatibility
+function openGymModal(){}
+function closeGymModal(){}
+function saveGymBooking(){}
+function deleteGymBooking(){}
+function setDur(){}
+function renderGymList(){}
+function setGymFilterToday(){}
+function clearGymFilter(){}
+
 
 /* ═══════════════════════════════
    YOGA & PILATES
@@ -1891,6 +2859,9 @@ function renderCls(type){
   const color=type==='yoga'?'yoga':'pilates';
   const attended=entries.filter(e=>e.attended).length;
   const isFull=entries.length>=15;
+  if(!clsData[type+'_wl']) clsData[type+'_wl']={};
+  if(!clsData[type+'_wl'][dateKey]) clsData[type+'_wl'][dateKey]=[];
+  const waitList=clsData[type+'_wl'][dateKey];
   
   const html=`
     <div class="cls-card">
@@ -1927,6 +2898,38 @@ function renderCls(type){
       </table>`:
       '<div class="cls-empty">No bookings yet for this session</div>'}
       ${!isFull?`<button class="cls-add-row" onclick="clsAddRow('${type}','${dateKey}')"><i class="ti ti-plus"></i> Add guest</button>`:''}
+    </div>
+    
+    <!-- WAITING LIST -->
+    <div class="cls-card" style="margin-top:10px">
+      <div class="cls-card-hdr ${color}" style="opacity:.8">
+        <div class="cls-card-title"><i class="ti ti-clock-hour-4"></i> Waiting List</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="cls-card-count">${(waitList.length)} waiting</span>
+        </div>
+      </div>
+      ${waitList.length?`
+      <table class="cls-tbl">
+        <thead><tr>
+          <th style="width:30px">#</th>
+          <th>Guest Name</th>
+          <th style="width:90px;text-align:center">Room</th>
+          <th style="width:110px;text-align:center">Action</th>
+          <th style="width:38px"></th>
+        </tr></thead>
+        <tbody>
+          ${waitList.map((e,i)=>`<tr>
+            <td style="padding:6px 10px;color:var(--muted2);font-size:11px;text-align:center">${i+1}</td>
+            <td><input class="cls-inp" value="${esc(e.name||'')}" placeholder="Guest name" onchange="wlUpdate('${type}','${dateKey}',${i},'name',this.value)"></td>
+            <td><input class="cls-inp room" value="${esc(e.room||'')}" placeholder="309" onchange="wlUpdate('${type}','${dateKey}',${i},'room',this.value)"></td>
+            <td style="text-align:center;padding:4px">
+              ${isFull?'':`<button onclick="wlPromote('${type}','${dateKey}',${i})" style="padding:4px 10px;background:var(--olive);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-arrow-up"></i> Move up</button>`}
+            </td>
+            <td><button class="del-row-btn" onclick="wlDelRow('${type}','${dateKey}',${i})"><i class="ti ti-x"></i></button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`:'<div class="cls-empty" style="padding:16px">No one on waiting list</div>'}
+      <button class="cls-add-row" onclick="wlAddRow('${type}','${dateKey}')"><i class="ti ti-plus"></i> Add to waiting list</button>
     </div>`;
   
   document.getElementById(type+'-sessions').innerHTML=html;
@@ -2009,12 +3012,653 @@ function clsDelRow(type,dateKey,idx){
   svCls();renderCls(type);showToast('Row removed','w');
 }
 
+/* WAITING LIST */
+function wlAddRow(type,dateKey){
+  if(!clsData[type+'_wl']) clsData[type+'_wl']={};
+  if(!clsData[type+'_wl'][dateKey]) clsData[type+'_wl'][dateKey]=[];
+  clsData[type+'_wl'][dateKey].push({name:'',room:''});
+  svCls();renderCls(type);
+  setTimeout(()=>{
+    const rows=document.querySelectorAll('#'+type+'-sessions .cls-inp');
+    if(rows.length)rows[rows.length-2].focus();
+  },60);
+}
+
+function wlDelRow(type,dateKey,idx){
+  clsData[type+'_wl'][dateKey].splice(idx,1);
+  svCls();renderCls(type);showToast('Removed from waiting list','w');
+}
+
+function wlUpdate(type,dateKey,idx,field,val){
+  clsData[type+'_wl'][dateKey][idx][field]=val;
+  svCls();
+}
+
+function wlPromote(type,dateKey,idx){
+  const entries=clsData[type][dateKey]||[];
+  if(entries.length>=15){showToast('Class is still full!','w');return;}
+  const wl=clsData[type+'_wl'][dateKey]||[];
+  const guest=wl[idx];
+  if(!guest)return;
+  // Move from waiting list to class
+  clsData[type][dateKey].push({name:guest.name,room:guest.room,attended:false});
+  clsData[type+'_wl'][dateKey].splice(idx,1);
+  svCls();renderCls(type);
+  showToast(guest.name+' moved to class!','s');
+}
+
+
+/* ═══════════════════════════════
+   MASSAGE
+═══════════════════════════════ */
+let massageData = JSON.parse(localStorage.getItem('massage_data') || '{}');
+
+function svMassage(){
+  try{localStorage.setItem('massage_data',JSON.stringify(massageData));}catch(e){}
+  if(typeof fbdb!=='undefined') fbdb.ref('massage_data').set(massageData);
+}
+
+// Schedule: date -> array of {start, end} available windows
+const MASSAGE_SCHEDULE = {
+  '2026-05-28': [{start:'11:00',end:'13:00'},{start:'17:30',end:'19:00'}],
+  '2026-05-29': [{start:'15:00',end:'18:00'}],
+  '2026-05-30': [{start:'12:30',end:'16:30'}],
+  '2026-05-31': [{start:'10:00',end:'13:00'}],
+  '2026-06-01': [{start:'10:00',end:'12:00'}],
+  '2026-06-02': [{start:'11:00',end:'15:00'}],
+  '2026-06-03': [{start:'10:00',end:'13:00'}],
+  '2026-06-04': [{start:'11:00',end:'15:00'}],
+  '2026-06-05': [{start:'12:00',end:'14:00'},{start:'17:00',end:'19:00'}],
+  '2026-06-06': [{start:'12:30',end:'15:30'}],
+  '2026-06-07': [{start:'11:00',end:'13:00'}],
+};
+
+function timeToMins(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
+function minsToTime(m){ return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); }
+
+function getSlots(dateKey){
+  const windows = MASSAGE_SCHEDULE[dateKey] || [];
+  const slots = [];
+  windows.forEach(w => {
+    let cur = timeToMins(w.start);
+    const end = timeToMins(w.end);
+    while(cur + 60 <= end){ // min slot is 1hr
+      slots.push(minsToTime(cur));
+      cur += 60;
+    }
+  });
+  return slots;
+}
+
+function renderMassage(){
+  const el = document.getElementById('massageContent');
+  if(!el) return;
+
+  const DAY_GR = ['Κυριακή','Δευτέρα','Τρίτη','Τετάρτη','Πέμπτη','Παρασκευή','Σάββατο'];
+  const MON_GR = ['Ιαν','Φεβ','Μαρ','Απρ','Μαΐ','Ιουν','Ιουλ','Αυγ','Σεπ','Οκτ','Νοε','Δεκ'];
+
+  let html2 = '';
+  Object.entries(MASSAGE_SCHEDULE).sort().forEach(([dateKey, windows]) => {
+    const d = new Date(dateKey);
+    const dayName = DAY_GR[d.getDay()];
+    const dateLbl = dayName+' '+d.getDate()+' '+MON_GR[d.getMonth()]+' '+d.getFullYear();
+    const slots = getSlots(dateKey);
+    const bookings = massageData[dateKey] || {};
+    const bookedCount = Object.values(bookings).filter(b=>b.name||b.room).length;
+    const totalRevenue = Object.values(bookings).reduce((s,b)=>s+(parseFloat(b.cost)||0),0);
+
+    let slotsHtml = '';
+    // Header row
+    slotsHtml += `<div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr 80px 34px;gap:8px;padding:7px 16px;background:var(--amber-light);border-bottom:1px solid rgba(180,83,9,.15)">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Time</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Room</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Guest Name</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Duration</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e;text-align:center">€ Cost</div>
+      <div></div>
+    </div>`;
+
+    slots.forEach(slotTime => {
+      const b = bookings[slotTime] || {};
+      const isBooked = b.name || b.room;
+      slotsHtml += `<div class="ms-slot${isBooked?' ms-slot-booked':''}">
+        <div class="ms-time"><i class="ti ti-clock" style="font-size:11px;margin-right:3px"></i>${slotTime}</div>
+        <input class="ms-inp${isBooked?' booked':''}" placeholder="Δωμάτιο" value="${esc(b.room||'')}" 
+          onchange="msUpdate('${dateKey}','${slotTime}','room',this.value)">
+        <input class="ms-inp${isBooked?' booked':''}" placeholder="Όνομα επισκέπτη" value="${esc(b.name||'')}"
+          onchange="msUpdate('${dateKey}','${slotTime}','name',this.value)">
+        <select class="ms-dur-sel" onchange="msUpdate('${dateKey}','${slotTime}','dur',this.value)">
+          <option value="60" ${(b.dur||60)==60?'selected':''}>1 ώρα</option>
+          <option value="90" ${b.dur==90?'selected':''}>1.5 ώρα</option>
+        </select>
+        <input class="ms-inp cost${isBooked?' booked':''}" placeholder="0" value="${esc(b.cost||'')}" type="number" min="0"
+          onchange="msUpdate('${dateKey}','${slotTime}','cost',this.value)">
+        <button class="ms-del" onclick="msClear('${dateKey}','${slotTime}')" title="Clear"><i class="ti ti-x" style="font-size:12px"></i></button>
+      </div>`;
+    });
+
+    // Stats row
+    const statsHtml = `<div class="ms-stats">
+      <span class="ms-stat">Slots: <strong>${slots.length}</strong></span>
+      <span class="ms-stat">Booked: <strong>${bookedCount}</strong></span>
+      <span class="ms-stat">Available: <strong>${slots.length-bookedCount}</strong></span>
+      ${totalRevenue>0?`<span class="ms-stat" style="margin-left:auto">Revenue: <strong>€${totalRevenue.toFixed(0)}</strong></span>`:''}
+    </div>`;
+
+    // Available windows info
+    const windowsInfo = windows.map(w=>`${w.start}–${w.end}`).join(' &nbsp;|&nbsp; ');
+
+    html2 += `<div class="ms-day-card">
+      <div class="ms-day-hdr">
+        <div class="ms-day-title"><i class="ti ti-calendar"></i>${dateLbl}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:rgba(255,255,255,.7)">${windowsInfo}</span>
+          <span class="ms-day-count">${bookedCount}/${slots.length}</span>
+        </div>
+      </div>
+      ${slotsHtml}
+      ${statsHtml}
+    </div>`;
+  });
+
+  el.innerHTML = html2;
+}
+
+function msUpdate(dateKey, slotTime, field, val){
+  if(!massageData[dateKey]) massageData[dateKey]={};
+  if(!massageData[dateKey][slotTime]) massageData[dateKey][slotTime]={room:'',name:'',dur:60,cost:''};
+  massageData[dateKey][slotTime][field] = field==='dur' ? parseInt(val) : val;
+  svMassage();
+  // Re-render just the stats without full re-render for performance
+}
+
+function msClear(dateKey, slotTime){
+  if(!massageData[dateKey]) return;
+  delete massageData[dateKey][slotTime];
+  svMassage();
+  renderMassage();
+  showToast('Cleared','w');
+}
+
+// Load from Firebase
+if(typeof fbdb!=='undefined'){
+  fbdb.ref('massage_data').once('value').then(snap=>{
+    const d=snap.val();
+    if(d&&typeof d==='object'){massageData=d;try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}}
+  });
+  fbdb.ref('massage_data').on('value',snap=>{
+    const d=snap.val();
+    if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(massageData)){
+      massageData=d;
+      const msTab=document.getElementById('tab-massage');
+      if(msTab&&!msTab.classList.contains('hidden'))renderMassage();
+    }
+  });
+}
+
+
+/* ═══════════════════════════════
+   ALERTS & DAILY TASKS
+═══════════════════════════════ */
+let alertsData = JSON.parse(localStorage.getItem('alerts_data') || '{}');
+let alCurrentDate = new Date().toISOString().split('T')[0];
+
+function svAlerts(){
+  try{localStorage.setItem('alerts_data',JSON.stringify(alertsData));}catch(e){}
+  if(typeof fbdb!=='undefined') fbdb.ref('alerts_data').set(alertsData);
+}
+
+function alSetToday(){
+  alCurrentDate = new Date().toISOString().split('T')[0];
+  renderAlerts();
+}
+
+function alNavDay(dir){
+  const d = new Date(alCurrentDate);
+  d.setDate(d.getDate()+dir);
+  alCurrentDate = d.toISOString().split('T')[0];
+  renderAlerts();
+}
+
+function addAlert(){
+  const date = document.getElementById('al-add-date').value;
+  const time = document.getElementById('al-add-time').value;
+  const desc = document.getElementById('al-add-desc').value.trim();
+  const pri  = document.getElementById('al-add-pri').value;
+
+  if(!date||!time||!desc){showToast('Συμπλήρωσε όλα τα πεδία','w');return;}
+
+  if(!alertsData[date]) alertsData[date]=[];
+  alertsData[date].push({
+    id: Date.now().toString(),
+    time, desc, pri,
+    done: false,
+    doneBy: '',
+    doneAt: '',
+    createdAt: new Date().toISOString()
+  });
+  // Sort by time
+  alertsData[date].sort((a,b)=>a.time.localeCompare(b.time));
+  svAlerts();
+
+  // Navigate to that date
+  alCurrentDate = date;
+  renderAlerts();
+  document.getElementById('al-add-desc').value='';
+  showToast('Task added!','s');
+  checkOverdueTasks();
+}
+
+function toggleAlert(dateKey, id){
+  const tasks = alertsData[dateKey]||[];
+  const task = tasks.find(t=>t.id===id);
+  if(!task) return;
+  task.done = !task.done;
+  task.doneAt = task.done ? new Date().toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'}) : '';
+  svAlerts();
+  renderAlerts();
+  checkOverdueTasks();
+  if(task.done) showToast('✓ Task completed!','s');
+}
+
+function deleteAlert(dateKey, id){
+  if(!confirm('Delete this task?')) return;
+  alertsData[dateKey] = (alertsData[dateKey]||[]).filter(t=>t.id!==id);
+  svAlerts();
+  renderAlerts();
+  checkOverdueTasks();
+  showToast('Deleted','w');
+}
+
+function renderAlerts(){
+  const DAY_GR=['Κυρ','Δευτ','Τρ','Τετ','Πέμ','Παρ','Σαβ'];
+  const MON_GR=['Ιαν','Φεβ','Μαρ','Απρ','Μαΐ','Ιουν','Ιουλ','Αυγ','Σεπ','Οκτ','Νοε','Δεκ'];
+  const d = new Date(alCurrentDate);
+  const isToday = alCurrentDate === new Date().toISOString().split('T')[0];
+  const isTomorrow = (() => { const t=new Date(); t.setDate(t.getDate()+1); return alCurrentDate===t.toISOString().split('T')[0]; })();
+
+  let dayLbl = DAY_GR[d.getDay()]+' '+d.getDate()+' '+MON_GR[d.getMonth()]+' '+d.getFullYear();
+  if(isToday) dayLbl = '📅 Σήμερα — '+dayLbl;
+  if(isTomorrow) dayLbl = '⏭ Αύριο — '+dayLbl;
+  document.getElementById('al-date-lbl').textContent = dayLbl;
+
+  // Set default date in add form
+  const addDateEl = document.getElementById('al-add-date');
+  if(addDateEl && !addDateEl.value){ 
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+    addDateEl.value = tomorrow.toISOString().split('T')[0];
+  }
+
+  const tasks = alertsData[alCurrentDate] || [];
+  const now = new Date();
+  const nowMins = now.getHours()*60+now.getMinutes();
+
+  // Stats
+  const total=tasks.length, done=tasks.filter(t=>t.done).length;
+  const overdue=tasks.filter(t=>{
+    if(t.done||!isToday) return false;
+    const [h,m]=t.time.split(':').map(Number);
+    return (h*60+m) < nowMins;
+  }).length;
+
+  document.getElementById('al-stats').innerHTML = total ? `
+    <div class="al-stat-pill"><i class="ti ti-list" style="color:var(--sea)"></i> Total: <strong>${total}</strong></div>
+    <div class="al-stat-pill"><i class="ti ti-check" style="color:#16a34a"></i> Done: <strong style="color:#16a34a">${done}</strong></div>
+    <div class="al-stat-pill"><i class="ti ti-clock" style="color:#f5a623"></i> Pending: <strong style="color:#f5a623">${total-done}</strong></div>
+    ${overdue?`<div class="al-stat-pill" style="background:#fef2f2;border-color:#fecaca"><i class="ti ti-alert-triangle" style="color:#dc2626"></i> Overdue: <strong style="color:#dc2626">${overdue}</strong></div>`:''}
+  ` : '';
+
+  const el = document.getElementById('al-list');
+  if(!tasks.length){
+    el.innerHTML=`<div class="al-empty"><i class="ti ti-bell-off"></i><div style="font-size:14px;font-weight:600;color:var(--muted)">Δεν υπάρχουν tasks για αυτή την ημέρα</div><div style="margin-top:4px">Πρόσθεσε tasks με τη φόρμα παραπάνω</div></div>`;
+    return;
+  }
+
+  el.innerHTML = tasks.map(task => {
+    const [h,m] = task.time.split(':').map(Number);
+    const taskMins = h*60+m;
+    const isOverdue = isToday && !task.done && taskMins < nowMins;
+    const priClass = {high:'high',mid:'mid',low:'low'}[task.pri]||'mid';
+    const priLabel = {high:'🔴 Urgent',mid:'🟡 Normal',low:'🟢 Low'}[task.pri]||'🟡 Normal';
+
+    return `<div class="al-task pri-${priClass}${task.done?' done':''}${isOverdue?' overdue':''}">
+      <input type="checkbox" class="al-chk" ${task.done?'checked':''} onchange="toggleAlert('${alCurrentDate}','${task.id}')">
+      <div class="al-task-time${isOverdue?' overdue':''}">${task.time}</div>
+      <div class="al-task-desc${task.done?' done':''}">${esc(task.desc)}</div>
+      <span class="al-pri-badge ${priClass}">${priLabel}</span>
+      ${task.done&&task.doneAt?`<span class="al-task-who">✓ ${task.doneAt}</span>`:''}
+      ${isOverdue?'<span style="font-size:11px;color:#dc2626;font-weight:700;animation:alertPulse 1s infinite">⚠ OVERDUE</span>':''}
+      <button class="al-task-del" onclick="deleteAlert('${alCurrentDate}','${task.id}')"><i class="ti ti-trash" style="font-size:13px"></i></button>
+    </div>`;
+  }).join('');
+}
+
+function checkOverdueTasks(){
+  // Pulse the Alerts tab if there are overdue tasks today
+  const today = new Date().toISOString().split('T')[0];
+  const tasks = alertsData[today]||[];
+  const now = new Date();
+  const nowMins = now.getHours()*60+now.getMinutes();
+  const hasOverdue = tasks.some(t=>{
+    if(t.done) return false;
+    const [h,m]=t.time.split(':').map(Number);
+    return (h*60+m) < nowMins;
+  });
+  const tabEl = document.getElementById('nt-alerts');
+  if(tabEl){
+    if(hasOverdue){
+      tabEl.classList.add('tab-alert-pulse');
+      tabEl.style.color='#dc2626';
+    } else {
+      tabEl.classList.remove('tab-alert-pulse');
+      tabEl.style.color='';
+    }
+  }
+}
+
+// Check overdue every minute
+setInterval(()=>{
+  checkOverdueTasks();
+  // Re-render if alerts tab is open
+  const alertTab = document.getElementById('tab-alerts');
+  if(alertTab && !alertTab.classList.contains('hidden')) renderAlerts();
+}, 60000);
+
+// Initial check after Firebase loads
+setTimeout(checkOverdueTasks, 2000);
+
 // Load fitness data from Firebase
 if(typeof fbdb!=='undefined'){
   fbdb.ref('gym_bookings').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){gymBookings=d;try{localStorage.setItem('gym_bookings',JSON.stringify(d));}catch(e){};}});
   fbdb.ref('cls_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){clsData=d;try{localStorage.setItem('cls_data',JSON.stringify(d));}catch(e){};}});
 }
 
+/* ═══════════════════════════════
+   ACE RENT A CAR — EXPERIENCES
+═══════════════════════════════ */
+const ACE_CARS=[
+  {id:'A-M',  s:'A Manual',    l:'KIA Picanto / Toyota Aygo / Hyundai i10'},
+  {id:'A-A',  s:'A Automatic', l:'Skoda Citigo / KIA Picanto Auto'},
+  {id:'B-M',  s:'B Manual',    l:'Ford Fiesta / Seat Ibiza / Opel Corsa'},
+  {id:'B1-M', s:'B1 Manual',   l:'Toyota Aygo Convertible'},
+  {id:'B-A',  s:'B Automatic', l:'Seat Ibiza / Mazda 2 Auto'},
+  {id:'C-M',  s:'C Manual',    l:'Ford Focus / Citroen C-Elysee'},
+  {id:'C1-M', s:'C1 Manual',   l:'Citroen C3 Aircross (SUV)'},
+  {id:'D-M',  s:'D Manual',    l:'Fiat Doblo 7-Seater'},
+  {id:'J-M',  s:'J Manual',    l:'Jeep Renegade / Nissan Qashqai'},
+  {id:'J-A',  s:'J Automatic', l:'Dacia Sandero Stepway Auto'},
+  {id:'J-E',  s:'J Electric',  l:'Jeep Avenger Electric Auto'},
+  {id:'T',    s:'Tesla T',     l:'Tesla Model 3 (On Request)'}
+];
+const ACE_PRICES={
+  'A-M': {low:[40,70,105,120,150,180,210,30],mid:[60,100,150,192,230,270,301,43],high:[70,120,165,220,275,330,385,55],peak:[null,195,240,300,360,420,null,60]},
+  'A-A': {low:[45,80,120,160,175,210,245,35],mid:[70,112,168,210,255,294,329,47],high:[80,140,180,240,300,360,420,60],peak:[null,210,280,325,390,455,null,65]},
+  'B-M': {low:[45,80,120,160,175,210,245,35],mid:[70,110,165,204,250,282,315,45],high:[80,140,180,240,300,360,420,60],peak:[null,210,280,325,390,455,null,65]},
+  'B1-M':{low:[45,80,120,160,175,210,245,35],mid:[70,112,168,210,255,294,329,47],high:[80,140,180,240,300,360,420,60],peak:[null,210,280,325,390,455,null,65]},
+  'B-A': {low:[55,100,135,180,200,240,280,40],mid:[80,120,180,232,280,336,385,55],high:[90,174,240,320,400,480,560,80],peak:[null,270,360,450,540,630,null,90]},
+  'C-M': {low:[55,100,135,180,200,240,280,40],mid:[80,120,180,232,280,336,385,55],high:[90,150,210,280,350,420,490,70],peak:[null,240,320,400,480,560,null,80]},
+  'C1-M':{low:[60,110,165,200,250,300,350,50],mid:[90,140,210,260,320,380,420,60],high:[100,170,240,320,400,480,560,80],peak:[null,300,400,500,540,630,null,90]},
+  'D-M': {low:[70,120,180,232,280,336,385,55],mid:[100,170,255,336,415,492,560,80],high:[130,240,300,400,500,540,630,90],peak:[null,360,440,550,660,770,null,110]},
+  'J-M': {low:[90,180,210,280,350,420,490,70],mid:[100,200,255,336,415,492,560,80],high:[150,240,360,440,550,660,770,110],peak:[null,390,500,600,720,840,null,120]},
+  'J-A': {low:[90,180,210,280,350,420,490,70],mid:[100,200,255,336,415,492,560,80],high:[150,240,360,440,550,660,770,110],peak:[null,390,500,600,720,840,null,120]},
+  'J-E': {low:[100,170,255,320,400,480,560,80],mid:[130,240,360,420,500,600,700,100],high:[null,null,390,500,600,720,840,120],peak:[null,450,560,700,840,980,null,140]},
+  'T':   {low:[null,null,null,null,null,null,null,null],mid:[null,null,null,null,null,null,null,null],high:[null,null,null,null,null,null,null,null],peak:[null,null,null,null,null,null,null,null]}
+};
+const ACE_INS={'A-M':10,'A-A':10,'B-M':10,'B1-M':10,'B-A':13,'C-M':13,'C1-M':15,'D-M':15,'J-M':20,'J-A':20,'J-E':20,'T':25};
+
+function carSeason(d){if(!d)return'low';const m=new Date(d).getMonth()+1;if(m===8)return'peak';if(m===7)return'high';if(m===6||m===9)return'mid';return'low';}
+function carSeasonLbl(d){return{low:'Low Season (Apr–May, Oct)',mid:'Middle Season (Jun, Sep)',high:'High Season (Jul)',peak:'Peak Season (Aug)'}[carSeason(d)];}
+function carBasePrice(id,days,d){
+  if(id==='T')return null;
+  const s=(ACE_PRICES[id]||{})[carSeason(d)];if(!s)return null;
+  if(days>=1&&days<=7){const p=s[days-1];if(p!=null)return p;}
+  if(days>7){const b=s[6],e=s[7];if(b!=null&&e!=null)return b+(days-7)*e;}
+  return null;
+}
+function carInsPrice(id,days){return(ACE_INS[id]||0)*days;}
+function carCalc(c){
+  const base=carBasePrice(c.carType,c.days,c.rentalDate||c.bookDate);
+  const ins=c.insurance?carInsPrice(c.carType,c.days):0;
+  return{base,ins,total:base!=null?base+ins:null};
+}
+function carGetMonth(c){const d=new Date(c.rentalDate||c.bookDate||'');return isNaN(d)?'':String(d.getMonth()+1).padStart(2,'0');}
+
+let CARS=JSON.parse(localStorage.getItem('ace_cars')||'[]');
+let carMFlt='all',carOpenEP=null;
+
+function svCars(){
+  try{localStorage.setItem('ace_cars',JSON.stringify(CARS));}catch(e){}
+  if(typeof fbdb!=='undefined')fbdb.ref('ace_cars').set(CARS);
+}
+
+function carAdd(){
+  CARS.unshift({id:Date.now()+'',ref:'',name:'',to:'',room:'',bookDate:new Date().toISOString().split('T')[0],rentalDate:'',rentalTime:'',carType:'A-M',days:1,insurance:false,status:'waiting'});
+  svCars();carOpenEP=0;renderCars();showToast('New car booking added','s');
+}
+
+function carDel(i){
+  if(!confirm('Delete this car booking?'))return;
+  CARS.splice(i,1);svCars();carOpenEP=null;renderCars();showToast('Deleted','w');
+}
+
+function setCarM(m,el){
+  carMFlt=m;document.querySelectorAll('.car-mpill').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderCars();
+}
+
+function carUpd(i,field,val){
+  CARS[i][field]=val;svCars();
+  if(['carType','days','rentalDate','bookDate','insurance'].includes(field))renderCars();
+}
+
+function carSetStatus(i,s){CARS[i].status=s;svCars();renderCars();}
+function carCycleStatus(i){const o=['waiting','confirmed','cancelled'];CARS[i].status=o[(o.indexOf(CARS[i].status)+1)%3];svCars();renderCars();}
+
+function renderCars(){
+  const tbody=document.getElementById('carTbody');if(!tbody)return;
+  const filtered=CARS.filter(c=>carMFlt==='all'||carGetMonth(c)===carMFlt);
+  const cntEl=document.getElementById('car-cnt');if(cntEl)cntEl.textContent=filtered.length+' bookings';
+
+  if(!CARS.length){
+    tbody.innerHTML='<tr><td colspan="15"><div class="car-empty"><i class="ti ti-car"></i><div style="font-size:14px;font-weight:600;margin-bottom:4px">No car bookings yet</div><div>Click "Add Car Booking" to start</div></div></td></tr>';
+    renderCarSum();return;
+  }
+  if(!filtered.length){
+    tbody.innerHTML='<tr><td colspan="15"><div class="car-empty"><i class="ti ti-calendar-off"></i>No bookings for this month</div></td></tr>';
+    renderCarSum();return;
+  }
+
+  const SIC={confirmed:'<i class="ti ti-circle-check"></i>',waiting:'<i class="ti ti-clock"></i>',cancelled:'<i class="ti ti-circle-x"></i>'};
+  const SLB={confirmed:'Confirmed',waiting:'Waiting',cancelled:'Cancelled'};
+  const SRCLS={confirmed:'car-rc',waiting:'car-rw',cancelled:'car-rx'};
+  const carOpts=ACE_CARS.map(a=>`<option value="${a.id}">`+a.s+' — '+a.l+'</option>').join('');
+
+  let html='';
+  filtered.forEach((c,n)=>{
+    const i=CARS.indexOf(c);const isOpen=carOpenEP===i;
+    const{base,ins,total}=carCalc(c);
+    const selOpts=ACE_CARS.map(a=>`<option value="${a.id}"${c.carType===a.id?' selected':''}>${a.s} — ${a.l}</option>`).join('');
+
+    html+=`<tr class="${SRCLS[c.status]||'car-rw'}${isOpen?' car-ep-open':''}">
+      <td style="padding:7px 9px;color:var(--muted2);font-size:11px;text-align:center">${n+1}</td>
+      <td><input class="car-ci mono" value="${esc(c.ref)}" placeholder="Ref#" onchange="CARS[${i}].ref=this.value;svCars()"></td>
+      <td><input class="car-ci" style="font-weight:600" value="${esc(c.name)}" placeholder="FULL NAME" onchange="CARS[${i}].name=this.value.toUpperCase();this.value=CARS[${i}].name;svCars()"></td>
+      <td><input class="car-ci" style="font-size:11px" value="${esc(c.to)}" placeholder="T.O." onchange="CARS[${i}].to=this.value;svCars()"></td>
+      <td><input class="car-ci room" value="${esc(c.room)}" placeholder="309" onchange="CARS[${i}].room=this.value;svCars()"></td>
+      <td><input class="car-ci" type="date" value="${c.bookDate||''}" style="font-size:11px;padding:6px 7px" onchange="carUpd(${i},'bookDate',this.value)"></td>
+      <td><input class="car-ci" type="date" value="${c.rentalDate||''}" style="font-size:11px;padding:6px 7px" onchange="carUpd(${i},'rentalDate',this.value)"></td>
+      <td><input class="car-ci" type="time" value="${c.rentalTime||''}" style="font-size:11px;padding:6px 7px" onchange="CARS[${i}].rentalTime=this.value;svCars()"></td>
+      <td><select class="car-ci" style="font-size:11px;padding:5px 4px" onchange="carUpd(${i},'carType',this.value)">${selOpts}</select></td>
+      <td><input class="car-ci" type="number" min="1" max="60" value="${c.days||1}" style="text-align:center;font-weight:700;padding:5px 4px" onchange="CARS[${i}].days=Math.max(1,parseInt(this.value)||1);this.value=CARS[${i}].days;carUpd(${i},'days',CARS[${i}].days)"></td>
+      <td style="padding:7px 9px;text-align:right;font-weight:700;color:#1a6644">${base!=null?'€'+base:c.carType==='T'?'On Req':'—'}</td>
+      <td style="padding:4px 7px;text-align:center">
+        <input type="checkbox"${c.insurance?' checked':''} style="width:15px;height:15px;cursor:pointer;accent-color:#1a6644" onchange="carUpd(${i},'insurance',this.checked)" title="Full Insurance">
+        ${c.insurance&&ins?'<div style="font-size:9px;color:#1a6644;font-weight:700;margin-top:1px">€'+ins+'</div>':''}
+      </td>
+      <td style="padding:7px 9px;text-align:right;font-weight:700;font-size:14px;color:#0d4a2f;font-family:var(--serif)">${total!=null?'€'+total:c.carType==='T'?'On Req':'—'}</td>
+      <td style="padding:4px 7px;text-align:center">
+        <button class="car-badge ${c.status}" onclick="carCycleStatus(${i})" title="Click to change">
+          ${SIC[c.status]||SIC.waiting} ${SLB[c.status]||'Waiting'}
+        </button>
+      </td>
+      <td style="padding:4px 7px">
+        <div style="display:flex;gap:3px;align-items:center;justify-content:center">
+          <button class="tog${isOpen?' open':''}" onclick="carOpenEP=carOpenEP===${i}?null:${i};renderCars()" title="Edit">
+            <i class="ti ti-${isOpen?'chevron-up':'pencil'}" style="font-size:12px"></i>
+          </button>
+          <button onclick="carDel(${i})" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center" title="Delete">
+            <i class="ti ti-trash" style="font-size:12px"></i>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+
+    if(isOpen){
+      const sl=carSeasonLbl(c.rentalDate||c.bookDate);
+      const{base:bp,ins:ip,total:tp}=carCalc(c);
+      html+=`<tr class="car-ep"><td colspan="15" onclick="event.stopPropagation()">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr) 160px;gap:12px;align-items:start;margin-bottom:12px">
+          <div class="car-epg"><label>Car Type</label>
+            <select onchange="carUpd(${i},'carType',this.value)">${selOpts}</select>
+          </div>
+          <div class="car-epg"><label>Rental Days</label>
+            <input type="number" min="1" max="60" value="${c.days}" onchange="CARS[${i}].days=Math.max(1,parseInt(this.value)||1);carUpd(${i},'days',CARS[${i}].days)">
+          </div>
+          <div class="car-epg"><label>Day of Booking</label>
+            <input type="date" value="${c.bookDate||''}" onchange="carUpd(${i},'bookDate',this.value)">
+          </div>
+          <div class="car-epg"><label>Day of Rental</label>
+            <input type="date" value="${c.rentalDate||''}" onchange="carUpd(${i},'rentalDate',this.value)">
+          </div>
+          <div class="car-pbox">
+            <div class="cpl">${sl}</div>
+            <div class="cpv">${bp!=null?'€'+bp:c.carType==='T'?'On Request':'N/A'}</div>
+            ${c.insurance&&ip?'<div class="cpi">+ €'+ip+' insurance</div>':''}
+            ${c.insurance&&tp?'<div class="cpt">Total: €'+tp+'</div>':''}
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:end">
+          <div class="car-epg"><label>Ref No</label><input value="${esc(c.ref)}" placeholder="Ref κράτησης" onchange="CARS[${i}].ref=this.value;svCars()"></div>
+          <div class="car-epg"><label>Full Name</label><input value="${esc(c.name)}" placeholder="SURNAME NAME" onchange="CARS[${i}].name=this.value.toUpperCase();this.value=CARS[${i}].name;svCars()"></div>
+          <div class="car-epg"><label>Tour Operator</label><input value="${esc(c.to)}" placeholder="TUI, JET2..." onchange="CARS[${i}].to=this.value;svCars()"></div>
+          <div class="car-epg"><label>Room No</label><input value="${esc(c.room)}" placeholder="407" onchange="CARS[${i}].room=this.value;svCars()"></div>
+          <div class="car-epg"><label>Pick-up Time</label><input type="time" value="${c.rentalTime||''}" onchange="CARS[${i}].rentalTime=this.value;svCars()"></div>
+          <div class="car-epg" style="grid-column:1/3">
+            <label>Full Insurance &middot; €${ACE_INS[c.carType]||0}/day${ip?' &middot; Total insurance: €'+ip:''}</label>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+              <input type="checkbox" id="carins${i}"${c.insurance?' checked':''} style="width:17px;height:17px;cursor:pointer;accent-color:#1a6644" onchange="carUpd(${i},'insurance',this.checked)">
+              <label for="carins${i}" style="font-size:13px;cursor:pointer;color:var(--ink);text-transform:none;letter-spacing:0;font-weight:500">
+                Add full insurance${c.insurance&&ip?' <strong style="color:#1a6644">→ +€'+ip+'</strong>':''}
+              </label>
+            </div>
+          </div>
+          <div class="car-epg" style="grid-column:3/6">
+            <label>Status</label>
+            <div class="car-sbtns">
+              <button class="car-sbtn${c.status==='confirmed'?' sc':''}" onclick="carSetStatus(${i},'confirmed')">&#10003; Confirmed</button>
+              <button class="car-sbtn${c.status==='waiting'?' sw':''}" onclick="carSetStatus(${i},'waiting')">&#9203; Waiting</button>
+              <button class="car-sbtn${c.status==='cancelled'?' sx':''}" onclick="carSetStatus(${i},'cancelled')">&#10007; Cancelled</button>
+            </div>
+          </div>
+        </div>
+      </td></tr>`;
+    }
+  });
+  tbody.innerHTML=html;
+  renderCarSum();
+}
+
+function renderCarSum(){
+  const grid=document.getElementById('carSumGrid');if(!grid)return;
+  const MN={'05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'September 2026','10':'October 2026'};
+  let html='',any=false;
+  ['05','06','07','08','09','10'].forEach(m=>{
+    const mc=CARS.filter(c=>carGetMonth(c)===m);if(!mc.length)return;
+    any=true;
+    const conf=mc.filter(c=>c.status==='confirmed').length;
+    const wait=mc.filter(c=>c.status==='waiting').length;
+    const canc=mc.filter(c=>c.status==='cancelled').length;
+    const rev=mc.filter(c=>c.status!=='cancelled').reduce((s,c)=>{const{total}=carCalc(c);return s+(total||0);},0);
+    html+='<div class="car-sum-card">'
+      +'<div class="car-sum-month">'+MN[m]+'</div>'
+      +'<div class="car-sum-count">'+mc.length+' bookings</div>'
+      +(rev>0?'<div class="car-sum-rev">€'+rev.toFixed(0)+' revenue</div>':'')
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'
+      +(conf?'<span style="color:#1a6644;font-size:11px;font-weight:700">&#10003; '+conf+'</span>':'')
+      +(wait?'<span style="color:#b45309;font-size:11px;font-weight:700">&#9203; '+wait+'</span>':'')
+      +(canc?'<span style="color:#c0392b;font-size:11px;font-weight:700">&#10007; '+canc+'</span>':'')
+      +'</div></div>';
+  });
+  grid.innerHTML=any?html:'<div style="font-size:12px;color:var(--muted2);padding:6px">No data yet</div>';
+}
+
+
+/* ── CAR ADD MODAL ── */
+function carAdd(){
+  // Open modal instead of adding directly
+  document.getElementById('carModal').classList.add('open');
+  // Reset form
+  document.getElementById('cm-ref').value='';
+  document.getElementById('cm-name').value='';
+  document.getElementById('cm-to').value='';
+  document.getElementById('cm-room').value='';
+  document.getElementById('cm-bookdate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('cm-rentaldate').value='';
+  document.getElementById('cm-time').value='';
+  document.getElementById('cm-type').value='A-M';
+  document.getElementById('cm-days').value=1;
+  document.getElementById('cm-ins').checked=false;
+  document.getElementById('cm-status').value='waiting';
+  carModalUpdatePrice();
+}
+
+function carModalUpdatePrice(){
+  const type=document.getElementById('cm-type').value;
+  const days=parseInt(document.getElementById('cm-days').value)||1;
+  const rentalDate=document.getElementById('cm-rentaldate').value||document.getElementById('cm-bookdate').value;
+  const ins=document.getElementById('cm-ins').checked;
+  const base=carBasePrice(type,days,rentalDate);
+  const insAmt=ins?carInsPrice(type,days):0;
+  const total=base!=null?base+insAmt:null;
+  const sl=carSeasonLbl(rentalDate);
+  const el=document.getElementById('cm-pricebox');
+  if(!el)return;
+  if(type==='T'){el.innerHTML='<div class="cpl">Price</div><div class="cpv" style="font-size:16px">On Request</div>';return;}
+  if(base==null){el.innerHTML='<div class="cpl">'+sl+'</div><div style="font-size:13px;color:var(--muted)">N/A for '+days+' days</div>';return;}
+  el.innerHTML='<div class="cpl">'+sl+'</div>'
+    +'<div class="cpv">€'+base+'</div>'
+    +(ins&&insAmt?'<div class="cpi">+ €'+insAmt+' insurance</div>':'')
+    +(ins&&total?'<div class="cpt">Total: €'+total+'</div>':'');
+}
+
+function carModalSave(){
+  const type=document.getElementById('cm-type').value;
+  const days=Math.max(1,parseInt(document.getElementById('cm-days').value)||1);
+  const rentalDate=document.getElementById('cm-rentaldate').value;
+  const bookDate=document.getElementById('cm-bookdate').value;
+  const ins=document.getElementById('cm-ins').checked;
+  const base=carBasePrice(type,days,rentalDate||bookDate);
+  const insAmt=ins?carInsPrice(type,days):0;
+  CARS.unshift({
+    id:Date.now()+'',
+    ref:document.getElementById('cm-ref').value.trim(),
+    name:document.getElementById('cm-name').value.trim().toUpperCase(),
+    to:document.getElementById('cm-to').value.trim(),
+    room:document.getElementById('cm-room').value.trim(),
+    bookDate,rentalDate,
+    rentalTime:document.getElementById('cm-time').value,
+    carType:type,days,insurance:ins,
+    status:document.getElementById('cm-status').value,
+    base,insAmt,total:base!=null?base+insAmt:null
+  });
+  svCars();carOpenEP=null;
+  document.getElementById('carModal').classList.remove('open');
+  renderCars();
+  showToast('Car booking added!','s');
+}
+
+function carModalClose(){
+  document.getElementById('carModal').classList.remove('open');
+}
 
 /* ═══════════════════════
    PASSWORD PROTECTION
@@ -2063,6 +3707,9 @@ function togglePwdEye(){
 })();
 
 </script>
+
+<!-- CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -2151,6 +3798,47 @@ fbdb.ref('grooms').on('value', snap => {
 // Load review history from Firebase
 fbdb.ref('ta_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){taHistory=d;localStorage.setItem('ta_reviews',JSON.stringify(d));renderRevHistory('ta');}});
 fbdb.ref('goo_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){gooHistory=d;localStorage.setItem('goo_reviews',JSON.stringify(d));renderRevHistory('goo');}});
+
+// Alerts Firebase sync
+fbdb.ref('alerts_data').once('value').then(snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'){
+    alertsData=d;
+    try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}
+    checkOverdueTasks();
+    const alTab=document.getElementById('tab-alerts');
+    if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();
+  }
+});
+fbdb.ref('alerts_data').on('value',snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(alertsData)){
+    alertsData=d;
+    try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}
+    checkOverdueTasks();
+    const alTab=document.getElementById('tab-alerts');
+    if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();
+  }
+});
+
+// Massage Firebase sync
+fbdb.ref('massage_data').once('value').then(snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'){
+    massageData=d;
+    try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}
+    const msTab=document.getElementById('tab-massage');
+    if(msTab&&!msTab.classList.contains('hidden'))renderMassage();
+  }
+});
+fbdb.ref('massage_data').on('value',snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(massageData)){
+    massageData=d;
+    const msTab=document.getElementById('tab-massage');
+    if(msTab&&!msTab.classList.contains('hidden'))renderMassage();
+  }
+});
 
 // Real-time sync for Gym bookings
 fbdb.ref('gym_bookings').on('value', snap=>{
