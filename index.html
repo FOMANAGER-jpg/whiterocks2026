@@ -443,7 +443,7 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .ms-day-hdr{background:linear-gradient(135deg,#7c4a00,#b45309);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
 .ms-day-title{font-family:var(--serif);font-size:15px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px}
 .ms-day-count{background:rgba(255,255,255,.25);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;color:#fff}
-.ms-slot{display:grid;grid-template-columns:90px 1fr 1fr 1fr 80px 34px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border2)}
+.ms-slot{display:grid;grid-template-columns:90px 1fr 1fr 1fr 1fr 80px 34px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border2)}
 .ms-slot:last-child{border-bottom:none}
 .ms-slot:hover{background:var(--amber-light)}
 .ms-time{font-size:13px;font-weight:700;color:#b45309;white-space:nowrap}
@@ -507,21 +507,6 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
 @keyframes tabPulse{0%,100%{color:#dc2626}50%{color:#ff6b6b;text-shadow:0 0 8px rgba(220,38,38,.5)}}
 .tab-alert-pulse{animation:tabPulse 1.2s infinite!important;font-weight:700!important}
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-.pwd-screen{position:fixed;inset:0;background:linear-gradient(135deg,var(--sea-dark),var(--sea));z-index:9999;display:flex;align-items:center;justify-content:center}
-.pwd-card{background:#fff;border-radius:20px;padding:36px 40px;width:380px;max-width:92vw;box-shadow:0 24px 80px rgba(15,74,119,.4);text-align:center}
-.pwd-logo{width:64px;height:64px;background:linear-gradient(135deg,var(--sea-dark),var(--sea));border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
-.pwd-logo i{font-size:30px;color:#fff}
-.pwd-title{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:4px}
-.pwd-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
-.pwd-inp-wrap{position:relative;margin-bottom:14px}
-.pwd-inp{width:100%;padding:13px 44px 13px 16px;border:2px solid var(--border);border-radius:11px;font-family:var(--sans);font-size:15px;color:var(--ink);outline:none;background:var(--bg);text-align:center;letter-spacing:3px}
-.pwd-inp:focus{border-color:var(--sea);background:#fff}
-.pwd-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted);font-size:18px;background:none;border:none}
-.pwd-eye:hover{color:var(--sea)}
-.pwd-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--sea-dark),var(--sea));color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:8px}
-.pwd-btn:hover{opacity:.92}
-.pwd-err{background:#fce8e8;color:var(--coral);border-radius:8px;padding:9px 14px;font-size:13px;margin-bottom:12px;display:none}
-.pwd-footer{font-size:11px;color:var(--muted2);margin-top:18px}
 .an-wrap{padding:16px 20px 40px}
 .an-hdr{background:linear-gradient(135deg,#1a3a6e,#2563aa);border-radius:var(--r);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)}
 .an-hdr-ico{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -598,6 +583,12 @@ canvas.an-chart{width:100%!important;height:220px!important}
   .print-header{display:block!important;font-family:var(--serif);font-size:18px;font-weight:600;color:var(--pur-dark);margin-bottom:8px;padding:10px 0 6px}
 }
 .print-header{display:none}
+
+.pe-season-tab{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.pe-season-tab.on.low{background:#e8f3fb;color:var(--sea);border-color:var(--sea)}
+.pe-season-tab.on.mid{background:#fef7e6;color:#b45309;border-color:#b45309}
+.pe-season-tab.on.high{background:#fce8e8;color:#c0392b;border-color:#c0392b}
+.pe-season-tab.on.peak{background:#f0eaff;color:var(--pur);border-color:var(--pur)}
 </style>
 </head>
 <body>
@@ -608,23 +599,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
 </div>
 
 <!-- PASSWORD SCREEN -->
-<div class="pwd-screen" id="pwdScreen">
-  <div class="pwd-card">
-    <div class="pwd-logo"><i class="ti ti-building"></i></div>
-    <div class="pwd-title">White Rocks Hotel</div>
-    <div class="pwd-sub">Staff access only &mdash; please enter your password</div>
-    <div class="pwd-err" id="pwdErr">Incorrect password. Please try again.</div>
-    <div class="pwd-inp-wrap">
-      <input class="pwd-inp" type="password" id="pwdInp" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;" maxlength="30"
-        onkeydown="if(event.key==='Enter')checkPwd()">
-      <button class="pwd-eye" onclick="togglePwdEye()" id="pwdEye"><i class="ti ti-eye" id="pwdEyeIco"></i></button>
-    </div>
-    <button class="pwd-btn" onclick="checkPwd()">
-      <i class="ti ti-lock-open"></i> Enter
-    </button>
-    <div class="pwd-footer">White Rocks Hotel &amp; Bungalows &middot; Kefalonia 2026</div>
-  </div>
-</div>
+
 
 <div class="app" id="mainApp">
 
@@ -1014,6 +989,74 @@ canvas.an-chart{width:100%!important;height:220px!important}
 </div>
 
 <!-- GYM MODAL -->
+
+<!-- PRICE EDITOR MODAL -->
+<div class="modal-bg" id="peModal">
+  <div style="background:var(--white);border-radius:16px;padding:0;width:95vw;max-width:1100px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(26,37,53,.25);overflow:hidden">
+    <div style="background:linear-gradient(135deg,#0d4a2f,#1a6644);padding:16px 22px;display:flex;align-items:center;gap:12px;flex-shrink:0">
+      <div style="width:36px;height:36px;background:rgba(255,255,255,.2);border-radius:9px;display:flex;align-items:center;justify-content:center"><i class="ti ti-pencil" style="font-size:18px;color:#fff"></i></div>
+      <div style="font-family:var(--serif);font-size:18px;font-weight:600;color:#fff;flex:1">ACE Rent a Car — Price Editor 2026</div>
+      <button onclick="closePriceEditor()" style="width:32px;height:32px;background:rgba(255,255,255,.2);border:none;border-radius:8px;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="pe-view-bar" style="background:#f0fff4;border-bottom:1px solid #a8d5b8;padding:10px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0">
+      <button onclick="peStartEdit()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:#1a6644;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-pencil"></i> Edit Prices</button>
+      <button class="pe-season-tab on low" id="pe-tab-low" onclick="peShowSeason('low')">🔵 Low Season</button>
+      <button class="pe-season-tab" id="pe-tab-mid" onclick="peShowSeason('mid')">🟡 Middle</button>
+      <button class="pe-season-tab" id="pe-tab-high" onclick="peShowSeason('high')">🔴 High</button>
+      <button class="pe-season-tab" id="pe-tab-peak" onclick="peShowSeason('peak')">🟣 Peak</button>
+      <span style="font-size:11px;color:var(--muted);margin-left:auto">Prices include VAT, unlimited mileage, CDW</span>
+    </div>
+    <div id="pe-edit-bar" class="hidden" style="background:#fff3e0;border-bottom:1px solid #f5c2a0;padding:10px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0">
+      <button onclick="peSave()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:#1a6644;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-device-floppy"></i> Save & Sync</button>
+      <button onclick="peCancelEdit()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--white);color:var(--muted);border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-x"></i> Cancel</button>
+      <button onclick="peReset()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--white);color:var(--coral);border:1.5px solid rgba(224,90,78,.25);border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-refresh"></i> Reset to Original</button>
+      <span style="font-size:11px;color:#b45309;font-weight:600">✏ Click any price to edit</span>
+    </div>
+    <div style="overflow-y:auto;flex:1;padding:16px">
+      <div id="pe-sec-low">
+        <div style="background:linear-gradient(135deg,#0f4a77,#1b6ca8);border-radius:var(--r);padding:11px 16px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+          <div style="font-family:var(--serif);font-size:15px;font-weight:600;color:#fff">Low Season</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7)">Apr–May, Oct 2026</div>
+        </div>
+        <div style="background:var(--white);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;overflow-x:auto;margin-bottom:14px">
+          <table style="width:100%;border-collapse:collapse;min-width:700px" id="pe-tbl-low"></table>
+        </div>
+      </div>
+      <div id="pe-sec-mid" class="hidden">
+        <div style="background:linear-gradient(135deg,#b06e08,#d4860a);border-radius:var(--r);padding:11px 16px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+          <div style="font-family:var(--serif);font-size:15px;font-weight:600;color:#fff">Middle Season</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7)">Jun, Sep 2026</div>
+        </div>
+        <div style="background:var(--white);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;overflow-x:auto;margin-bottom:14px">
+          <table style="width:100%;border-collapse:collapse;min-width:700px" id="pe-tbl-mid"></table>
+        </div>
+      </div>
+      <div id="pe-sec-high" class="hidden">
+        <div style="background:linear-gradient(135deg,#991b1b,#dc2626);border-radius:var(--r);padding:11px 16px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+          <div style="font-family:var(--serif);font-size:15px;font-weight:600;color:#fff">High Season</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7)">July 2026</div>
+        </div>
+        <div style="background:var(--white);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;overflow-x:auto;margin-bottom:14px">
+          <table style="width:100%;border-collapse:collapse;min-width:700px" id="pe-tbl-high"></table>
+        </div>
+      </div>
+      <div id="pe-sec-peak" class="hidden">
+        <div style="background:linear-gradient(135deg,#3d1a6e,#5c3d8f);border-radius:var(--r);padding:11px 16px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+          <div style="font-family:var(--serif);font-size:15px;font-weight:600;color:#fff">Peak Season</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7)">August 2026</div>
+        </div>
+        <div style="background:var(--white);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;overflow-x:auto;margin-bottom:14px">
+          <table style="width:100%;border-collapse:collapse;min-width:700px" id="pe-tbl-peak"></table>
+        </div>
+      </div>
+      <div style="background:#e8f3fb;border-radius:9px;padding:10px 14px;font-size:12px;color:#1b6ca8;display:flex;align-items:center;gap:8px">
+        <i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0"></i>
+        All prices include 24% VAT, unlimited mileage, 2nd driver free, CDW. GPS: €5/day. Baby seat: €3/day.
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="gymOv">
   <div class="gym-modal">
     <h3><i class="ti ti-barbell"></i> <span id="gymModalTitle">Gym Booking</span></h3>
@@ -1137,6 +1180,19 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div class="ms-hdr-ico"><i class="ti ti-heart-handshake"></i></div>
       <div><div class="ms-hdr-t">Massage Bookings</div><div class="ms-hdr-s">Sessions per day &middot; Room, Name &amp; Cost</div></div>
     </div>
+    <!-- MANUAL ADD -->
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;box-shadow:var(--sh)">
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px"><i class="ti ti-plus" style="color:#b45309"></i> Add Manual Reservation</div>
+      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Date</label><input type="date" id="ms-add-date" class="tr-inp" style="width:150px"></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Time</label><input type="time" id="ms-add-time" class="tr-inp" style="width:110px" value="10:00"></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Room</label><input id="ms-add-room" class="tr-inp" style="width:90px" placeholder="407"></div>
+        <div style="flex:1;min-width:140px"><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Guest Name</label><input id="ms-add-name" class="tr-inp" style="width:100%" placeholder="SMITH JOHN"></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Duration</label><select id="ms-add-dur" class="tr-inp" style="width:110px"><option value="60">1 hour</option><option value="90">1.5 hours</option></select></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Cost (€)</label><input id="ms-add-cost" class="tr-inp" style="width:90px" type="number" min="0" placeholder="0"></div>
+        <button onclick="msAddManual()" style="padding:9px 18px;background:#b45309;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px;height:38px"><i class="ti ti-check"></i> Add</button>
+      </div>
+    </div>
     <div id="massageContent"></div>
   </div>
 </div>
@@ -1187,6 +1243,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div class="car-toolbar">
       <button class="car-add-btn" onclick="carAdd()"><i class="ti ti-plus"></i> Add Car Booking</button>
       <button class="car-print-btn" onclick="window.print()"><i class="ti ti-printer"></i> Print</button>
+      <button class="car-print-btn" onclick="openPriceEditor()" style="color:#b45309;border-color:rgba(212,134,10,.3)"><i class="ti ti-pencil"></i> Edit Prices</button>
       <div style="display:flex;gap:4px;flex-wrap:wrap">
         <button class="car-mpill on" onclick="setCarM('all',this)">All</button>
         <button class="car-mpill" onclick="setCarM('05',this)">May</button>
@@ -2148,7 +2205,7 @@ function renderCls(type){
     '<button class="cls-add-row" onclick="wlAddRow(\''+type+'\',\''+dateKey+'\')"><i class="ti ti-plus"></i> Add to waiting list</button></div>';
   document.getElementById(type+'-sessions').innerHTML=html;
 }
-function printCls(type){const dates=getClsDates(type);const d=dates[clsIdx[type]];if(!d)return;const DAY3=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const lbl=DAY3[d.getDay()]+' '+d.getDate()+' '+MON3[d.getMonth()]+' '+d.getFullYear();const dateKey=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');const entries=(clsData[type]&&clsData[type][dateKey])||[];const color=type==='yoga'?'#6b2d8f':'#7a1a3a';const title=type==='yoga'?'Yoga':'Pilates';const rows=entries.length?entries.map((e,i)=>'<tr><td style="padding:8px 12px;text-align:center;color:#888;font-size:12px">'+(i+1)+'</td><td style="padding:8px 12px;font-weight:600">'+e.name+'</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:'+color+'">'+e.room+'</td><td style="padding:8px 12px;text-align:center">'+(e.attended?'\u2713':'')+'</td></tr>').join(''):'<tr><td colspan="4" style="padding:20px;text-align:center;color:#aaa">No bookings</td></tr>';const win=window.open('','_blank','width=700,height=900');win.document.write('<!DOCTYPE html><html><head><title>'+title+' - '+lbl+'</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#1a2535;max-width:680px;margin:0 auto}table{width:100%;border-collapse:collapse;font-size:13px}thead{background:'+color+';color:#fff}th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:.8px;text-transform:uppercase}tbody tr{border-bottom:1px solid #e8e0f0}tbody tr:nth-child(even){background:#fdf8ff}@media print{body{padding:15px}}</style></head><body><h1 style="font-size:22px;color:'+color+';margin-bottom:4px">'+title+' Class</h1><div style="font-size:13px;color:#6b85a0;margin-bottom:20px">'+lbl+' &bull; White Rocks Hotel &amp; Bungalows</div><table><thead><tr><th style="width:40px">#</th><th>Guest Name</th><th style="width:100px;text-align:center">Room</th><th style="width:100px;text-align:center">Attended</th></tr></thead><tbody>'+rows+'</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>');win.document.close();}
+function printCls(type){const dates=getClsDates(type);const d=dates[clsIdx[type]];if(!d)return;const DAY3=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const lbl=DAY3[d.getDay()]+' '+d.getDate()+' '+MON3[d.getMonth()]+' '+d.getFullYear();const dateKey=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');const entries=(clsData[type]&&clsData[type][dateKey])||[];const color=type==='yoga'?'#6b2d8f':'#7a1a3a';const title=type==='yoga'?'Yoga':'Pilates';const rows=entries.length?entries.map((e,i)=>'<tr><td style="padding:8px 12px;text-align:center;color:#888;font-size:12px">'+(i+1)+'</td><td style="padding:8px 12px;font-weight:600">'+e.name+'</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:'+color+'">'+e.room+'</td><td style="padding:8px 12px;text-align:center">'+(e.attended?'\u2713':'')+'</td></tr>').join(''):'<tr><td colspan="4" style="padding:20px;text-align:center;color:#aaa">No bookings</td></tr>';const win=window.open('','_blank','width=700,height=900');win.document.write('<!DOCTYPE html><html><head><title>'+title+' - '+lbl+'</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#1a2535;max-width:680px;margin:0 auto}table{width:100%;border-collapse:collapse;font-size:13px}thead{background:'+color+';color:#fff}th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:.8px;text-transform:uppercase}tbody tr{border-bottom:1px solid #e8e0f0}tbody tr:nth-child(even){background:#fdf8ff}@media print{body{padding:15px}}</style></head><body><h1 style="font-size:22px;color:'+color+';margin-bottom:4px">'+title+' Class</h1><div style="font-size:13px;color:#6b85a0;margin-bottom:20px">'+lbl+' &bull; White Rocks Hotel &amp; Bungalows</div><table><thead><tr><th style="width:40px">#</th><th>Guest Name</th><th style="width:100px;text-align:center">Room</th><th style="width:100px;text-align:center">Attended</th></tr></thead><tbody>'+rows+'</tbody></table><script>window.onload=function(){window.print();}<\/script><\/body><\/html>');win.document.close();}
 function clsUpdate(type,dateKey,idx,field,val){clsData[type][dateKey][idx][field]=val;svCls();}
 function clsAddRow(type,dateKey){if(!clsData[type])clsData[type]={};if(!clsData[type][dateKey])clsData[type][dateKey]=[];if(clsData[type][dateKey].length>=15){showToast('Class is full (15/15)','w');return;}clsData[type][dateKey].push({name:'',room:'',attended:false});svCls();renderCls(type);setTimeout(()=>{const rows=document.querySelectorAll('#'+type+'-sessions .cls-inp');if(rows.length)rows[rows.length-2].focus();},60);}
 function clsDelRow(type,dateKey,idx){clsData[type][dateKey].splice(idx,1);svCls();renderCls(type);showToast('Row removed','w');}
@@ -2172,14 +2229,36 @@ function renderMassage(){
   Object.entries(MASSAGE_SCHEDULE).sort().forEach(([dateKey,windows])=>{
     const d=new Date(dateKey);const dayName=DAY_GR[d.getDay()];const dateLbl=dayName+' '+d.getDate()+' '+MON_GR[d.getMonth()]+' '+d.getFullYear();
     const slots=getSlots(dateKey);const bookings=massageData[dateKey]||{};const bookedCount=Object.values(bookings).filter(b=>b.name||b.room).length;const totalRevenue=Object.values(bookings).reduce((s,b)=>s+(parseFloat(b.cost)||0),0);
-    let slotsHtml='<div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr 80px 34px;gap:8px;padding:7px 16px;background:var(--amber-light);border-bottom:1px solid rgba(180,83,9,.15)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Time</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Room</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Guest Name</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Duration</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e;text-align:center">\u20ac Cost</div><div></div></div>';
-    slots.forEach(slotTime=>{const b=bookings[slotTime]||{};const isBooked=b.name||b.room;slotsHtml+='<div class="ms-slot'+(isBooked?' ms-slot-booked':'')+'"><div class="ms-time"><i class="ti ti-clock" style="font-size:11px;margin-right:3px"></i>'+slotTime+'</div><input class="ms-inp'+(isBooked?' booked':'')+'" placeholder="Room" value="'+esc(b.room||'')+'" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'room\',this.value)"><input class="ms-inp'+(isBooked?' booked':'')+'" placeholder="Guest name" value="'+esc(b.name||'')+'" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'name\',this.value)"><select class="ms-dur-sel" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'dur\',this.value)"><option value="60" '+(( b.dur||60)==60?'selected':'')+'>1 hour</option><option value="90" '+(b.dur==90?'selected':'')+'>1.5 hours</option></select><input class="ms-inp cost'+(isBooked?' booked':'')+'" placeholder="0" value="'+esc(b.cost||'')+'" type="number" min="0" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'cost\',this.value)"><button class="ms-del" onclick="msClear(\''+dateKey+'\',\''+slotTime+'\')" title="Clear"><i class="ti ti-x" style="font-size:12px"></i></button></div>';});
+    let slotsHtml='<div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr 1fr 80px 34px;gap:8px;padding:7px 16px;background:var(--amber-light);border-bottom:1px solid rgba(180,83,9,.15)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Time</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Room</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Guest Name</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Duration</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Booked by</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e;text-align:center">\u20ac Cost</div><div></div></div>';
+    slots.forEach(slotTime=>{const b=bookings[slotTime]||{};const isBooked=b.name||b.room;slotsHtml+='<div class="ms-slot'+(isBooked?' ms-slot-booked':'')+'"><div class="ms-time"><i class="ti ti-clock" style="font-size:11px;margin-right:3px"></i>'+slotTime+'</div><input class="ms-inp'+(isBooked?' booked':'')+'" placeholder="Room" value="'+esc(b.room||'')+'" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'room\',this.value)"><input class="ms-inp'+(isBooked?' booked':'')+'" placeholder="Guest name" value="'+esc(b.name||'')+'" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'name\',this.value)"><select class="ms-dur-sel" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'dur\',this.value)"><option value="60" '+(( b.dur||60)==60?'selected':'')+'>1 hour</option><option value="90" '+(b.dur==90?'selected':'')+'>1.5 hours</option></select><input class="ms-inp'+(isBooked?' booked':'')+'" placeholder="Booked by..." value="'+esc(b.bookedBy||'')+'" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'bookedBy\',this.value)"><input class="ms-inp cost'+(isBooked?' booked':'')+'" placeholder="0" value="'+esc(b.cost||'')+'" type="number" min="0" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'cost\',this.value)"><button class="ms-del" onclick="msClear(\''+dateKey+'\',\''+slotTime+'\')" title="Clear"><i class="ti ti-x" style="font-size:12px"></i></button></div>';});
     html+='<div class="ms-day-card"><div class="ms-day-hdr"><div class="ms-day-title"><i class="ti ti-calendar"></i>'+dateLbl+'</div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:rgba(255,255,255,.7)">'+windows.map(w=>w.start+'\u2013'+w.end).join(' | ')+'</span><span class="ms-day-count">'+bookedCount+'/'+slots.length+'</span></div></div>'+slotsHtml+'<div class="ms-stats"><span class="ms-stat">Slots: <strong>'+slots.length+'</strong></span><span class="ms-stat">Booked: <strong>'+bookedCount+'</strong></span>'+(totalRevenue>0?'<span class="ms-stat" style="margin-left:auto">Revenue: <strong>\u20ac'+totalRevenue.toFixed(0)+'</strong></span>':'')+'</div></div>';
   });
   el.innerHTML=html;
 }
 function msUpdate(dateKey,slotTime,field,val){if(!massageData[dateKey])massageData[dateKey]={};if(!massageData[dateKey][slotTime])massageData[dateKey][slotTime]={room:'',name:'',dur:60,cost:''};massageData[dateKey][slotTime][field]=field==='dur'?parseInt(val):val;svMassage();}
 function msClear(dateKey,slotTime){if(!massageData[dateKey])return;delete massageData[dateKey][slotTime];svMassage();renderMassage();showToast('Cleared','w');}
+
+function msAddManual(){
+  var date=document.getElementById('ms-add-date').value;
+  var time=document.getElementById('ms-add-time').value;
+  var room=document.getElementById('ms-add-room').value.trim();
+  var name=document.getElementById('ms-add-name').value.trim().toUpperCase();
+  var dur=parseInt(document.getElementById('ms-add-dur').value)||60;
+  var cost=document.getElementById('ms-add-cost').value.trim();
+  if(!date||!time){showToast('Select date and time','w');return;}
+  if(!name&&!room){showToast('Enter room or guest name','w');return;}
+  if(!massageData[date])massageData[date]={};
+  if(massageData[date][time]&&(massageData[date][time].name||massageData[date][time].room)){
+    if(!confirm('Booking already exists at '+time+'. Replace?'))return;
+  }
+  massageData[date][time]={room:room,name:name,dur:dur,cost:cost,manual:true};
+  svMassage();
+  document.getElementById('ms-add-room').value='';
+  document.getElementById('ms-add-name').value='';
+  document.getElementById('ms-add-cost').value='';
+  renderMassage();
+  showToast('Added!','s');
+}
 
 /* ALERTS */
 let alertsData=JSON.parse(localStorage.getItem('alerts_data')||'{}');let alCurrentDate=new Date().toISOString().split('T')[0];
@@ -2215,14 +2294,115 @@ function checkOverdueTasks(){const today=new Date().toISOString().split('T')[0];
 setInterval(()=>{checkOverdueTasks();const alertTab=document.getElementById('tab-alerts');if(alertTab&&!alertTab.classList.contains('hidden'))renderAlerts();},60000);
 setTimeout(checkOverdueTasks,2000);
 
-/* PASSWORD */
-const PWD_HASH='frontoffice';const PWD_SESSION_KEY='wr_auth';
-function checkPwd(){const inp=document.getElementById('pwdInp').value;const err=document.getElementById('pwdErr');if(inp===PWD_HASH){sessionStorage.setItem(PWD_SESSION_KEY,'1');document.getElementById('pwdScreen').style.display='none';err.style.display='none';showToast('Welcome! Connected to White Rocks \u2601','s');}else{err.style.display='block';document.getElementById('pwdInp').value='';document.getElementById('pwdInp').focus();const card=document.querySelector('.pwd-card');card.style.animation='shake .4s ease';setTimeout(()=>card.style.animation='',400);}}
-function togglePwdEye(){const inp=document.getElementById('pwdInp');const ico=document.getElementById('pwdEyeIco');if(inp.type==='password'){inp.type='text';ico.className='ti ti-eye-off';}else{inp.type='password';ico.className='ti ti-eye';}}
-(function(){if(sessionStorage.getItem(PWD_SESSION_KEY)==='1'){document.getElementById('pwdScreen').style.display='none';}else{setTimeout(()=>document.getElementById('pwdInp').focus(),200);}})();
 
 document.getElementById('groomDate').value=new Date().toISOString().split('T')[0];
 renderStats();renderRes();
+
+
+/* ═══ ACE PRICE EDITOR ═══ */
+const ACE_PRICE_STORAGE='ace_prices_custom';
+const PE_DEFAULT={
+  low:{'A-M':[40,70,105,120,150,180,210,30,10],'A-A':[45,80,120,160,175,210,245,35,10],'B-M':[45,80,120,160,175,210,245,35,10],'B1-M':[45,80,120,160,175,210,245,35,10],'B-A':[55,100,135,180,200,240,280,40,13],'C-M':[55,100,135,180,200,240,280,40,13],'C1-M':[60,110,165,200,250,300,350,50,15],'D-M':[70,120,180,232,280,336,385,55,15],'J-M':[90,180,210,280,350,420,490,70,20],'J-A':[90,180,210,280,350,420,490,70,20],'J-E':[100,170,255,320,400,480,560,80,20],'T':[null,null,null,null,null,null,null,null,25]},
+  mid:{'A-M':[60,100,150,192,230,270,301,43,10],'A-A':[70,112,168,210,255,294,329,47,10],'B-M':[70,110,165,204,250,282,315,45,10],'B1-M':[70,112,168,210,255,294,329,47,10],'B-A':[80,120,180,232,280,336,385,55,13],'C-M':[80,120,180,232,280,336,385,55,13],'C1-M':[90,140,210,260,320,380,420,60,15],'D-M':[100,170,255,336,415,492,560,80,15],'J-M':[100,200,255,336,415,492,560,80,20],'J-A':[100,200,255,336,415,492,560,80,20],'J-E':[130,240,360,420,500,600,700,100,20],'T':[null,null,null,null,null,null,null,null,25]},
+  high:{'A-M':[70,120,165,220,275,330,385,55,10],'A-A':[80,140,180,240,300,360,420,60,10],'B-M':[80,140,180,240,300,360,420,60,10],'B1-M':[80,140,180,240,300,360,420,60,10],'B-A':[90,174,240,320,400,480,560,80,13],'C-M':[90,150,210,280,350,420,490,70,13],'C1-M':[100,170,240,320,400,480,560,80,15],'D-M':[130,240,300,400,500,540,630,90,15],'J-M':[150,240,360,440,550,660,770,110,20],'J-A':[150,240,360,440,550,660,770,110,20],'J-E':[null,null,390,500,600,720,840,120,20],'T':[null,null,null,null,null,null,null,null,25]},
+  peak:{'A-M':[null,195,240,300,360,420,null,60,10],'A-A':[null,210,280,325,390,455,null,65,10],'B-M':[null,210,280,325,390,455,null,65,10],'B1-M':[null,210,280,325,390,455,null,65,10],'B-A':[null,270,360,450,540,630,null,90,13],'C-M':[null,240,320,400,480,560,null,80,13],'C1-M':[null,300,400,500,540,630,null,90,15],'D-M':[null,360,440,550,660,770,null,110,15],'J-M':[null,390,500,600,720,840,null,120,20],'J-A':[null,390,500,600,720,840,null,120,20],'J-E':[null,450,560,700,840,980,null,140,20],'T':[null,null,null,null,null,null,null,null,25]}
+};
+let PE_PRICES=JSON.parse(localStorage.getItem(ACE_PRICE_STORAGE)||'null')||JSON.parse(JSON.stringify(PE_DEFAULT));
+let peEditMode=false,pePending=null,peSeason='low';
+const PE_CARS=[
+  {id:'A-M',name:'A Manual',desc:'KIA Picanto / Aygo'},{id:'A-A',name:'A Automatic',desc:'KIA Picanto Auto'},
+  {id:'B-M',name:'B Manual',desc:'Fiesta / Seat Ibiza'},{id:'B1-M',name:'B1 Manual',desc:'Aygo Convertible'},
+  {id:'B-A',name:'B Automatic',desc:'Ibiza / Mazda 2 Auto'},{id:'C-M',name:'C Manual',desc:'Focus / C-Elysee'},
+  {id:'C1-M',name:'C1 Manual',desc:'C3 Aircross (SUV)'},{id:'D-M',name:'D Manual',desc:'Fiat Doblo 7-Seat'},
+  {id:'J-M',name:'J Manual',desc:'Renegade / Qashqai'},{id:'J-A',name:'J Automatic',desc:'Sandero Auto'},
+  {id:'J-E',name:'J Electric',desc:'Avenger Electric'},{id:'T',name:'Tesla T',desc:'Model 3 (On Request)'}
+];
+const PE_HEADS=['1 Day','2 Days','3 Days','4 Days','5 Days','6 Days','7 Days','Extra Day','Insurance/day'];
+
+function openPriceEditor(){
+  peEditMode=false; pePending=null; peSeason='low';
+  document.getElementById('peModal').classList.add('open');
+  document.getElementById('pe-edit-bar').classList.add('hidden');
+  document.getElementById('pe-view-bar').classList.remove('hidden');
+  if(typeof fbdb!=='undefined'){
+    fbdb.ref('ace_prices').once('value').then(function(snap){
+      var d=snap.val();
+      if(d&&typeof d==='object'){PE_PRICES=d;try{localStorage.setItem(ACE_PRICE_STORAGE,JSON.stringify(d));}catch(e){}}
+      peShowSeason('low');
+    });
+  } else { peShowSeason('low'); }
+}
+function closePriceEditor(){document.getElementById('peModal').classList.remove('open');}
+
+function peStartEdit(){
+  peEditMode=true; pePending=JSON.parse(JSON.stringify(PE_PRICES));
+  document.getElementById('pe-edit-bar').classList.remove('hidden');
+  document.getElementById('pe-view-bar').classList.add('hidden');
+  peRenderTable(peSeason);
+}
+function peCancelEdit(){
+  peEditMode=false; pePending=null;
+  document.getElementById('pe-edit-bar').classList.add('hidden');
+  document.getElementById('pe-view-bar').classList.remove('hidden');
+  peRenderTable(peSeason);
+}
+function peSave(){
+  PE_PRICES=JSON.parse(JSON.stringify(pePending));
+  try{localStorage.setItem(ACE_PRICE_STORAGE,JSON.stringify(PE_PRICES));}catch(e){}
+  if(typeof fbdb!=='undefined')fbdb.ref('ace_prices').set(PE_PRICES);
+  peEditMode=false; pePending=null;
+  document.getElementById('pe-edit-bar').classList.add('hidden');
+  document.getElementById('pe-view-bar').classList.remove('hidden');
+  peRenderTable(peSeason);
+  showToast('Prices saved!','s');
+}
+function peReset(){
+  if(!confirm('Reset all prices to original ACE 2026 rates?'))return;
+  pePending=JSON.parse(JSON.stringify(PE_DEFAULT));
+  peRenderTable(peSeason);
+}
+function peShowSeason(s){
+  peSeason=s;
+  ['low','mid','high','peak'].forEach(function(x){
+    var btn=document.getElementById('pe-tab-'+x);
+    var sec=document.getElementById('pe-sec-'+x);
+    if(btn)btn.className='pe-season-tab'+(x===s?' on '+x:'');
+    if(sec)sec.classList.toggle('hidden',x!==s);
+  });
+  peRenderTable(s);
+}
+function peRenderTable(s){
+  var tbl=document.getElementById('pe-tbl-'+s); if(!tbl)return;
+  var prices=peEditMode?pePending:PE_PRICES;
+  var html='<thead><tr><th style="text-align:left;min-width:160px;padding:8px 10px;font-size:9px;color:#0d4a2f;font-weight:700;background:#f0fff4">Car Type</th>';
+  PE_HEADS.forEach(function(h,i){html+='<th style="padding:8px 6px;font-size:9px;color:#0d4a2f;font-weight:700;text-align:center;'+(i===8?'background:#fafff8':'')+'">'+h+'</th>';});
+  html+='</tr></thead><tbody>';
+  PE_CARS.forEach(function(car){
+    var row=(prices[s]||{})[car.id]||[];
+    var defRow=(PE_DEFAULT[s]||{})[car.id]||[];
+    html+='<tr style="border-bottom:1px solid #f0f4f8"><td style="padding:7px 10px"><div style="font-size:11px;font-weight:700;color:#1a6644">'+car.name+'</div><div style="font-size:10px;color:var(--muted)">'+car.desc+'</div></td>';
+    for(var i=0;i<9;i++){
+      var val=row[i]; var isIns=(i===8);
+      var display=val!=null?val:(car.id==='T'?'On Req':'—');
+      var changed=peEditMode&&pePending&&val!==(defRow[i]||null);
+      if(peEditMode){
+        html+='<td style="'+(isIns?'background:#fafff8':'')+'"><input style="width:100%;padding:6px 4px;border:none;background:'+(changed?'#fffbe6':'transparent')+';font-size:12px;font-weight:600;text-align:center;outline:none;font-family:var(--sans)" value="'+display+'"'+(car.id==='T'&&i<8?' disabled':'')+' data-s="'+s+'" data-c="'+car.id+'" data-i="'+i+'" onchange="peUpdatePrice(this)" onfocus="if(this.value==='—'||this.value==='On Req')this.value=''"></td>';
+      } else {
+        html+='<td style="padding:7px 5px;text-align:center;font-weight:600;font-size:12px;color:'+(val!=null?'var(--ink)':'#c5dff2')+';'+(isIns?'background:#fafff8':'')+'">'+( val!=null?'€'+val:display)+'</td>';
+      }
+    }
+    html+='</tr>';
+  });
+  html+='</tbody>';
+  tbl.innerHTML=html;
+}
+function peUpdatePrice(el){
+  var s=el.getAttribute('data-s'),c=el.getAttribute('data-c'),i=parseInt(el.getAttribute('data-i'));
+  if(!pePending||!pePending[s]||!pePending[s][c])return;
+  var num=el.value===''||el.value==='—'||el.value.toLowerCase()==='on req'?null:parseFloat(el.value);
+  pePending[s][c][i]=isNaN(num)?null:num;
+  el.style.background='#fffbe6';
+}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
