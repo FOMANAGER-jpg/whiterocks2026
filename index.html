@@ -1885,14 +1885,15 @@ function renderMassage(){
     const manualSlots=Object.keys(massageData[dateKey]||{}).filter(t=>!slots.includes(t)&&(massageData[dateKey][t].name||massageData[dateKey][t].room));
     manualSlots.sort().forEach(slotTime=>{
       const b=massageData[dateKey][slotTime]||{};
-      slotsHtml+=`<div class="ms-slot" style="background:#fef7e6;border-left:3px solid #b45309">
-        <div class="ms-time" style="display:flex;align-items:center;gap:4px"><i class="ti ti-pencil" style="font-size:10px;opacity:.6"></i>${slotTime}</div>
-        <input class="ms-inp booked" placeholder="Δωμάτιο" value="${esc(b.room||'')}" onchange="msUpdate('${dateKey}','${slotTime}','room',this.value)">
-        <input class="ms-inp booked" placeholder="Όνομα επισκέπτη" value="${esc(b.name||'')}" onchange="msUpdate('${dateKey}','${slotTime}','name',this.value)">
-        <select class="ms-dur-sel" onchange="msUpdate('${dateKey}','${slotTime}','dur',this.value)"><option value="60" ${(b.dur||60)==60?'selected':''}>1 ώρα</option><option value="90" ${b.dur==90?'selected':''}>1.5 ώρα</option></select>
-        <input class="ms-inp cost booked" placeholder="0" value="${esc(b.cost||'')}" type="number" min="0" onchange="msUpdate('${dateKey}','${slotTime}','cost',this.value)">
-        <button class="ms-del" onclick="msClear('${dateKey}','${slotTime}')" title="Delete"><i class="ti ti-trash" style="font-size:12px"></i></button>
-      </div>`;
+      const dk=dateKey,st=slotTime;
+      slotsHtml+='<div class="ms-slot" style="background:#fef7e6;border-left:3px solid #b45309">'
+        +'<div class="ms-time" style="display:flex;align-items:center;gap:4px"><i class="ti ti-pencil" style="font-size:10px;opacity:.6"></i>'+st+'</div>'
+        +'<input class="ms-inp booked" placeholder="Δωμάτιο" value="'+esc(b.room||'')+'" onchange="msUpdate(''+dk+'',''+st+'','room',this.value)">'
+        +'<input class="ms-inp booked" placeholder="Όνομα επισκέπτη" value="'+esc(b.name||'')+'" onchange="msUpdate(''+dk+'',''+st+'','name',this.value)">'
+        +'<select class="ms-dur-sel" onchange="msUpdate(''+dk+'',''+st+'','dur',this.value)"><option value="60"'+((b.dur||60)==60?' selected':'')+'>1 ώρα</option><option value="90"'+(b.dur==90?' selected':'')+'>1.5 ώρα</option></select>'
+        +'<input class="ms-inp cost booked" placeholder="0" value="'+(b.cost||'')+'" type="number" min="0" onchange="msUpdate(''+dk+'',''+st+'','cost',this.value)">'
+        +'<button class="ms-del" onclick="msClear(''+dk+'',''+st+'')" title="Delete"><i class="ti ti-trash" style="font-size:12px"></i></button>'
+        +'</div>';
     });
     const totalSlots=slots.length+manualSlots.length;
     const totalRevenue2=Object.values(massageData[dateKey]||{}).reduce((s,b)=>s+(parseFloat(b.cost)||0),0);
