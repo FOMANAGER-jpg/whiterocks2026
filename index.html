@@ -443,7 +443,7 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .ms-day-hdr{background:linear-gradient(135deg,#7c4a00,#b45309);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
 .ms-day-title{font-family:var(--serif);font-size:15px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px}
 .ms-day-count{background:rgba(255,255,255,.25);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;color:#fff}
-.ms-slot{display:grid;grid-template-columns:90px 1fr 1fr 1fr 80px 34px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border2)}
+.ms-slot{display:grid;grid-template-columns:90px 1fr 1fr 1fr 1fr 1fr 80px 34px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border2)}
 .ms-slot:last-child{border-bottom:none}
 .ms-slot:hover{background:var(--amber-light)}
 .ms-time{font-size:13px;font-weight:700;color:#b45309;white-space:nowrap}
@@ -1136,6 +1136,22 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div class="ms-hdr">
       <div class="ms-hdr-ico"><i class="ti ti-heart-handshake"></i></div>
       <div><div class="ms-hdr-t">Massage Bookings</div><div class="ms-hdr-s">Sessions per day &middot; Room, Name &amp; Cost</div></div>
+    </div>
+   <!-- MANUAL ADD FORM -->
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;box-shadow:var(--sh)">
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+        <i class="ti ti-plus" style="color:#b45309"></i> Add Manual Reservation
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Date</label><input type="date" id="ms-add-date" class="tr-inp" style="width:150px"></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Time</label><input type="time" id="ms-add-time" class="tr-inp" style="width:110px" value="10:00"></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Room</label><input id="ms-add-room" class="tr-inp" style="width:90px" placeholder="407"></div>
+        <div style="flex:1;min-width:140px"><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Guest Name</label><input id="ms-add-name" class="tr-inp" style="width:100%" placeholder="SMITH JOHN"></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Duration</label><select id="ms-add-dur" class="tr-inp" style="width:110px"><option value="60">1 hour</option><option value="90">1.5 hours</option></select></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Booked by</label><input id="ms-add-bookedby" class="tr-inp" style="width:120px" placeholder="Reception..."></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Cost (€)</label><input id="ms-add-cost" class="tr-inp" style="width:90px" type="number" min="0" placeholder="0"></div>
+        <button onclick="msAddManual()" style="padding:9px 18px;background:#b45309;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px;height:38px"><i class="ti ti-check"></i> Add</button>
+      </div>
     </div>
     <div id="massageContent"></div>
   </div>
@@ -2179,7 +2195,30 @@ function renderMassage(){
   el.innerHTML=html;
 }
 function msUpdate(dateKey,slotTime,field,val){if(!massageData[dateKey])massageData[dateKey]={};if(!massageData[dateKey][slotTime])massageData[dateKey][slotTime]={room:'',name:'',dur:60,cost:''};massageData[dateKey][slotTime][field]=field==='dur'?parseInt(val):val;svMassage();}
-function msClear(dateKey,slotTime){if(!massageData[dateKey])return;delete massageData[dateKey][slotTime];svMassage();renderMassage();showToast('Cleared','w');}
+function msAddManual(){
+  var date=document.getElementById('ms-add-date').value;
+  var time=document.getElementById('ms-add-time').value;
+  var room=document.getElementById('ms-add-room').value.trim();
+  var name=document.getElementById('ms-add-name').value.trim().toUpperCase();
+  var dur=parseInt(document.getElementById('ms-add-dur').value)||60;
+  var bookedBy=document.getElementById('ms-add-bookedby').value.trim();
+  var cost=document.getElementById('ms-add-cost').value.trim();
+  if(!date||!time){showToast('Select date and time','w');return;}
+  if(!name&&!room){showToast('Enter room or guest name','w');return;}
+  if(!massageData[date])massageData[date]={};
+  if(massageData[date][time]&&(massageData[date][time].name||massageData[date][time].room)){
+    if(!confirm('Booking already exists at '+time+'. Replace?'))return;
+  }
+  massageData[date][time]={room:room,name:name,dur:dur,bookedBy:bookedBy,cost:cost,manual:true};
+  svMassage();
+  document.getElementById('ms-add-room').value='';
+  document.getElementById('ms-add-name').value='';
+  document.getElementById('ms-add-bookedby').value='';
+  document.getElementById('ms-add-cost').value='';
+  renderMassage();
+  showToast('Added!','s');
+}
+  function msClear(dateKey,slotTime){if(!massageData[dateKey])return;delete massageData[dateKey][slotTime];svMassage();renderMassage();showToast('Cleared','w');}
 
 /* ALERTS */
 let alertsData=JSON.parse(localStorage.getItem('alerts_data')||'{}');let alCurrentDate=new Date().toISOString().split('T')[0];
