@@ -3839,7 +3839,25 @@ fbdb.ref('massage_data').on('value',snap=>{
     if(msTab&&!msTab.classList.contains('hidden'))renderMassage();
   }
 });
-
+// Cars Firebase sync
+fbdb.ref('ace_cars').once('value').then(snap=>{
+  const d=snap.val();
+  if(d&&Array.isArray(d)){
+    CARS=d;
+    try{localStorage.setItem('ace_cars',JSON.stringify(d));}catch(e){}
+    const t=document.getElementById('tab-experiences');
+    if(t&&!t.classList.contains('hidden'))renderCars();
+  }
+});
+fbdb.ref('ace_cars').on('value',snap=>{
+  const d=snap.val();
+  if(d&&Array.isArray(d)&&JSON.stringify(d)!==JSON.stringify(CARS)){
+    CARS=d;
+    try{localStorage.setItem('ace_cars',JSON.stringify(d));}catch(e){}
+    const t=document.getElementById('tab-experiences');
+    if(t&&!t.classList.contains('hidden'))renderCars();
+  }
+});
 // Real-time sync for Gym bookings
 fbdb.ref('gym_bookings').on('value', snap=>{
   const d=snap.val();
