@@ -55,6 +55,8 @@ table.car-tbl{table-layout:fixed;width:100%;border-collapse:collapse;font-size:1
 .car-rc{border-left:3px solid #1a6644!important}
 .car-rw{border-left:3px solid #b45309!important}
 .car-rx{border-left:3px solid #c0392b!important;opacity:.72}
+.car-rk{border-left:3px solid #d97706!important;background:linear-gradient(90deg,#fffbeb,var(--white))!important}
+tr.car-rk td{background:transparent!important}
 .car-ep td{padding:14px 16px;background:#e8f5ee;border-bottom:2px solid #a8d5b8}
 .car-epg{display:flex;flex-direction:column;gap:3px}
 .car-epg label{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:#0d4a2f;font-weight:700}
@@ -70,6 +72,7 @@ table.car-tbl{table-layout:fixed;width:100%;border-collapse:collapse;font-size:1
 .car-sbtn.sc{background:#1a6644;color:#fff;border-color:#1a6644}
 .car-sbtn.sw{background:#b45309;color:#fff;border-color:#b45309}
 .car-sbtn.sx{background:#c0392b;color:#fff;border-color:#c0392b}
+.car-sbtn.sk{background:#d97706;color:#fff;border-color:#d97706}
 .car-sum-card{background:#e8f5ee;border:1px solid #a8d5b8;border-radius:10px;padding:11px 13px}
 .car-sum-month{font-size:10px;font-weight:700;text-transform:uppercase;color:#0d4a2f;margin-bottom:2px}
 .car-sum-count{font-size:20px;font-weight:700;color:#1a6644;font-family:var(--serif)}
@@ -1943,7 +1946,82 @@ function expGoTab(tab,el){
 
 /* -- Generic data store -- */
 let GEN_DATA={excursions:[],moto:[],flowers:[],boats:[],transfers:[],vantours:[]};
-let GEN_OPEN={};  // {tab_i: true} for expanded rows
+let GEN_OPEN={};
+
+function renderGenRevSummary(tab, rows){
+  const el=document.getElementById(tab+'-sum');
+  if(!el) return;
+  if(!rows||!rows.length){el.innerHTML='';return;}
+
+  const col=EXP_COLORS[tab]||'#1a6644';
+
+  // Group by month
+  const byMonth={};
+  let totalAll=0, confirmedAll=0, commissionAll=0;
+
+  rows.forEach(r=>{
+    const cost=parseFloat(r.cost)||0;
+    if(!cost) return;
+    // Get month from date field (different per tab)
+    const dateStr=r.date||r.rentalDate||r.delivDate||r.bookDate||'';
+    const month=dateStr?dateStr.slice(0,7):'Unknown'; // YYYY-MM
+    if(!byMonth[month]) byMonth[month]={total:0,confirmed:0,commission:0,count:0,commCount:0,confCount:0};
+    byMonth[month].count++;
+    if(r.status==='confirmed'||r.status==='commission'){
+      byMonth[month].total+=cost;
+      totalAll+=cost;
+      if(r.status==='confirmed'){byMonth[month].confirmed+=cost;byMonth[month].confCount++;confirmedAll+=cost;}
+      if(r.status==='commission'){byMonth[month].commission+=cost;byMonth[month].commCount++;commissionAll+=cost;}
+    }
+  });
+
+  const confirmedCount=rows.filter(r=>r.status==='confirmed').length;
+  const commissionCount=rows.filter(r=>r.status==='commission').length;
+  const waitingCount=rows.filter(r=>r.status==='waiting').length;
+  const cancelledCount=rows.filter(r=>r.status==='cancelled').length;
+  const totalRevenue=confirmedAll+commissionAll;
+
+  // Month bars
+  const sortedMonths=Object.keys(byMonth).sort();
+  const maxRev=Math.max(...sortedMonths.map(m=>byMonth[m].total),1);
+  const MONTH_NAMES={
+    '01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun',
+    '07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'
+  };
+  const monthBars=sortedMonths.map(m=>{
+    const d=byMonth[m];
+    if(!d.total) return '';
+    const pct=Math.round((d.total/maxRev)*100);
+    const [yr,mo]=m.split('-');
+    const lbl=(MONTH_NAMES[mo]||mo)+(yr&&yr!=='Unknown'?' \'' + yr.slice(2):'');
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">'
+      +'<div style="width:52px;font-size:11px;color:var(--ink2);flex-shrink:0;font-weight:600">'+lbl+'</div>'
+      +'<div style="flex:1;background:#e8e8e8;border-radius:20px;height:10px;position:relative">'
+        +'<div style="width:'+pct+'%;background:'+col+';border-radius:20px;height:10px"></div>'
+        +(d.commission>0?'<div style="position:absolute;right:0;top:0;height:10px;width:'+(Math.round((d.commission/maxRev)*100))+'%;background:#d97706;border-radius:0 20px 20px 0;opacity:.8"></div>':'')
+      +'</div>'
+      +'<div style="font-size:11px;font-weight:700;color:'+col+';width:65px;text-align:right">€'+d.total.toFixed(0)+'</div>'
+      +(d.commCount?'<div style="font-size:10px;color:#d97706;width:65px">€'+d.commission.toFixed(0)+' comm.</div>':'<div style="width:65px"></div>')
+      +'</div>';
+  }).join('');
+
+  el.innerHTML=
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">'
+    +'<i class="ti ti-chart-bar-popular" style="color:'+col+';font-size:18px"></i>'
+    +'<span style="font-size:13px;font-weight:700;color:var(--ink)">Revenue Summary</span>'
+    +'<div style="display:flex;gap:12px;margin-left:auto;flex-wrap:wrap">'
+    +'<span style="text-align:center"><div style="font-size:24px;font-weight:700;color:'+col+';font-family:var(--serif)">€'+totalRevenue.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Total Revenue</div></span>'
+    +(confirmedAll>0?'<span style="text-align:center"><div style="font-size:20px;font-weight:700;color:#1a6644;font-family:var(--serif)">€'+confirmedAll.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted)">✓ '+confirmedCount+' confirmed</div></span>':'')
+    +(commissionAll>0?'<span style="text-align:center"><div style="font-size:20px;font-weight:700;color:#d97706;font-family:var(--serif)">€'+commissionAll.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted)">● '+commissionCount+' commission</div></span>':'')
+    +'</div></div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">'
+    +'<span style="background:#e8f5ee;color:#1a6644;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">✓ '+confirmedCount+' confirmed</span>'
+    +'<span style="background:#d97706;color:#fff;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">ኁ76 '+commissionCount+' commission</span>'
+    +'<span style="background:#fef3c7;color:#b45309;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">⏳ '+waitingCount+' waiting</span>'
+    +(cancelledCount?'<span style="background:#fce8e8;color:#c0392b;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">✗ '+cancelledCount+' cancelled</span>':'')
+    +'</div>'
+    +(monthBars?'<div style="border-top:1px solid var(--border);padding-top:10px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:6px">Monthly breakdown</div>'+monthBars+'</div>':'');
+}  // {tab_i: true} for expanded rows
 function genToggleRow(tab,i){
   const key=tab+'_'+i;
   GEN_OPEN[key]=!GEN_OPEN[key];
@@ -1981,10 +2059,12 @@ function epStatus(tab,i,status,col){
   const sc=status==='confirmed'?' sc':'';
   const sw=status==='waiting'?' sw':'';
   const sx=status==='cancelled'?' sx':'';
+  const sk=status==='commission'?' sk':'';
   return `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:4px">
     <button class="car-sbtn${sc}" onclick="GEN_DATA['${tab}'][${i}].status='confirmed';svGen('${tab}');renderGenTab('${tab}')" style="font-size:11px;padding:5px 8px">&#10003; Confirmed</button>
     <button class="car-sbtn${sw}" onclick="GEN_DATA['${tab}'][${i}].status='waiting';svGen('${tab}');renderGenTab('${tab}')" style="font-size:11px;padding:5px 8px">&#9203; Waiting</button>
     <button class="car-sbtn${sx}" onclick="GEN_DATA['${tab}'][${i}].status='cancelled';svGen('${tab}');renderGenTab('${tab}')" style="font-size:11px;padding:5px 8px">&#10007; Cancelled</button>
+    <button class="car-sbtn${sk}" onclick="GEN_DATA['${tab}'][${i}].status='commission';svGen('${tab}');renderGenTab('${tab}')" style="font-size:11px;padding:5px 8px">&#128176; Commission</button>
   </div>`;
 }
 function epBaseFields(tab,i,r,col){
@@ -2029,12 +2109,13 @@ function genInitFilter(tab){
 }
 function genGetFilter(tab){const wrap=document.getElementById(tab+'-mfilter');if(!wrap)return'all';const on=wrap.querySelector('.car-mpill.on');return on?on.dataset.m:'all';}
 
-const GEN_STATUS_ORDER=['waiting','confirmed','cancelled'];
-const GEN_STATUS_CLS={confirmed:'car-badge confirmed',waiting:'car-badge waiting',cancelled:'car-badge cancelled'};
-const GEN_STATUS_ICO={confirmed:'<i class="ti ti-circle-check"></i>',waiting:'<i class="ti ti-clock"></i>',cancelled:'<i class="ti ti-circle-x"></i>'};
-const GEN_STATUS_LBL={confirmed:'Confirmed',waiting:'Waiting',cancelled:'Cancelled'};
-const GEN_ROW_CLS={confirmed:'car-rc',waiting:'car-rw',cancelled:'car-rx'};
-function genCycleStatus(tab,i){const o=GEN_STATUS_ORDER;GEN_DATA[tab][i].status=o[(o.indexOf(GEN_DATA[tab][i].status)+1)%3];svGen(tab);renderGenTab(tab);}
+const GEN_STATUS_ORDER=['waiting','confirmed','commission','cancelled'];
+const GEN_STATUS_CLS={confirmed:'car-badge confirmed',waiting:'car-badge waiting',cancelled:'car-badge cancelled',commission:'car-badge',};
+const GEN_STATUS_ICO={confirmed:'<i class="ti ti-circle-check"></i>',waiting:'<i class="ti ti-clock"></i>',cancelled:'<i class="ti ti-circle-x"></i>',commission:'<i class="ti ti-coin"></i>'};
+const GEN_STATUS_LBL={confirmed:'Confirmed',waiting:'Waiting',cancelled:'Cancelled',commission:'Commission'};
+const GEN_STATUS_STYLE={confirmed:'background:#1a6644;color:#fff;border-color:#1a6644',waiting:'background:#b45309;color:#fff;border-color:#b45309',cancelled:'background:#c0392b;color:#fff;border-color:#c0392b',commission:'background:#d97706;color:#fff;border-color:#d97706'};
+const GEN_ROW_CLS={confirmed:'car-rc',waiting:'car-rw',cancelled:'car-rx',commission:'car-rk'};
+function genCycleStatus(tab,i){const o=GEN_STATUS_ORDER;GEN_DATA[tab][i].status=o[(o.indexOf(GEN_DATA[tab][i].status)+1)%4];svGen(tab);renderGenTab(tab);}
 
 function renderGenTab(tab){
   genInitFilter(tab);
@@ -2042,6 +2123,8 @@ function renderGenTab(tab){
   const rows=GEN_DATA[tab];
   const filtered=rows.filter(r=>mflt==='all'||genGetMonth(r)===mflt);
   const cnt=document.getElementById(tab+'-cnt');if(cnt)cnt.textContent=filtered.length+' bookings';
+  // Revenue summary
+  renderGenRevSummary(tab,filtered);
   const tbody=document.getElementById(tab+'Tbody');if(!tbody)return;
   const col=EXP_COLORS[tab];
   if(!filtered.length){tbody.innerHTML='<tr><td colspan="20"><div class="car-empty"><i class="ti '+EXP_ICONS[tab]+'"></i><div style="font-size:14px;font-weight:600;margin-bottom:4px">No bookings yet</div></div></td></tr>';renderGenSum(tab);return;}
@@ -2050,7 +2133,7 @@ function renderGenTab(tab){
   const inpTime=(i2,field,val)=>'<input class="car-ci" type="time" value="'+(val||'')+'" style="font-size:11px;padding:5px 6px" onchange="GEN_DATA[\''+tab+'\']['+i2+'][\''+field+'\']=this.value;svGen(\''+tab+'\')">';
   const inpNum=(i2,field,val,w,extraCb)=>'<input class="car-ci" type="number" min="0" value="'+(val||'')+'" style="text-align:center;font-weight:700;'+(w?'width:'+w+';':'')+'" onchange="GEN_DATA[\''+tab+'\']['+i2+'][\''+field+'\']=parseFloat(this.value)||0;svGen(\''+tab+'\')'+(extraCb?';'+extraCb:'')+'">';
   const del=(i2)=>'<button onclick="genDel(\''+tab+'\','+i2+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button>';
-  const sb=(r,i2)=>'<button class="'+( GEN_STATUS_CLS[r.status]||'car-badge waiting')+'" onclick="genCycleStatus(\''+tab+'\','+i2+')">'+(GEN_STATUS_ICO[r.status]||GEN_STATUS_ICO.waiting)+' '+(GEN_STATUS_LBL[r.status]||'Waiting')+'</button>';
+  const sb=(r,i2)=>'<button class="car-badge" style="'+(GEN_STATUS_STYLE[r.status]||GEN_STATUS_STYLE.waiting)+'" onclick="genCycleStatus(\''+tab+'\','+i2+')">'+(GEN_STATUS_ICO[r.status]||GEN_STATUS_ICO.waiting)+' '+(GEN_STATUS_LBL[r.status]||'Waiting')+'</button>';
 
   let html='';
   filtered.forEach((r,fn)=>{
@@ -3351,7 +3434,7 @@ function carUpd(i,field,val){
 }
 
 function carSetStatus(i,s){CARS[i].status=s;svCars();renderCars();}
-function carCycleStatus(i){const o=['waiting','confirmed','cancelled'];CARS[i].status=o[(o.indexOf(CARS[i].status)+1)%3];svCars();renderCars();}
+function carCycleStatus(i){const o=['waiting','confirmed','commission','cancelled'];CARS[i].status=o[(o.indexOf(CARS[i].status)+1)%4];svCars();renderCars();}
 
 function renderCars(){
   const tbody=document.getElementById('carTbody');if(!tbody)return;
@@ -3492,6 +3575,61 @@ function renderCars(){
   });
   tbody.innerHTML=html;
   renderCarSum();
+}
+
+function renderCarRevSummary(){
+  const el=document.getElementById('car-rev-sum');
+  if(!el) return;
+  const mflt=document.querySelector('.car-mpill.on')?.dataset?.month||'all';
+  const rows=mflt==='all'?CARS:CARS.filter(c=>{const m=am(c);return m===mflt;});
+  const col='#1a6644';
+  const byMonth={};
+  let totalAll=0,confirmedAll=0,commissionAll=0;
+  rows.forEach(c=>{
+    const calc=carCalc(c);
+    const total=calc.total;
+    if(!total) return;
+    const dateStr=c.rentalDate||c.bookDate||'';
+    const month=dateStr?dateStr.slice(0,7):'Unknown';
+    if(!byMonth[month]) byMonth[month]={total:0,confirmed:0,commission:0};
+    if(c.status==='confirmed'||c.status==='commission'){
+      byMonth[month].total+=total;totalAll+=total;
+      if(c.status==='confirmed'){byMonth[month].confirmed+=total;confirmedAll+=total;}
+      if(c.status==='commission'){byMonth[month].commission+=total;commissionAll+=total;}
+    }
+  });
+  const confirmedCount=rows.filter(c=>c.status==='confirmed').length;
+  const commissionCount=rows.filter(c=>c.status==='commission').length;
+  const waitingCount=rows.filter(c=>c.status==='waiting').length;
+  const totalRevenue=confirmedAll+commissionAll;
+  if(!totalRevenue){el.innerHTML='';return;}
+  const sortedMonths=Object.keys(byMonth).filter(m=>byMonth[m].total>0).sort();
+  const maxRev=Math.max(...sortedMonths.map(m=>byMonth[m].total),1);
+  const MONTH_N={'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
+  const monthBars=sortedMonths.map(m=>{
+    const d=byMonth[m];const [yr,mo]=m.split('-');
+    const pct=Math.round((d.total/maxRev)*100);
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">'
+      +'<div style="width:52px;font-size:11px;color:var(--ink2);font-weight:600">'+(MONTH_N[mo]||mo)+' '+yr.slice(2)+'</div>'
+      +'<div style="flex:1;background:#e8e8e8;border-radius:20px;height:10px"><div style="width:'+pct+'%;background:'+col+';border-radius:20px;height:10px"></div></div>'
+      +'<div style="font-size:11px;font-weight:700;color:'+col+';width:65px;text-align:right">€'+d.total.toFixed(0)+'</div>'
+      +(d.commission?'<div style="font-size:10px;color:#d97706;width:65px">€'+d.commission.toFixed(0)+' comm.</div>':'<div style="width:65px"></div>')
+      +'</div>';
+  }).join('');
+  el.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">'
+    +'<i class="ti ti-chart-bar-popular" style="color:'+col+';font-size:18px"></i>'
+    +'<span style="font-size:13px;font-weight:700;color:var(--ink)">Car Revenue</span>'
+    +'<div style="display:flex;gap:12px;margin-left:auto;flex-wrap:wrap">'
+    +'<span style="text-align:center"><div style="font-size:24px;font-weight:700;color:'+col+';font-family:var(--serif)">€'+totalRevenue.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted)">Total Revenue</div></span>'
+    +(confirmedAll?'<span style="text-align:center"><div style="font-size:20px;font-weight:700;color:#1a6644;font-family:var(--serif)">€'+confirmedAll.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted)">✓ '+confirmedCount+' confirmed</div></span>':'')
+    +(commissionAll?'<span style="text-align:center"><div style="font-size:20px;font-weight:700;color:#d97706;font-family:var(--serif)">€'+commissionAll.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted)">● '+commissionCount+' commission</div></span>':'')
+    +'</div></div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">'
+    +'<span style="background:#e8f5ee;color:#1a6644;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">✓ '+confirmedCount+' confirmed</span>'
+    +'<span style="background:#d97706;color:#fff;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">'+commissionCount+' commission</span>'
+    +'<span style="background:#fef3c7;color:#b45309;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">⏳ '+waitingCount+' waiting</span>'
+    +'</div>'
+    +(monthBars?'<div style="border-top:1px solid var(--border);padding-top:10px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:6px">Monthly</div>'+monthBars+'</div>':'');
 }
 
 function renderCarSum(){
@@ -4302,6 +4440,44 @@ function renderMassage(){
     html+='<div class="ms-day-card"><div class="ms-day-hdr"><div class="ms-day-title"><i class="ti ti-calendar"></i>'+dateLbl+(isManualOnly?' <span style="background:rgba(255,255,255,.25);border-radius:6px;padding:2px 8px;font-size:11px;font-family:var(--sans)">Manual</span>':'')+'</div><div style="display:flex;align-items:center;gap:8px">'+windowsLbl+'<span class="ms-day-count">'+bookedCount+(scheduledSlots.length?'/'+allSlots.length:'')+'</span></div></div>'+slotsHtml+'<div class="ms-stats"><span class="ms-stat">Slots: <strong>'+allSlots.length+'</strong></span><span class="ms-stat">Booked: <strong>'+bookedCount+'</strong></span>'+(totalRevenue>0?'<span class="ms-stat" style="margin-left:auto">Revenue: <strong>\u20ac'+totalRevenue.toFixed(0)+'</strong></span>':'')+'</div></div>';
   });
   if(!allDays.length)html='<div style="padding:40px;text-align:center;color:var(--muted2)"><i class="ti ti-calendar-off" style="font-size:36px;display:block;margin-bottom:10px;opacity:.3"></i>No massage schedule yet</div>';
+
+  // Revenue summary
+  const byMonth={};
+  allDays.forEach(dk=>{
+    const month=dk.slice(0,7); // YYYY-MM
+    if(!byMonth[month]) byMonth[month]={revenue:0,booked:0};
+    const bk=massageData[dk]||{};
+    Object.values(bk).forEach(b=>{if(b.name||b.room){byMonth[month].booked++;byMonth[month].revenue+=parseFloat(b.cost)||0;}});
+  });
+  const sortedMonths=Object.keys(byMonth).sort();
+  const totalRev=sortedMonths.reduce((s,m)=>s+byMonth[m].revenue,0);
+  const totalBk=sortedMonths.reduce((s,m)=>s+byMonth[m].booked,0);
+  const maxRev=Math.max(...sortedMonths.map(m=>byMonth[m].revenue),1);
+  const MONTH_N={'01':'January','02':'February','03':'March','04':'April','05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','11':'November','12':'December'};
+  if(totalBk>0){
+    let revHtml='<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 20px;margin-bottom:16px;box-shadow:var(--sh)">'
+      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+      +'<i class="ti ti-chart-bar-popular" style="color:#b45309;font-size:18px"></i>'
+      +'<span style="font-size:13px;font-weight:700;color:var(--ink)">Massage Revenue</span>'
+      +'<span style="margin-left:auto;font-size:24px;font-weight:700;color:#b45309;font-family:var(--serif)">€'+totalRev.toFixed(0)+'</span>'
+      +'<span style="font-size:12px;color:var(--muted)">/ '+totalBk+' sessions</span>'
+      +'</div>';
+    sortedMonths.forEach(m=>{
+      const d=byMonth[m];if(!d.booked) return;
+      const pct=Math.round((d.revenue/maxRev)*100);
+      const [yr,mo]=m.split('-');
+      const lbl=(MONTH_N[mo]||mo)+' '+yr;
+      revHtml+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'
+        +'<div style="width:90px;font-size:11px;font-weight:600;color:var(--ink2)">'+lbl+'</div>'
+        +'<div style="flex:1;background:#f0f0f0;border-radius:20px;height:10px"><div style="width:'+pct+'%;background:#b45309;border-radius:20px;height:10px"></div></div>'
+        +'<div style="font-size:12px;font-weight:700;color:#b45309;width:60px;text-align:right">€'+d.revenue.toFixed(0)+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);width:55px">'+d.booked+' sess.</div>'
+        +'</div>';
+    });
+    revHtml+='</div>';
+    html=revHtml+html;
+  }
+
   el.innerHTML=html;
 }
 function msUpdate(dateKey,slotTime,field,val){if(!massageData[dateKey])massageData[dateKey]={};if(!massageData[dateKey][slotTime])massageData[dateKey][slotTime]={room:'',name:'',dur:60,cost:''};massageData[dateKey][slotTime][field]=field==='dur'?parseInt(val):val;svMassage();}
