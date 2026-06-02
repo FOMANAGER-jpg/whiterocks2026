@@ -451,7 +451,7 @@ table.cls-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .ms-day-hdr{background:linear-gradient(135deg,#7c4a00,#b45309);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
 .ms-day-title{font-family:var(--serif);font-size:15px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px}
 .ms-day-count{background:rgba(255,255,255,.25);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;color:#fff}
-.ms-slot{display:grid;grid-template-columns:90px 1fr 1fr 1fr 80px 34px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border2)}
+.ms-slot{display:grid;grid-template-columns:90px 1fr 1fr 1fr 70px 130px 34px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border2)}
 .ms-slot:last-child{border-bottom:none}
 .ms-slot:hover{background:var(--amber-light)}
 .ms-time{font-size:13px;font-weight:700;color:#b45309;white-space:nowrap}
@@ -2095,7 +2095,7 @@ function svGen(tab){
     },600);
   }
 }
-function genGetMonth(row){const d=new Date(row.bookDate||row.date||row.delivDate||row.rentalDate||'');return isNaN(d)?'':String(d.getMonth()+1).padStart(2,'0');}
+function genGetMonth(row){const d=new Date(row.date||row.rentalDate||row.delivDate||row.bookDate||'');return isNaN(d)?'':String(d.getMonth()+1).padStart(2,'0');}
 
 /* -- Month filter pills -- */
 const MONTH_NAMES_G={all:'All','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct'};
@@ -4416,8 +4416,59 @@ function renderMassage(){
   const el=document.getElementById('massageContent');if(!el)return;
   const DAY_GR=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const MON_GR=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const colHdr='<div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr 80px 34px;gap:8px;padding:7px 16px;background:var(--amber-light);border-bottom:1px solid rgba(180,83,9,.15)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Time</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Room</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Guest Name</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Duration</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e;text-align:center">\u20ac Cost</div><div></div></div>';
-  function slotRow(dateKey,slotTime,bookings){const b=bookings[slotTime]||{};const isBooked=b.name||b.room;return '<div class="ms-slot'+(isBooked?' ms-slot-booked':'')+'"><div class="ms-time"><i class="ti ti-clock" style="font-size:11px;margin-right:3px"></i>'+slotTime+'</div><input class="ms-inp'+(isBooked?' booked':'')+'" placeholder="Room" value="'+esc(b.room||'')+'" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'room\',this.value)"><input class="ms-inp'+(isBooked?' booked':'')+'" placeholder="Guest name" value="'+esc(b.name||'')+'" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'name\',this.value)"><select class="ms-dur-sel" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'dur\',this.value)"><option value="60" '+((b.dur||60)==60?'selected':'')+'>1 hour</option><option value="90" '+(b.dur==90?'selected':'')+'>1.5 hours</option></select><input class="ms-inp cost'+(isBooked?' booked':'')+'" placeholder="0" value="'+esc(b.cost||'')+'" type="number" min="0" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'cost\',this.value)"><button class="ms-del" onclick="msClear(\''+dateKey+'\',\''+slotTime+'\')" title="Clear"><i class="ti ti-x" style="font-size:12px"></i></button></div>';}
+  const colHdr='<div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr 70px 130px 34px;gap:8px;padding:7px 16px;background:var(--amber-light);border-bottom:1px solid rgba(180,83,9,.15)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Time</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Room</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Guest Name</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e">Duration</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e;text-align:center">\u20ac Cost</div><div style=\"font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#92400e\">Status</div><div></div></div>';
+  const MS_STATUS_CFG={
+  waiting:   {lbl:'Waiting',    ico:'ti-clock',        bg:'#b45309',col:'#fff'},
+  confirmed: {lbl:'Confirmed',  ico:'ti-circle-check', bg:'#1a6644',col:'#fff'},
+  commission:{lbl:'Commission', ico:'ti-coin',         bg:'#d97706',col:'#fff'},
+  cancelled: {lbl:'Cancelled',  ico:'ti-circle-x',     bg:'#c0392b',col:'#fff'},
+};
+const MS_STATUS_ORDER=['waiting','confirmed','commission','cancelled'];
+function msNextStatus(cur){const o=MS_STATUS_ORDER;return o[(o.indexOf(cur)+1)%o.length];}
+function msStatusBtn(dateKey,slotTime,status,isBooked){
+  const s=MS_STATUS_CFG[status]||MS_STATUS_CFG.waiting;
+  const opacity=isBooked?'1':'0.35';
+  const title=isBooked?'Click to change status':'Click to set status';
+  return '<button title="'+title+'" onclick="msCycleStatus(this.dataset.dk,this.dataset.st)" data-dk="'+dateKey+'" data-st="'+slotTime+'" style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:'+s.bg+';color:'+s.col+';border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap;width:100%;justify-content:center;opacity:'+opacity+'"><i class="ti '+s.ico+'" style="font-size:12px"></i> '+s.lbl+'</button>';
+}
+function msCycleStatus(dateKey,slotTime){
+  if(!dateKey||!slotTime){console.warn('msCycleStatus: missing args',dateKey,slotTime);return;}
+  if(!massageData[dateKey]) massageData[dateKey]={};
+  if(!massageData[dateKey][slotTime]) massageData[dateKey][slotTime]={room:'',name:'',dur:60,cost:'',status:'waiting'};
+  const cur=massageData[dateKey][slotTime].status||'waiting';
+  const next=msNextStatus(cur);
+  massageData[dateKey][slotTime].status=next;
+  svMassage();
+  renderMassage();
+  showToast(next.charAt(0).toUpperCase()+next.slice(1),'s');
+}
+function slotRow(dateKey,slotTime,bookings){
+  const b=bookings[slotTime]||{};
+  const isBooked=!!(b.name||b.room);
+  const st=b.status||'waiting';
+  const stColors={waiting:'#b45309',confirmed:'#1a6644',commission:'#d97706',cancelled:'#c0392b'};
+  const stColor=stColors[st]||stColors.waiting;
+  const rowBg=isBooked&&st!=='waiting'?' style="background:linear-gradient(90deg,'+(st==='confirmed'?'#f0fff4':st==='commission'?'#fffbeb':'#fff5f5')+',var(--white))"':'';
+  let html='<div class="ms-slot'+(isBooked?' ms-slot-booked':'')+'"'+rowBg+'>';
+  html+='<div class="ms-time"><i class="ti ti-clock" style="font-size:11px;margin-right:3px"></i>'+slotTime+'</div>';
+  html+='<input class="ms-inp'+(isBooked?' booked':'')+'" placeholder="Room" value="'+esc(b.room||'')+'" data-dk="'+dateKey+'" data-st="'+slotTime+'" onchange="msUpdate(this.dataset.dk,this.dataset.st,\'room\',this.value)">';
+  html+='<input class="ms-inp'+(isBooked?' booked':'')+'" placeholder="Guest name" value="'+esc(b.name||'')+'" data-dk="'+dateKey+'" data-st="'+slotTime+'" onchange="msUpdate(this.dataset.dk,this.dataset.st,\'name\',this.value)">';
+  html+='<select class="ms-dur-sel" data-dk="'+dateKey+'" data-st="'+slotTime+'" onchange="msUpdate(this.dataset.dk,this.dataset.st,\'dur\',this.value)"><option value="60" '+((b.dur||60)==60?'selected':'')+'>1 hour</option><option value="90" '+(b.dur==90?'selected':'')+'>1.5 hours</option></select>';
+  html+='<input class="ms-inp cost'+(isBooked?' booked':'')+'" placeholder="0" value="'+esc(b.cost||'')+'" type="number" min="0" data-dk="'+dateKey+'" data-st="'+slotTime+'" onchange="msUpdate(this.dataset.dk,this.dataset.st,\'cost\',this.value)">';
+  if(isBooked){
+    html+='<select data-dk="'+dateKey+'" data-st="'+slotTime+'" onchange="msUpdate(this.dataset.dk,this.dataset.st,\'status\',this.value)" style="width:100%;padding:4px 6px;border:2px solid '+stColor+';border-radius:8px;font-size:11px;font-weight:700;font-family:var(--sans);color:'+stColor+';background:#fff;outline:none;cursor:pointer">'
+      +'<option value="waiting"'+(st==='waiting'?' selected':'')+'>⏳ Waiting</option>'
+      +'<option value="confirmed"'+(st==='confirmed'?' selected':'')+'>✓ Confirmed</option>'
+      +'<option value="commission"'+(st==='commission'?' selected':'')+'>💰 Commission</option>'
+      +'<option value="cancelled"'+(st==='cancelled'?' selected':'')+'>✗ Cancelled</option>'
+      +'</select>';
+  } else {
+    html+='<div></div>';
+  }
+  html+='<button class="ms-del" data-dk="'+dateKey+'" data-st="'+slotTime+'" onclick="msClear(this.dataset.dk,this.dataset.st)" title="Clear"><i class="ti ti-x" style="font-size:12px"></i></button>';
+  html+='</div>';
+  return html;
+}
   // Merge scheduled days + any extra days with manual bookings
   const extraDays=Object.keys(massageData).filter(dk=>!MASSAGE_SCHEDULE[dk]&&Object.values(massageData[dk]||{}).some(b=>b.name||b.room));
   const allDays=[...Object.keys(MASSAGE_SCHEDULE),...extraDays].sort();
@@ -4437,7 +4488,7 @@ function renderMassage(){
     allSlots.forEach(slotTime=>{slotsHtml+=slotRow(dateKey,slotTime,bookings);});
     if(!allSlots.length){slotsHtml+='<div style="padding:16px;text-align:center;color:var(--muted2);font-size:12px">No bookings</div>';}
     const windowsLbl=isManualOnly?'<span style="font-size:11px;color:rgba(255,255,255,.7)">Manual booking</span>':'<span style="font-size:11px;color:rgba(255,255,255,.7)">'+windows.map(w=>w.start+'\u2013'+w.end).join(' | ')+'</span>';
-    html+='<div class="ms-day-card"><div class="ms-day-hdr"><div class="ms-day-title"><i class="ti ti-calendar"></i>'+dateLbl+(isManualOnly?' <span style="background:rgba(255,255,255,.25);border-radius:6px;padding:2px 8px;font-size:11px;font-family:var(--sans)">Manual</span>':'')+'</div><div style="display:flex;align-items:center;gap:8px">'+windowsLbl+'<span class="ms-day-count">'+bookedCount+(scheduledSlots.length?'/'+allSlots.length:'')+'</span></div></div>'+slotsHtml+'<div class="ms-stats"><span class="ms-stat">Slots: <strong>'+allSlots.length+'</strong></span><span class="ms-stat">Booked: <strong>'+bookedCount+'</strong></span>'+(totalRevenue>0?'<span class="ms-stat" style="margin-left:auto">Revenue: <strong>\u20ac'+totalRevenue.toFixed(0)+'</strong></span>':'')+'</div></div>';
+        html+='<div class="ms-day-card"><div class="ms-day-hdr"><div class="ms-day-title"><i class="ti ti-calendar"></i>'+dateLbl+(isManualOnly?' <span style="background:rgba(255,255,255,.25);border-radius:6px;padding:2px 8px;font-size:11px;font-family:var(--sans)">Manual</span>':'')+'</div><div style="display:flex;align-items:center;gap:8px">'+windowsLbl+'<span class="ms-day-count">'+bookedCount+(scheduledSlots.length?'/'+allSlots.length:'')+'</span></div></div>'+slotsHtml+'<div class="ms-stats"><span class="ms-stat">Slots: <strong>'+allSlots.length+'</strong></span><span class="ms-stat">Booked: <strong>'+bookedCount+'</strong></span>'+(totalRevenue>0?'<span class="ms-stat" style="margin-left:auto">Revenue: <strong>\u20ac'+totalRevenue.toFixed(0)+'</strong></span>':'')+'</div></div>';
   });
   if(!allDays.length)html='<div style="padding:40px;text-align:center;color:var(--muted2)"><i class="ti ti-calendar-off" style="font-size:36px;display:block;margin-bottom:10px;opacity:.3"></i>No massage schedule yet</div>';
 
@@ -4447,7 +4498,16 @@ function renderMassage(){
     const month=dk.slice(0,7); // YYYY-MM
     if(!byMonth[month]) byMonth[month]={revenue:0,booked:0};
     const bk=massageData[dk]||{};
-    Object.values(bk).forEach(b=>{if(b.name||b.room){byMonth[month].booked++;byMonth[month].revenue+=parseFloat(b.cost)||0;}});
+    Object.values(bk).forEach(b=>{
+      if(b.name||b.room){
+        byMonth[month].booked++;
+        const st=b.status||'waiting';
+        if(st==='confirmed'||st==='commission'){
+          byMonth[month].revenue+=parseFloat(b.cost)||0;
+          if(st==='commission') byMonth[month].commission=(byMonth[month].commission||0)+(parseFloat(b.cost)||0);
+        }
+      }
+    });
   });
   const sortedMonths=Object.keys(byMonth).sort();
   const totalRev=sortedMonths.reduce((s,m)=>s+byMonth[m].revenue,0);
@@ -4480,7 +4540,14 @@ function renderMassage(){
 
   el.innerHTML=html;
 }
-function msUpdate(dateKey,slotTime,field,val){if(!massageData[dateKey])massageData[dateKey]={};if(!massageData[dateKey][slotTime])massageData[dateKey][slotTime]={room:'',name:'',dur:60,cost:''};massageData[dateKey][slotTime][field]=field==='dur'?parseInt(val):val;svMassage();}
+function msUpdate(dateKey,slotTime,field,val){
+  if(!massageData[dateKey]) massageData[dateKey]={};
+  if(!massageData[dateKey][slotTime]) massageData[dateKey][slotTime]={room:'',name:'',dur:60,cost:'',status:'waiting'};
+  massageData[dateKey][slotTime][field]=field==='dur'?parseInt(val):val;
+  svMassage();
+  // Only re-render for status changes (to update row color), not for text input (causes cursor jump)
+  if(field==='status') renderMassage();
+}
 function msClear(dateKey,slotTime){if(!massageData[dateKey])return;delete massageData[dateKey][slotTime];if(!Object.keys(massageData[dateKey]).length)delete massageData[dateKey];svMassage();renderMassage();showToast('Cleared','w');}
 function msToggleAddForm(){const f=document.getElementById('ms-add-form');const open=f.style.display==='none';f.style.display=open?'block':'none';if(open){const inp=document.getElementById('ms-new-date');if(!inp.value)inp.value=new Date().toISOString().split('T')[0];document.getElementById('ms-new-room').focus();}}
 function msNewDateChange(){}
