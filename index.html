@@ -948,6 +948,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div style="text-align:right;margin-bottom:6px">
       <button onclick="clearAllTAReviews()" style="padding:5px 12px;background:#fce8e8;color:#c0392b;border:1.5px solid #fca5a5;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-trash"></i> Clear all TA reviews</button>
     </div>
+    <div id="ta-summary-box" style="display:none"></div>
     <div class="rev-history" id="ta-history-wrap">
       <h3 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px"><span><i class="ti ti-history" style="color:var(--sea)"></i> Review History</span><button class="print-rev-btn" onclick="printRevHistory('ta')"><i class="ti ti-printer"></i> Print</button></h3>
       <div id="ta-history-list"><div class="rev-empty"><i class="ti ti-brand-tripadvisor"></i>No saved reviews yet</div></div>
@@ -998,6 +999,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
       </div>
       <button class="rev-save-btn" onclick="saveReview('goo')"><i class="ti ti-device-floppy"></i> Save to history</button>
     </div>
+    <div style="text-align:right;margin-bottom:6px">
+      <button onclick="clearAllGooReviews()" style="padding:5px 12px;background:#fce8e8;color:#c0392b;border:1.5px solid #fca5a5;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-trash"></i> Clear all Google reviews</button>
+    </div>
+    <div id="goo-summary-box" style="display:none"></div>
     <div class="rev-history" id="goo-history-wrap">
       <h3 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px"><span><i class="ti ti-history" style="color:var(--sea)"></i> Review History</span><button class="print-rev-btn" onclick="printRevHistory('goo')"><i class="ti ti-printer"></i> Print</button></h3>
       <div id="goo-history-list"><div class="rev-empty"><i class="ti ti-brand-google"></i>No saved reviews yet</div></div>
@@ -3432,6 +3437,14 @@ function clearAllTAReviews(){
   showToast('All TA reviews deleted','w');
 }
 const svGoo=()=>{try{localStorage.setItem('goo_reviews',JSON.stringify(gooHistory));}catch(e){}};
+function clearAllGooReviews(){
+  if(!confirm('Delete ALL Google reviews? This cannot be undone.'))return;
+  gooHistory=[];
+  svGoo();
+  if(typeof fbdb!=='undefined')fbdb.ref('goo_reviews').set([]);
+  renderRevHistory('goo');
+  showToast('All Google reviews deleted','w');
+}
 function starsHtml(score,max){const full=Math.floor(score);const half=score-full>=0.5?1:0;const empty=max-full-half;return '\u2605'.repeat(full)+(half?'\u00bd':'')+'\u2606'.repeat(empty);}
 async function parseReviews(src){
   const txt=document.getElementById(src+'-text').value.trim();if(!txt){alert('Please paste some reviews first.');return;}
@@ -3449,7 +3462,16 @@ async function parseReviews(src){
   btn.disabled=false;
 }
 function showRevResults(src,result){
-  const period=document.getElementById(src+'-period-m').value+' '+document.getElementById(src+'-period-y').value;
+  // Use period from result data if available (e.g. from history), otherwise read from dropdowns
+  const period=result.period||( document.getElementById(src+'-period-m').value+' '+document.getElementById(src+'-period-y').value);
+  // Sync the dropdowns to match the displayed period
+  const parts=period.split(' ');
+  if(parts.length>=2){
+    const mEl=document.getElementById(src+'-period-m');
+    const yEl=document.getElementById(src+'-period-y');
+    if(mEl)mEl.value=parts[0];
+    if(yEl)yEl.value=parts[1];
+  }
   document.getElementById(src+'-res-period').textContent=period;
   document.getElementById(src+'-score').textContent=result.score.toFixed(1);
   document.getElementById(src+'-stars').textContent=starsHtml(result.score,5);
@@ -3466,19 +3488,94 @@ function saveReview(src){
   else{gooHistory=gooHistory.filter(r=>r.period!==pending.period);gooHistory.unshift(pending);svGoo();if(typeof fbdb!=='undefined')fbdb.ref('goo_reviews').set(gooHistory);renderRevHistory('goo');}
   showToast('Saved to history','s');
 }
+// Multi-select state for period summary
+const revSelected={ta:new Set(), goo:new Set()};
+
+function revDeleteEntry(src,idx){
+  const history=src==='ta'?taHistory:gooHistory;
+  const r=history[idx];
+  if(!confirm('Delete "'+r.period+'" entry?'))return;
+  if(src==='ta'){taHistory.splice(idx,1);svTA();if(typeof fbdb!=='undefined')fbdb.ref('ta_reviews').set(taHistory);}
+  else{gooHistory.splice(idx,1);svGoo();if(typeof fbdb!=='undefined')fbdb.ref('goo_reviews').set(gooHistory);}
+  revSelected[src].clear();
+  renderRevHistory(src);
+  showToast('Entry deleted','w');
+}
+
+function revToggleSelect(src,idx){
+  if(revSelected[src].has(idx))revSelected[src].delete(idx);
+  else revSelected[src].add(idx);
+  renderRevHistory(src);
+}
+
+function revShowSummary(src){
+  const history=src==='ta'?taHistory:gooHistory;
+  const sel=[...revSelected[src]].map(i=>history[i]).filter(Boolean);
+  if(!sel.length){showToast('Select at least one period','w');return;}
+  const totalCount=sel.reduce((s,r)=>s+r.count,0);
+  const avgScore=totalCount?(sel.reduce((s,r)=>s+r.score*r.count,0)/totalCount).toFixed(2):0;
+  const periods=sel.map(r=>r.period).join(', ');
+  const color=src==='ta'?'#2d9c68':'#4285f4';
+  const allPos=sel.flatMap(r=>r.positives||[]);
+  const allImp=sel.flatMap(r=>r.improvements||[]);
+  const posHtml=allPos.length?allPos.slice(0,5).map(p=>'<div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:3px"><span style="color:#16a34a;font-size:13px">✓</span><span style="font-size:12px">'+esc(p)+'</span></div>').join(''):'<span style="font-size:11px;color:var(--muted)">—</span>';
+  const impHtml=allImp.length?allImp.slice(0,5).map(p=>'<div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:3px"><span style="color:#b45309;font-size:13px">△</span><span style="font-size:12px">'+esc(p)+'</span></div>').join(''):'<span style="font-size:11px;color:var(--muted)">—</span>';
+  const summaryEl=document.getElementById(src+'-summary-box');
+  if(summaryEl){
+    summaryEl.innerHTML='<div style="background:var(--white);border:1.5px solid '+color+'30;border-radius:12px;padding:16px 18px;margin-bottom:14px">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:'+color+';margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-chart-bar-popular"></i> Summary: '+esc(periods)+'</div>'
+      +'<div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px">'
+      +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px">Avg Score</div><div style="font-size:26px;font-weight:800;color:'+color+'">'+avgScore+'<span style="font-size:14px">/5</span></div></div>'
+      +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px">Total Reviews</div><div style="font-size:26px;font-weight:800;color:var(--ink)">'+totalCount+'</div></div>'
+      +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px">Periods</div><div style="font-size:26px;font-weight:800;color:var(--ink)">'+sel.length+'</div></div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
+      +'<div><div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">Positives</div>'+posHtml+'</div>'
+      +'<div><div style="font-size:10px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">Improvements</div>'+impHtml+'</div>'
+      +'</div>'
+      +'<div style="text-align:right;margin-top:10px"><button onclick="revClearSel(\''+src+'\')" style="padding:4px 10px;background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:7px;font-size:11px;cursor:pointer;font-family:var(--sans)">Clear selection</button></div>'
+      +'</div>';
+    summaryEl.style.display='';
+  }
+}
+
+function revClearSel(src){revSelected[src].clear();renderRevHistory(src);}
 function renderRevHistory(src){
   const history=src==='ta'?taHistory:gooHistory;
   const el=document.getElementById(src+'-history-list');
   const statsEl=document.getElementById(src+'-stats-bar');
+  const color=src==='ta'?'#2d9c68':'#4285f4';
   if(statsEl){
     if(history.length){
-      const latest=history[0];const totalReviews=history.reduce((s,r)=>s+r.count,0);const avgScore=(history.reduce((s,r)=>s+r.score*r.count,0)/totalReviews).toFixed(1);const color=src==='ta'?'#2d9c68':'#4285f4';
+      const totalReviews=history.reduce((s,r)=>s+r.count,0);
+      const avgScore=(history.reduce((s,r)=>s+r.score*r.count,0)/totalReviews).toFixed(1);
+      const latest=history[0];
       statsEl.innerHTML='<div class="stat"><div class="slbl2">Latest period</div><div class="sval" style="color:'+color+'">'+latest.period+'</div></div><div class="stat"><div class="slbl2">Latest score</div><div class="sval" style="color:'+color+'">'+latest.score.toFixed(1)+'/5</div></div><div class="stat"><div class="slbl2">Total reviews</div><div class="sval">'+totalReviews+'</div></div><div class="stat"><div class="slbl2">Overall avg</div><div class="sval star">'+avgScore+'</div></div><div class="stat"><div class="slbl2">Periods saved</div><div class="sval">'+history.length+'</div></div>';
       statsEl.classList.remove('hidden');
     }else{statsEl.classList.add('hidden');}
   }
   if(!history.length){el.innerHTML='<div class="rev-empty"><i class="ti ti-'+(src==='ta'?'brand-tripadvisor':'brand-google')+'"></i>No saved reviews yet</div>';return;}
-  el.innerHTML=history.map((r,i)=>`<div class="rev-hist-item" onclick="showHistoryDetail('${src}',${i})"><div><div class="rev-hist-period">${r.period}</div><div class="rev-hist-count">${r.count} reviews</div></div><div style="text-align:right"><div class="rev-hist-score ${src}">${r.score.toFixed(1)}/5</div><div style="font-size:14px;color:#f5a623">${starsHtml(r.score,5)}</div></div></div>`).join('');
+  const selSet=revSelected[src];
+  const selCount=selSet.size;
+  // Summary button bar
+  const sumBar='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">'
+    +'<span style="font-size:11px;color:var(--muted)">Click entries to select</span>'
+    +(selCount?'<span style="font-size:11px;font-weight:700;color:'+color+'">'+selCount+' selected</span>':'')
+    +(selCount?'<button id="rev-sum-btn-'+src+'" onclick="revShowSummary(this.dataset.src)" data-src="'+src+'" style="padding:5px 12px;background:'+color+';color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-chart-bar"></i> Summary</button>':'')
+    +(selCount?'<button id="rev-clr-btn-'+src+'" onclick="revClearSel(this.dataset.src)" data-src="'+src+'" style="padding:5px 10px;background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--sans)">✕ Deselect</button>':'')
+    +'</div>';
+  el.innerHTML=sumBar+history.map((r,i)=>{
+    const isSel=selSet.has(i);
+    const bg=isSel?color+'0d':'var(--white)';
+    const border=isSel?color:'var(--border)';
+    return `<div style="display:flex;align-items:center;gap:6px">
+      <div class="rev-hist-item${isSel?' sel':''}" data-src="${src}" data-idx="${i}" style="flex:1;cursor:pointer;border:1.5px solid ${border};background:${bg};border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center" onclick="revToggleSelect(this.dataset.src,+this.dataset.idx)">
+        <div><div class="rev-hist-period">${r.period}</div><div class="rev-hist-count">${r.count} reviews</div></div>
+        <div style="text-align:right"><div class="rev-hist-score ${src}">${r.score.toFixed(1)}/5</div><div style="font-size:14px;color:#f5a623">${starsHtml(r.score,5)}</div></div>
+      </div>
+      <button data-src="${src}" data-idx="${i}" onclick="event.stopPropagation();revDeleteEntry(this.dataset.src,+this.dataset.idx)" style="width:28px;height:28px;background:#fce8e8;border:none;border-radius:7px;cursor:pointer;color:#c0392b;display:flex;align-items:center;justify-content:center;flex-shrink:0" title="Delete this period"><i class="ti ti-trash" style="font-size:13px"></i></button>
+    </div>`;
+  }).join('');
 }
 function showHistoryDetail(src,idx){const history=src==='ta'?taHistory:gooHistory;const r=history[idx];window[src+'_pending']=r;showRevResults(src,r);document.getElementById(src+'-text').value='';document.getElementById(src+'-period-m').value=r.period.split(' ')[0];document.getElementById(src+'-period-y').value=r.period.split(' ')[1];goTab(src);}
 function importReviewJSON(src,inp){const file=inp.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{try{const result=JSON.parse(e.target.result);showRevResults(src,result);showToast('Review analysis loaded!','s');}catch(err){showToast('Error: '+err.message,'w');}inp.value='';};reader.readAsText(file);}
