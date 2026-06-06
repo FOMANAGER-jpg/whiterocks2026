@@ -1300,6 +1300,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
             <th style="width:145px">Car Type</th>
             <th style="width:46px">Days</th>
             <th style="min-width:110px">Company</th>
+            <th style="min-width:90px">Booked By</th>
             <th style="width:85px">Base Price</th>
             <th style="width:78px">Insurance</th>
             <th style="width:90px">Total</th>
@@ -1335,7 +1336,9 @@ canvas.an-chart{width:100%!important;height:220px!important}
             <th style="width:105px">Date</th><th style="width:80px">Pick-up Time</th>
             <th style="min-width:160px">Excursion</th><th style="width:80px">Pax</th>
             <th style="width:90px">Cost</th>
-            <th style="min-width:110px">Company</th><th style="width:105px">Status</th><th style="width:58px"></th>
+            <th style="min-width:110px">Company</th>
+            <th style="min-width:90px">Booked By</th>
+            <th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
           <tbody id="excursionsTbody"></tbody>
         </table>
@@ -1360,7 +1363,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
             <th style="width:50px">Room</th><th style="width:105px">Day of Booking</th>
             <th style="width:105px">Rental Date</th><th style="width:50px">Days</th>
             <th style="min-width:190px">Vehicle</th>
-            <th style="width:100px">Cost &#8364;</th><th style="min-width:110px">Company</th><th style="width:105px">Status</th><th style="width:58px"></th>
+            <th style="width:100px">Cost &#8364;</th><th style="min-width:110px">Company</th><th style="min-width:90px">Booked By</th><th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
           <tbody id="motoTbody"></tbody>
         </table>
@@ -1386,7 +1389,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
             <th style="width:105px">Delivery Date</th><th style="width:80px">Delivery Time</th>
             <th style="min-width:160px">Arrangement</th>
             <th style="width:90px">Bosoni Price</th><th style="width:90px">Gross Price</th>
-            <th style="width:105px">Status</th><th style="width:58px"></th>
+            <th style="min-width:90px">Booked By</th><th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
           <tbody id="flowersTbody"></tbody>
         </table>
@@ -1411,7 +1414,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
             <th style="width:52px">Room</th><th style="width:105px">Day of Booking</th>
             <th style="width:105px">Date</th><th style="width:80px">Pick-up Time</th>
             <th style="min-width:160px">Trip / Cruise</th><th style="width:80px">Pax</th>
-            <th style="width:90px">Cost</th><th style="min-width:110px">Company</th><th style="width:105px">Status</th><th style="width:58px"></th>
+            <th style="width:90px">Cost</th><th style="min-width:110px">Company</th><th style="min-width:90px">Booked By</th><th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
           <tbody id="boatsTbody"></tbody>
         </table>
@@ -1436,7 +1439,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
             <th style="width:52px">Room</th><th style="width:105px">Day of Booking</th>
             <th style="width:105px">Transfer Date</th><th style="width:80px">Time</th>
             <th style="min-width:180px">Route</th>
-            <th style="width:90px">Cost</th><th style="width:105px">Status</th><th style="width:58px"></th>
+            <th style="width:90px">Cost</th>
+            <th style="min-width:110px">Company</th>
+            <th style="min-width:90px">Booked By</th>
+            <th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
           <tbody id="transfersTbody"></tbody>
         </table>
@@ -1462,7 +1468,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
             <th style="width:105px">Tour Date</th><th style="width:80px">Time</th>
             <th style="min-width:200px">Tour</th><th style="width:50px">Pax</th>
             <th style="width:80px">Type</th>
-            <th style="width:90px">Cost</th><th style="width:105px">Status</th><th style="width:58px"></th>
+            <th style="width:90px">Cost</th><th style="min-width:90px">Booked By</th><th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
           <tbody id="vantoursTbody"></tbody>
         </table>
@@ -1565,7 +1571,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       </select>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;align-items:end">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px;align-items:end">
       <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Rental Days</label>
         <input class="tr-inp" style="width:100%" id="cm-days" type="number" min="1" max="60" value="1" onchange="carModalUpdatePrice()"></div>
       <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Status</label>
@@ -1574,6 +1580,8 @@ canvas.an-chart{width:100%!important;height:220px!important}
           <option value="confirmed">✓ Confirmed</option>
           <option value="cancelled">✕ Cancelled</option>
         </select></div>
+      <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Booked By</label>
+        <input class="tr-inp" style="width:100%" id="cm-bookedby" type="text" placeholder="Staff name"></div>
       <div style="display:flex;align-items:center;gap:8px;padding-bottom:2px">
         <input type="checkbox" id="cm-ins" style="width:17px;height:17px;cursor:pointer;accent-color:#1a6644" onchange="carModalUpdatePrice()">
         <label for="cm-ins" style="font-size:12px;cursor:pointer;color:var(--ink);font-weight:500">Full Insurance</label>
@@ -1978,7 +1986,7 @@ function renderGenTab(tab){
       const isOpen_excursions=genIsOpen('excursions',i);
       const excSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #93c5fd;border-radius:8px;font-size:12px;outline:none;font-family:var(--sans)" onchange="GEN_DATA[\'excursions\']['+i+'].excursion=this.value;svGen(\'excursions\')"><option value="">-- Select --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'"'+(r.excursion===e.name?' selected':'')+'>'+e.name+'</option>').join('')+'</select>';
       const ep_ex=EXC_CATALOG.find(e=>e.name===r.excursion);
-      html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td>'+inp(i,'company',r.company,'Company')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td>'+inp(i,'company',r.company,'Company')+'</td><td>'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_excursions){const pi=ep_ex?'<div style="font-size:10px;color:#1a6ca8;font-weight:600;margin-top:4px">Adult: €'+(ep_ex.priceAdult||'?')+' · Child: €'+(ep_ex.priceChild||'?')+' · Pickup WR: '+(ep_ex.pickupWR||'--')+'</div>':'';html+='<tr class="car-ep" style="background:#ebf5ff"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('excursions',i,r,'#1a6ca8')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Excursion','#1a6ca8',excSel+pi)+epField('Tour Date','#1a6ca8',epDate('excursions',i,'date',r.date))+epField('Pickup Time WR','#1a6ca8',epTime('excursions',i,'time',r.time))+epField('Pax','#1a6ca8',epNum('excursions',i,'pax',r.pax,'2','1',null))+epField('Cost €','#1a6ca8',epNum('excursions',i,'cost',r.cost,'0','0',null))+epField('Notes','#1a6ca8',epInp('excursions',i,'notes',r.notes,'Special requests...'))+epStatus('excursions',i,r.status,4)+'</div></td></tr>';}
     }
     else if(tab==='moto'){
@@ -1992,23 +2000,23 @@ function renderGenTab(tab){
       const vehSel='<td><select class="car-ci" style="min-width:200px" onchange="GEN_DATA[\'moto\']['+i+'].vehicle=this.value;GEN_DATA[\'moto\']['+i+'].costOverride=null;motoRowAutoPrice('+i+')">'+MOTO_CATALOG.map(m=>'<option value="'+m.name+'"'+(r.vehicle===m.name?' selected':'')+'>'+m.name+'</option>').join('')+'</select>'+(mt?'<div style="font-size:9px;color:var(--muted);margin-top:2px">'+mt.cc+' · Lic: '+mt.licence+(hs?' · ☀ High':' · Low')+'</div>':'')+'</td>';
       const daysCell='<td>'+inpNum(i,'days',r.days||3,'50px',`motoRowAutoPrice(${i})`)+'</td>';
       const costCell='<td style="padding:4px 7px;text-align:right"><input type="number" min="0" value="'+(displayCost||'')+'" placeholder="'+(autoCost||'?')+'" style="width:75px;padding:4px 7px;border:1.5px solid '+(hasOv?'#b45309':'#d8b4fe')+';border-radius:7px;font-size:13px;font-weight:700;color:'+(hasOv?'#b45309':'#5c3d8f')+';font-family:var(--serif);background:'+(hasOv?'#fef7e6':'#fff')+';text-align:right;outline:none" oninput="GEN_DATA[\'moto\']['+i+'].costOverride=this.value===\'\'?null:parseFloat(this.value);svGen(\'moto\')"><div style="font-size:9px;color:'+(hasOv?'#b45309':'var(--muted2)')+';text-align:right;margin-top:1px">'+(hasOv?'⚠ custom':autoCost?'auto €'+autoCost:'')+'</div></td>';
-      html+='<tr class="'+rc+(isOpen?' car-ep-open':'')+'" onclick="genToggleRow(\'moto\','+i+')">'+baseFields+'<td>'+inpDate(i,'rentalDate',r.rentalDate)+'</td>'+daysCell+vehSel+costCell+'<td>'+inp(i,'company',r.company,'Company')+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td>'+actM+'</tr>';
+      html+='<tr class="'+rc+(isOpen?' car-ep-open':'')+'" onclick="genToggleRow(\'moto\','+i+')">'+baseFields+'<td>'+inpDate(i,'rentalDate',r.rentalDate)+'</td>'+daysCell+vehSel+costCell+'<td>'+inp(i,'company',r.company,'Company')+'</td><td>'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td>'+actM+'</tr>';
       if(isOpen){html+='<tr class="car-ep" style="background:#f5f0fc"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('moto',i,r,'#5c3d8f')+'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"><div style="grid-column:1/3">'+epField('Vehicle','#5c3d8f','<select style="width:100%;padding:5px 8px;border:1.5px solid #d8b4fe;border-radius:8px;font-size:12px;outline:none" onchange="GEN_DATA[\'moto\']['+i+'].vehicle=this.value;GEN_DATA[\'moto\']['+i+'].costOverride=null;motoRowAutoPrice('+i+')">'+MOTO_CATALOG.map(m=>'<option value="'+m.name+'"'+(r.vehicle===m.name?' selected':'')+'>'+m.name+'</option>').join('')+'</select>')+'</div>'+epField('Rental Date','#5c3d8f',epDate('moto',i,'rentalDate',r.rentalDate))+epField('Days','#5c3d8f','<input type="number" min="1" value="'+(r.days||3)+'" style="padding:6px 8px;border:1.5px solid #d8b4fe;border-radius:8px;font-size:13px;width:80px;outline:none" onchange="GEN_DATA[\'moto\']['+i+'].days=parseInt(this.value)||3;motoRowAutoPrice('+i+')">')+epField('Day of Booking','#5c3d8f',epDate('moto',i,'bookDate',r.bookDate))+epField('Notes','#5c3d8f',epInp('moto',i,'notes',r.notes,'Helmet size, drop-off...'))+epField('Cost €','#5c3d8f','<input type="number" min="0" value="'+(displayCost||'')+'" style="padding:6px 8px;border:1.5px solid #d8b4fe;border-radius:8px;font-size:13px;width:100px;outline:none" oninput="GEN_DATA[\'moto\']['+i+'].costOverride=this.value===\'\'?null:parseFloat(this.value);svGen(\'moto\')">')+'</div></td></tr>';}
     }
     else if(tab==='flowers'){
       const isOpen_flowers=genIsOpen('flowers',i);
       const flSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #fbcfe8;border-radius:8px;font-size:12px;outline:none" onchange="const _f=flowersGetByName(this.value);GEN_DATA[\'flowers\']['+i+'].arrangement=this.value;if(_f){GEN_DATA[\'flowers\']['+i+'].bosoniPrice=_f.bosoni;GEN_DATA[\'flowers\']['+i+'].grossPrice=_f.gross;}svGen(\'flowers\');">'+FLOWERS_CATALOG.map(f=>'<option value="'+f.name+'"'+(r.arrangement===f.name?' selected':'')+'>'+f.name+(f.gross?' (€'+f.gross+')':'')+'</option>').join('')+'</select>';
-      html+='<tr class="'+rc+(isOpen_flowers?' car-ep-open':'')+'" onclick="genToggleRow(\'flowers\','+i+')">'+baseFields+'<td>'+inpDate(i,'delivDate',r.delivDate)+'</td><td>'+inpTime(i,'delivTime',r.delivTime)+'</td><td>'+inp(i,'arrangement',r.arrangement,'Arrangement')+'</td><td style="padding:7px 9px;font-weight:700;color:#be185d">'+(r.bosoniPrice?'€'+r.bosoniPrice:'')+'</td><td style="padding:7px 9px;font-weight:700;color:#0d4a2f">'+(r.grossPrice?'€'+r.grossPrice:'')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('flowers',i,'#be185d')+'<button onclick="event.stopPropagation();genDel(\'flowers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_flowers?' car-ep-open':'')+'" onclick="genToggleRow(\'flowers\','+i+')">'+baseFields+'<td>'+inpDate(i,'delivDate',r.delivDate)+'</td><td>'+inpTime(i,'delivTime',r.delivTime)+'</td><td>'+inp(i,'arrangement',r.arrangement,'Arrangement')+'</td><td style="padding:7px 9px;font-weight:700;color:#be185d">'+(r.bosoniPrice?'€'+r.bosoniPrice:'')+'</td><td style="padding:7px 9px;font-weight:700;color:#0d4a2f">'+(r.grossPrice?'€'+r.grossPrice:'')+'</td><td>'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('flowers',i,'#be185d')+'<button onclick="event.stopPropagation();genDel(\'flowers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_flowers){html+='<tr class="car-ep" style="background:#fff0f7"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('flowers',i,r,'#be185d')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Arrangement','#be185d',flSel)+epField('Delivery Date','#be185d',epDate('flowers',i,'delivDate',r.delivDate))+epField('Delivery Time','#be185d',epTime('flowers',i,'delivTime',r.delivTime))+epField('Bosoni €','#be185d',epNum('flowers',i,'bosoniPrice',r.bosoniPrice,'0','0',null))+epField('Gross €','#1a6644',epNum('flowers',i,'grossPrice',r.grossPrice,'0','0',null))+epField('Notes','#be185d',epInp('flowers',i,'notes',r.notes,'Room decoration...'))+epStatus('flowers',i,r.status,4)+'</div></td></tr>';}
     }
     else if(tab==='boats'){
       const isOpen_boats=genIsOpen('boats',i);
-      html+='<tr class="'+rc+(isOpen_boats?' car-ep-open':'')+'" onclick="genToggleRow(\'boats\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'trip',r.trip,'Trip / Cruise')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:7px 9px;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td>'+inp(i,'company',r.company,'Company')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('boats',i,'#0e7490')+'<button onclick="event.stopPropagation();genDel(\'boats\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_boats?' car-ep-open':'')+'" onclick="genToggleRow(\'boats\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'trip',r.trip,'Trip / Cruise')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:7px 9px;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td>'+inp(i,'company',r.company,'Company')+'</td><td>'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('boats',i,'#0e7490')+'<button onclick="event.stopPropagation();genDel(\'boats\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_boats){html+='<tr class="car-ep" style="background:#e0f7fa"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('boats',i,r,'#0e7490')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Trip / Cruise','#0e7490',epInp('boats',i,'trip',r.trip,'Trip name...'))+epField('Tour Date','#0e7490',epDate('boats',i,'date',r.date))+epField('Departure Time','#0e7490',epTime('boats',i,'time',r.time))+epField('Pax','#0e7490',epNum('boats',i,'pax',r.pax,'2','1',null))+epField('Cost €','#0e7490',epNum('boats',i,'cost',r.cost,'0','0',null))+epField('Company','#0e7490',epInp('boats',i,'company',r.company,'MAK / Ego / SIW...'))+epField('Notes','#0e7490',epInp('boats',i,'notes',r.notes,'Pickup, extras...'))+epStatus('boats',i,r.status,4)+'</div></td></tr>';}
     }
     else if(tab==='transfers'){
       const isOpen_transfers=genIsOpen('transfers',i);
-      html+='<tr class="'+rc+(isOpen_transfers?' car-ep-open':'')+'" onclick="genToggleRow(\'transfers\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'route',r.route,'Hotel → Airport')+'</td><td style="padding:7px 9px;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td>'+inp(i,'company',r.company,'Company')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('transfers',i,'#92400e')+'<button onclick="event.stopPropagation();genDel(\'transfers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_transfers?' car-ep-open':'')+'" onclick="genToggleRow(\'transfers\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'route',r.route,'Hotel → Airport')+'</td><td style="padding:7px 9px;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td>'+inp(i,'company',r.company,'Company')+'</td><td>'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('transfers',i,'#92400e')+'<button onclick="event.stopPropagation();genDel(\'transfers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_transfers){html+='<tr class="car-ep" style="background:#fef9f0"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('transfers',i,r,'#92400e')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Route','#92400e',epInp('transfers',i,'route',r.route,'Hotel → Airport'))+epField('Date','#92400e',epDate('transfers',i,'date',r.date))+epField('Time','#92400e',epTime('transfers',i,'time',r.time))+epField('Pax','#92400e',epNum('transfers',i,'pax',r.pax,'1','1',null))+epField('T.O.','#92400e',epInp('transfers',i,'to',r.to,'Tour operator'))+epField('Company / Car','#92400e',epInp('transfers',i,'company',r.company,'Company name'))+epField('Cost €','#92400e',epNum('transfers',i,'cost',r.cost,'0','0',null))+epField('Flight #','#92400e',epInp('transfers',i,'notes',r.notes,'Flight number...'))+epStatus('transfers',i,r.status,4)+'</div></td></tr>';}
     }
     else if(tab==='vantours'){
@@ -2016,7 +2024,7 @@ function renderGenTab(tab){
       const vtSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #e2c97e;border-radius:8px;font-size:12px;outline:none" onchange="const vt=VAN_TOURS.find(t=>t.name===this.value);GEN_DATA[\'vantours\']['+i+'].tour=this.value;if(vt&&r.pax){const pk=r.pax<=2?2:r.pax<=4?4:6;const tier=(r.tourType===\'exclusive\'&&vt.prices.exclusive)?vt.prices.exclusive:vt.prices.standard;if(tier&&tier[pk])GEN_DATA[\'vantours\']['+i+'].cost=tier[pk];}svGen(\'vantours\')"><option value="">-- Select tour --</option>'+VAN_TOURS.map(t=>'<option value="'+t.name+'"'+(r.tour===t.name?' selected':'')+'>'+t.name+' ('+t.duration+')</option>').join('')+'</select>';
       const vtPrice=()=>{const vt=VAN_TOURS.find(t=>t.name===r.tour);if(!vt)return null;const pk=r.pax<=2?2:r.pax<=4?4:6;const tier=(r.tourType==='exclusive'&&vt.prices.exclusive)?vt.prices.exclusive:vt.prices.standard;return tier?tier[pk]||null:null;};
       const vtP=vtPrice();
-      html+='<tr class="'+rc+(isOpen_vt?' car-ep-open':'')+'" onclick="genToggleRow(\'vantours\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'tour',r.tour,'Tour name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:5px 7px"><select class="car-ci" style="font-size:11px;width:90px" onchange="GEN_DATA[\'vantours\']['+i+'].tourType=this.value;svGen(\'vantours\')"><option value="standard"'+((!r.tourType||r.tourType==='standard')?' selected':'')+'>Standard</option><option value="exclusive"'+(r.tourType==='exclusive'?' selected':'')+'>Exclusive</option></select></td><td style="padding:7px 9px;font-weight:700;color:#7c5e2e">'+(r.cost?'€'+r.cost:(vtP?'€'+vtP:''))+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('vantours',i,'#7c5e2e')+'<button onclick="event.stopPropagation();genDel(\'vantours\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_vt?' car-ep-open':'')+'" onclick="genToggleRow(\'vantours\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'tour',r.tour,'Tour name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:5px 7px"><select class="car-ci" style="font-size:11px;width:90px" onchange="GEN_DATA[\'vantours\']['+i+'].tourType=this.value;svGen(\'vantours\')"><option value="standard"'+((!r.tourType||r.tourType==='standard')?' selected':'')+'>Standard</option><option value="exclusive"'+(r.tourType==='exclusive'?' selected':'')+'>Exclusive</option></select></td><td style="padding:7px 9px;font-weight:700;color:#7c5e2e">'+(r.cost?'€'+r.cost:(vtP?'€'+vtP:''))+'</td><td>'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('vantours',i,'#7c5e2e')+'<button onclick="event.stopPropagation();genDel(\'vantours\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_vt){
         const vt=VAN_TOURS.find(t=>t.name===r.tour);
         const priceInfo=vt?(()=>{const s=vt.prices.standard;const e=vt.prices.exclusive;return 'Std: 2pax €'+(s[2]||'?')+' / 4pax €'+(s[4]||'?')+' / 6pax €'+(s[6]||'?')+(e?' · Excl: 2pax €'+(e[2]||'?')+' / 4pax €'+(e[4]||'?')+' / 6pax €'+(e[6]||'?'):'');})():'';
@@ -2059,7 +2067,8 @@ const GEN_FIELDS={
     {id:'excursion',label:'Excursion',type:'exc_select'},
     {id:'pax',label:'Pax',type:'number',ph:'2'},
     {id:'cost',label:'Cost €',type:'number',ph:'0'},
-    {id:'status',label:'Status',type:'status'}
+    {id:'status',label:'Status',type:'status'},
+    {id:'bookedBy',label:'Booked By',type:'text',ph:'Staff name'}
   ],
   moto:[
     {id:'ref',label:'Ref No',type:'text',ph:'Ref'},
@@ -2072,7 +2081,8 @@ const GEN_FIELDS={
     {id:'vehicle',label:'Vehicle',type:'moto_select'},
     {id:'days',label:'Days',type:'number',ph:'3'},
     {id:'cost',label:'Cost € (auto)',type:'number',ph:'0'},
-    {id:'status',label:'Status',type:'status'}
+    {id:'status',label:'Status',type:'status'},
+    {id:'bookedBy',label:'Booked By',type:'text',ph:'Staff name'}
   ],
   flowers:[
     {id:'ref',label:'Ref No',type:'text',ph:'Ref'},
@@ -2084,7 +2094,8 @@ const GEN_FIELDS={
     {id:'arrangement',label:'Arrangement',type:'flowers_select'},
     {id:'bosoniPrice',label:'Bosoni €',type:'number',ph:'0'},
     {id:'grossPrice',label:'Gross €',type:'number',ph:'0'},
-    {id:'status',label:'Status',type:'status'}
+    {id:'status',label:'Status',type:'status'},
+    {id:'bookedBy',label:'Booked By',type:'text',ph:'Staff name'}
   ],
   boats:[
     {id:'ref',label:'Ref No',type:'text',ph:'Ref'},
@@ -2098,7 +2109,8 @@ const GEN_FIELDS={
     {id:'notes',label:'Notes (MAK custom)',type:'boats_notes'},
     {id:'pax',label:'Pax',type:'number',ph:'2'},
     {id:'cost',label:'Cost €',type:'number',ph:'0'},
-    {id:'status',label:'Status',type:'status'}
+    {id:'status',label:'Status',type:'status'},
+    {id:'bookedBy',label:'Booked By',type:'text',ph:'Staff name'}
   ],
   transfers:[
     {id:'ref',label:'Ref No',type:'text',ph:'Ref'},
@@ -2109,7 +2121,8 @@ const GEN_FIELDS={
     {id:'time',label:'Time',type:'time'},
     {id:'route',label:'Route',type:'text',ph:'Hotel → Airport'},
     {id:'cost',label:'Cost €',type:'number',ph:'0'},
-    {id:'status',label:'Status',type:'status'}
+    {id:'status',label:'Status',type:'status'},
+    {id:'bookedBy',label:'Booked By',type:'text',ph:'Staff name'}
   ],
   vantours:[
     {id:'ref',label:'Ref No',type:'text',ph:'Ref'},
@@ -2122,7 +2135,8 @@ const GEN_FIELDS={
     {id:'pax',label:'Pax',type:'number',ph:'2'},
     {id:'tourType',label:'Type',type:'vantour_type'},
     {id:'cost',label:'Cost € (auto)',type:'number',ph:'0'},
-    {id:'status',label:'Status',type:'status'}
+    {id:'status',label:'Status',type:'status'},
+    {id:'bookedBy',label:'Booked By',type:'text',ph:'Staff name'}
   ]
 };
 
@@ -2602,6 +2616,7 @@ function renderCars(){
       <td><select class="car-ci" style="font-size:11px;padding:5px 4px" onchange="carUpd(${i},'carType',this.value)">${selOpts}</select></td>
       <td><input class="car-ci" type="number" min="1" max="60" value="${c.days||1}" style="text-align:center;font-weight:700;padding:5px 4px" onchange="CARS[${i}].days=Math.max(1,parseInt(this.value)||1);this.value=CARS[${i}].days;carUpd(${i},'days',CARS[${i}].days)"></td>
       <td><input class="car-ci" value="${esc(c.company||'')}" placeholder="Company" onchange="CARS[${i}].company=this.value;svCars()"></td>
+      <td><input class="car-ci" value="${esc(c.bookedBy||'')}" placeholder="Staff" onchange="CARS[${i}].bookedBy=this.value;svCars()"></td>
       <td style="padding:7px 9px;text-align:right;font-weight:700;color:${c.priceOverride!=null?'#b45309':'#1a6644'}">${base!=null?'€'+base+(c.priceOverride!=null?' ✎':''):c.carType==='T'?'On Req':'—'}</td>
       <td style="padding:4px 7px;text-align:center">
         <input type="checkbox"${c.insurance?' checked':''} style="width:15px;height:15px;cursor:pointer;accent-color:#1a6644" onchange="carUpd(${i},'insurance',this.checked)" title="Full Insurance">
@@ -2737,6 +2752,7 @@ function carModalUpdatePrice(){
   const days=parseInt(document.getElementById('cm-days').value)||1;
   const rentalDate=document.getElementById('cm-rentaldate').value||document.getElementById('cm-bookdate').value;
   const ins=document.getElementById('cm-ins').checked;
+  const bookedBy=(document.getElementById('cm-bookedby')?.value||'').trim();
   const base=carBasePrice(type,days,rentalDate);
   const insAmt=ins?carInsPrice(type,days):0;
   const total=base!=null?base+insAmt:null;
@@ -2757,6 +2773,7 @@ function carModalSave(){
   const rentalDate=document.getElementById('cm-rentaldate').value;
   const bookDate=document.getElementById('cm-bookdate').value;
   const ins=document.getElementById('cm-ins').checked;
+  const bookedBy=(document.getElementById('cm-bookedby')?.value||'').trim();
   const base=carBasePrice(type,days,rentalDate||bookDate);
   const insAmt=ins?carInsPrice(type,days):0;
   CARS.unshift({
@@ -2768,7 +2785,7 @@ function carModalSave(){
     bookDate,rentalDate,
     rentalTime:document.getElementById('cm-time').value,
     carType:type,days,insurance:ins,
-    status:document.getElementById('cm-status').value,
+    status:document.getElementById('cm-status').value,bookedBy:bookedBy,
     base,insAmt,total:base!=null?base+insAmt:null
   });
   svCars();carOpenEP=null;
