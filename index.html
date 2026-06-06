@@ -44,10 +44,6 @@ table.car-tbl{width:100%;border-collapse:collapse;font-size:12px;min-width:1000p
 .car-tbl td{padding:0;vertical-align:middle;border-right:1px solid var(--border2)}
 .car-tbl td:last-child{border-right:none}
 .car-ci{width:100%;padding:8px 9px;border:none;background:transparent;font-family:var(--sans);font-size:12px;color:var(--ink);outline:none}
-
-
-
-
 .car-ci:focus{background:rgba(26,102,68,.06)}
 .car-ci.room{font-weight:700;color:#1a6644;text-align:center}
 .car-ci.mono{font-family:monospace;font-size:11px;color:var(--muted2)}
@@ -614,135 +610,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
 #sug-search{outline:none;border:1.5px solid var(--border);border-radius:10px;padding:8px 12px 8px 34px;font-family:var(--sans);font-size:13px;color:var(--ink);background:var(--bg)}
 #sug-search:focus{border-color:var(--sea);background:var(--white)}
 
-
-/* ── A/C ISSUES ── */
-.ac-wrap{padding:16px 20px 40px}
-.ac-hdr{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding:18px 20px;background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)}
-.ac-hdr-ico{width:46px;height:46px;border-radius:12px;background:#e0f7fa;display:flex;align-items:center;justify-content:center;font-size:22px;color:#0e7490;flex-shrink:0}
-.ac-hdr-t{font-size:18px;font-weight:800;color:var(--ink)}
-.ac-hdr-s{font-size:12px;color:var(--muted);margin-top:2px}
-.ac-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
-.ac-kpi{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:14px 16px;box-shadow:var(--sh)}
-.ac-kpi-val{font-size:26px;font-weight:800;font-family:var(--serif)}
-.ac-kpi-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-top:2px}
-.ac-add-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)}
-.ac-add-card h3{font-size:13px;font-weight:700;color:#0e7490;margin:0 0 12px;display:flex;align-items:center;gap:6px}
-.ac-form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
-.ac-form-group{display:flex;flex-direction:column;gap:4px}
-.ac-form-group label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted)}
-.ac-inp{padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:var(--sans);outline:none;background:var(--white);color:var(--ink)}
-.ac-inp:focus{border-color:#0e7490}
-.ac-save-btn{padding:9px 18px;background:#0e7490;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px;white-space:nowrap}
-.ac-filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-.ac-filter-btn{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);border:1.5px solid var(--border);background:var(--white);color:var(--muted);transition:.15s}
-.ac-filter-btn.on{border-color:#0e7490;background:#0e7490;color:#fff}
-.ac-tbl-wrap{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow-x:auto}
-.ac-tbl{width:100%;border-collapse:collapse;font-size:12px}
-.ac-tbl thead{background:linear-gradient(180deg,#e0f7fa,#b2ebf2);position:sticky;top:0;z-index:2}
-.ac-tbl th{padding:9px 11px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#0e4a6e;white-space:nowrap;border-bottom:1px solid #b2ebf2}
-.ac-tbl td{padding:7px 11px;border-bottom:1px solid var(--border2);vertical-align:middle}
-.ac-tbl tr:last-child td{border-bottom:none}
-.ac-tbl tr.ac-open{border-left:3px solid #dc2626}
-.ac-tbl tr.ac-inprogress{border-left:3px solid #d97706}
-.ac-tbl tr.ac-resolved{border-left:3px solid #16a34a;opacity:.75}
-.ac-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;border:none;font-family:var(--sans)}
-.ac-badge.open{background:#fce8e8;color:#dc2626}
-.ac-badge.inprogress{background:#fffbeb;color:#d97706}
-.ac-badge.resolved{background:#f0fdf4;color:#16a34a}
-.ac-pri{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700}
-.ac-pri.urgent{background:#fce8e8;color:#dc2626}
-.ac-pri.normal{background:#fef9c3;color:#854d0e}
-.ac-pri.low{background:#f0fdf4;color:#16a34a}
-.ac-ci{width:100%;padding:5px 7px;border:none;background:transparent;font-family:var(--sans);font-size:12px;color:var(--ink);outline:none}
-.ac-ci:focus{background:#f0f9ff;border-radius:6px}
-.ac-empty{padding:40px;text-align:center;color:var(--muted2);font-size:13px}
-.ac-empty i{font-size:36px;display:block;margin-bottom:10px;opacity:.3}
-
-function acToggleHistory(){
-  const panel=document.getElementById('ac-history-panel');
-  const btn=document.getElementById('ac-hist-btn');
-  const isOpen=panel.style.display!=='none';
-  panel.style.display=isOpen?'none':'block';
-  btn.style.background=isOpen?'#0e7490':'#0e4a6e';
-  btn.innerHTML=isOpen
-    ?'<i class="ti ti-history" style="font-size:15px"></i> History'
-    :'<i class="ti ti-history" style="font-size:15px"></i> Close History';
-  if(!isOpen)renderACHistory();
-}
-
-function renderACHistory(){
-  const search=(document.getElementById('ac-hist-search')?.value||'').toLowerCase();
-  const statusF=document.getElementById('ac-hist-status')?.value||'all';
-  const monthF=document.getElementById('ac-hist-month')?.value||'all';
-  const priF=document.getElementById('ac-hist-pri')?.value||'all';
-
-  let rows=[...AC_DATA];
-  if(statusF!=='all')rows=rows.filter(r=>r.status===statusF);
-  if(monthF!=='all')rows=rows.filter(r=>(r.dateReported||'').slice(5,7)===monthF);
-  if(priF!=='all')rows=rows.filter(r=>r.pri===priF);
-  if(search)rows=rows.filter(r=>
-    (r.room||'').toLowerCase().includes(search)||
-    (r.issue||'').toLowerCase().includes(search)||
-    (r.technician||'').toLowerCase().includes(search)||
-    (r.action||'').toLowerCase().includes(search)
-  );
-
-  // Sort: unresolved first, then by date desc
-  rows.sort((a,b)=>{
-    const order={open:0,inprogress:1,resolved:2};
-    if((order[a.status]||0)!==(order[b.status]||0))return (order[a.status]||0)-(order[b.status]||0);
-    return (b.dateReported||'').localeCompare(a.dateReported||'');
-  });
-
-  // Stats bar
-  const statsEl=document.getElementById('ac-hist-stats');
-  if(statsEl){
-    const tot=rows.length;
-    const res=rows.filter(r=>r.status==='resolved').length;
-    const avg=rows.filter(r=>r.status==='resolved'&&r.dateReported&&r.dateResolved).map(r=>{
-      const d1=new Date(r.dateReported),d2=new Date(r.dateResolved);
-      return Math.max(0,Math.round((d2-d1)/(1000*60*60*24)));
-    });
-    const avgDays=avg.length?Math.round(avg.reduce((s,v)=>s+v,0)/avg.length):null;
-    statsEl.innerHTML=
-      `<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px">${tot}</div><div class="ac-kpi-lbl">Showing</div></div>`+
-      `<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px;color:#16a34a">${res}</div><div class="ac-kpi-lbl">Resolved</div></div>`+
-      `<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px;color:#dc2626">${rows.filter(r=>r.status==='open').length}</div><div class="ac-kpi-lbl">Still Open</div></div>`+
-      `<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px;color:#d97706">${avgDays!=null?avgDays+'d':'—'}</div><div class="ac-kpi-lbl">Avg Resolution</div></div>`;
-  }
-
-  const el=document.getElementById('ac-hist-list');if(!el)return;
-  if(!rows.length){
-    el.innerHTML='<div class="ac-empty"><i class="ti ti-search"></i>No issues match your filters</div>';
-    return;
-  }
-  const priLbl={urgent:'🔴 Urgent',normal:'🟡 Normal',low:'🟢 Low'};
-  const stLbl={open:'🔴 Open',inprogress:'🟡 In Progress',resolved:'✅ Resolved'};
-  el.innerHTML=rows.map(r=>{
-    const days=r.dateReported&&r.dateResolved?Math.max(0,Math.round((new Date(r.dateResolved)-new Date(r.dateReported))/(1000*60*60*24))):null;
-    return `<div class="ac-hist-item ${r.status||'open'}">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
-        <div style="flex:1">
-          <div class="ac-hist-room"><i class="ti ti-door" style="font-size:12px;margin-right:4px"></i>${esc(r.room||'—')}</div>
-          <div class="ac-hist-issue">${esc(r.issue||'')}</div>
-          ${r.action?`<div class="ac-hist-action"><i class="ti ti-tool" style="font-size:11px;margin-right:4px"></i>${esc(r.action)}</div>`:''}
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
-          <span class="ac-badge ${r.status||'open'}">${stLbl[r.status]||'🔴 Open'}</span>
-          <span class="ac-pri ${({urgent:'urgent',normal:'normal',low:'low'})[r.pri]||'normal'}">${priLbl[r.pri]||'🟡 Normal'}</span>
-        </div>
-      </div>
-      <div class="ac-hist-meta" style="margin-top:8px">
-        ${r.dateReported?`<span><i class="ti ti-calendar" style="font-size:10px"></i> Reported: ${r.dateReported}</span>`:''}
-        ${r.technician?`<span><i class="ti ti-user" style="font-size:10px"></i> Tech: ${esc(r.technician)}</span>`:''}
-        ${r.reportedBy?`<span><i class="ti ti-user-circle" style="font-size:10px"></i> By: ${esc(r.reportedBy)}</span>`:''}
-        ${r.dateResolved?`<span><i class="ti ti-circle-check" style="color:#16a34a;font-size:10px"></i> Resolved: ${r.dateResolved}</span>`:''}
-        ${days!=null?`<span style="font-weight:700;color:#0e7490"><i class="ti ti-clock" style="font-size:10px"></i> ${days===0?'Same day':days+'d to resolve'}</span>`:''}
-      </div>
-    </div>`;
-  }).join('');
-}
-/* ── END A/C ISSUES ── */
+.ac-wrap{padding:16px 20px 40px}.ac-hdr{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding:18px 20px;background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)}.ac-hdr-ico{width:46px;height:46px;border-radius:12px;background:#e0f7fa;display:flex;align-items:center;justify-content:center;font-size:22px;color:#0e7490;flex-shrink:0}.ac-hdr-t{font-size:18px;font-weight:800;color:var(--ink)}.ac-hdr-s{font-size:12px;color:var(--muted);margin-top:2px}.ac-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}.ac-kpi{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:14px 16px;box-shadow:var(--sh)}.ac-kpi-val{font-size:26px;font-weight:800;font-family:var(--serif)}.ac-kpi-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-top:2px}.ac-add-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)}.ac-add-card h3{font-size:13px;font-weight:700;color:#0e7490;margin:0 0 12px;display:flex;align-items:center;gap:6px}.ac-form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.ac-form-group{display:flex;flex-direction:column;gap:4px}.ac-form-group label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted)}.ac-inp{padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:var(--sans);outline:none;background:var(--white);color:var(--ink)}.ac-inp:focus{border-color:#0e7490}.ac-save-btn{padding:9px 18px;background:#0e7490;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px;white-space:nowrap}.ac-filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.ac-filter-btn{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);border:1.5px solid var(--border);background:var(--white);color:var(--muted)}.ac-filter-btn.on{border-color:#0e7490;background:#0e7490;color:#fff}.ac-tbl-wrap{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow-x:auto}.ac-tbl{width:100%;border-collapse:collapse;font-size:12px}.ac-tbl thead{background:linear-gradient(180deg,#e0f7fa,#b2ebf2)}.ac-tbl th{padding:9px 11px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#0e4a6e;white-space:nowrap;border-bottom:1px solid #b2ebf2}.ac-tbl td{padding:7px 11px;border-bottom:1px solid var(--border2);vertical-align:middle}.ac-tbl tr:last-child td{border-bottom:none}.ac-tbl tr.ac-open{border-left:3px solid #dc2626}.ac-tbl tr.ac-inprogress{border-left:3px solid #d97706}.ac-tbl tr.ac-resolved{border-left:3px solid #16a34a;opacity:.75}.ac-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;border:none;font-family:var(--sans)}.ac-badge.open{background:#fce8e8;color:#dc2626}.ac-badge.inprogress{background:#fffbeb;color:#d97706}.ac-badge.resolved{background:#f0fdf4;color:#16a34a}.ac-pri{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700}.ac-pri.urgent{background:#fce8e8;color:#dc2626}.ac-pri.normal{background:#fef9c3;color:#854d0e}.ac-pri.low{background:#f0fdf4;color:#16a34a}.ac-ci{width:100%;padding:5px 7px;border:none;background:transparent;font-family:var(--sans);font-size:12px;color:var(--ink);outline:none}.ac-ci:focus{background:#f0f9ff;border-radius:6px}.ac-empty{padding:40px;text-align:center;color:var(--muted2);font-size:13px}.ac-empty i{font-size:36px;display:block;margin-bottom:10px;opacity:.3}.ac-hist-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;border-left:4px solid}.ac-hist-item.open{border-left-color:#dc2626}.ac-hist-item.inprogress{border-left-color:#d97706}.ac-hist-item.resolved{border-left-color:#16a34a}.ac-hist-room{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:3px}.ac-hist-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted)}.ac-hist-action{background:#f0fdf4;border-radius:7px;padding:6px 10px;font-size:12px;margin-top:6px;color:#166534;border-left:3px solid #16a34a}
 </style>
 </head>
 <body>
@@ -944,99 +812,18 @@ function renderACHistory(){
   <div class="ac-wrap">
     <div class="ac-hdr">
       <div class="ac-hdr-ico"><i class="ti ti-air-conditioning"></i></div>
-      <div>
-        <div class="ac-hdr-t">A/C Issues Log</div>
-        <div class="ac-hdr-s">Report issues &bull; Track actions &bull; Monitor resolutions</div>
-      </div>
-      <button id="ac-hist-btn" onclick="acToggleHistory()" style="margin-left:auto;display:flex;align-items:center;gap:6px;padding:8px 16px;background:#0e7490;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)">
-        <i class="ti ti-history" style="font-size:15px"></i> History
-      </button>
+      <div><div class="ac-hdr-t">A/C Issues Log</div><div class="ac-hdr-s">Report issues &bull; Track actions &bull; Monitor resolutions</div></div>
+      <button id="ac-hist-btn" onclick="acToggleHistory()" style="margin-left:auto;display:flex;align-items:center;gap:6px;padding:8px 16px;background:#0e7490;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-history" style="font-size:15px"></i> History</button>
     </div>
-    <!-- History Panel -->
     <div id="ac-history-panel" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);padding:18px 20px;margin-bottom:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-        <div style="font-size:15px;font-weight:800;color:#0e4a6e;display:flex;align-items:center;gap:8px"><i class="ti ti-history" style="color:#0e7490"></i> Issue History</div>
-        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-          <input type="text" id="ac-hist-search" placeholder="Search room, issue, technician..." oninput="renderACHistory()" style="padding:7px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none;width:240px">
-          <select id="ac-hist-status" onchange="renderACHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none">
-            <option value="all">All statuses</option>
-            <option value="open">🔴 Open</option>
-            <option value="inprogress">🟡 In Progress</option>
-            <option value="resolved">✅ Resolved</option>
-          </select>
-          <select id="ac-hist-month" onchange="renderACHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none">
-            <option value="all">All months</option>
-            <option value="05">May</option>
-            <option value="06">Jun</option>
-            <option value="07">Jul</option>
-            <option value="08">Aug</option>
-            <option value="09">Sep</option>
-            <option value="10">Oct</option>
-          </select>
-          <select id="ac-hist-pri" onchange="renderACHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none">
-            <option value="all">All priorities</option>
-            <option value="urgent">🔴 Urgent</option>
-            <option value="normal">🟡 Normal</option>
-            <option value="low">🟢 Low</option>
-          </select>
-        </div>
-      </div>
-      <!-- Summary stats for history view -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px"><div style="font-size:15px;font-weight:800;color:#0e4a6e"><i class="ti ti-history" style="color:#0e7490"></i> Issue History</div><div style="display:flex;gap:6px;flex-wrap:wrap"><input type="text" id="ac-hist-search" placeholder="Search..." oninput="renderACHistory()" style="padding:7px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none;width:200px"><select id="ac-hist-status" onchange="renderACHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none"><option value="all">All statuses</option><option value="open">🔴 Open</option><option value="inprogress">🟡 In Progress</option><option value="resolved">✅ Resolved</option></select><select id="ac-hist-month" onchange="renderACHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none"><option value="all">All months</option><option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option><option value="09">Sep</option><option value="10">Oct</option></select></div></div>
       <div id="ac-hist-stats" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"></div>
-      <!-- History timeline -->
       <div id="ac-hist-list"></div>
     </div>
     <div class="ac-kpis" id="ac-kpis"></div>
-    <div class="ac-add-card">
-      <h3><i class="ti ti-plus"></i> Report A/C Issue</h3>
-      <div class="ac-form-row">
-        <div class="ac-form-group"><label>Room / Unit</label><input class="ac-inp" id="ac-room" placeholder="e.g. 205, Bungalow 12" style="width:150px"></div>
-        <div class="ac-form-group" style="flex:1;min-width:180px"><label>Issue Description</label><input class="ac-inp" id="ac-issue" placeholder="e.g. Not cooling, strange noise..."></div>
-        <div class="ac-form-group"><label>Priority</label>
-          <select class="ac-inp" id="ac-pri" style="width:120px">
-            <option value="urgent">🔴 Urgent</option>
-            <option value="normal" selected>🟡 Normal</option>
-            <option value="low">🟢 Low</option>
-          </select>
-        </div>
-        <div class="ac-form-group"><label>Reported By</label><input class="ac-inp" id="ac-reportedby" placeholder="Staff name" style="width:130px"></div>
-        <div class="ac-form-group"><label>Date Reported</label><input class="ac-inp" type="date" id="ac-date" style="width:140px"></div>
-        <button class="ac-save-btn" onclick="acAdd()"><i class="ti ti-device-floppy"></i> Add Issue</button>
-      </div>
-    </div>
-    <div class="ac-filters">
-      <span style="font-size:11px;color:var(--muted);font-weight:600">Status:</span>
-      <button class="ac-filter-btn on" id="acf-all" onclick="acSetFilter('all',this)">All</button>
-      <button class="ac-filter-btn" id="acf-open" onclick="acSetFilter('open',this)">🔴 Open</button>
-      <button class="ac-filter-btn" id="acf-inprogress" onclick="acSetFilter('inprogress',this)">🟡 In Progress</button>
-      <button class="ac-filter-btn" id="acf-resolved" onclick="acSetFilter('resolved',this)">✅ Resolved</button>
-      <div style="width:1px;height:20px;background:var(--border2);margin:0 4px"></div>
-      <span style="font-size:11px;color:var(--muted);font-weight:600">Month:</span>
-      <button class="ac-filter-btn on" id="acfm-all" onclick="acSetMonthFilter('all',this)">All</button>
-      <button class="ac-filter-btn" onclick="acSetMonthFilter('05',this)">May</button>
-      <button class="ac-filter-btn" onclick="acSetMonthFilter('06',this)">Jun</button>
-      <button class="ac-filter-btn" onclick="acSetMonthFilter('07',this)">Jul</button>
-      <button class="ac-filter-btn" onclick="acSetMonthFilter('08',this)">Aug</button>
-      <button class="ac-filter-btn" onclick="acSetMonthFilter('09',this)">Sep</button>
-      <button class="ac-filter-btn" onclick="acSetMonthFilter('10',this)">Oct</button>
-    </div>
-    <div class="ac-tbl-wrap">
-      <table class="ac-tbl">
-        <thead><tr>
-          <th style="width:28px">#</th>
-          <th style="width:110px">Room / Unit</th>
-          <th style="min-width:200px">Issue</th>
-          <th style="width:80px">Priority</th>
-          <th style="min-width:150px">Action Taken</th>
-          <th style="width:100px">Technician</th>
-          <th style="width:105px">Date Reported</th>
-          <th style="width:105px">Resolved Date</th>
-          <th style="width:110px">Status</th>
-          <th style="width:34px"></th>
-        </tr></thead>
-        <tbody id="acTbody"></tbody>
-      </table>
-    </div>
+    <div class="ac-add-card"><h3><i class="ti ti-plus"></i> Report A/C Issue</h3><div class="ac-form-row"><div class="ac-form-group"><label>Room / Unit</label><input class="ac-inp" id="ac-room" placeholder="205, Bungalow 12" style="width:150px"></div><div class="ac-form-group" style="flex:1;min-width:180px"><label>Issue Description</label><input class="ac-inp" id="ac-issue" placeholder="Not cooling, strange noise..."></div><div class="ac-form-group"><label>Priority</label><select class="ac-inp" id="ac-pri" style="width:120px"><option value="urgent">🔴 Urgent</option><option value="normal" selected>🟡 Normal</option><option value="low">🟢 Low</option></select></div><div class="ac-form-group"><label>Reported By</label><input class="ac-inp" id="ac-reportedby" placeholder="Staff name" style="width:130px"></div><div class="ac-form-group"><label>Date Reported</label><input class="ac-inp" type="date" id="ac-date" style="width:140px"></div><button class="ac-save-btn" onclick="acAdd()"><i class="ti ti-device-floppy"></i> Add Issue</button></div></div>
+    <div class="ac-filters"><span style="font-size:11px;color:var(--muted);font-weight:600">Status:</span><button class="ac-filter-btn on" id="acf-all" onclick="acSetFilter('all',this)">All</button><button class="ac-filter-btn" id="acf-open" onclick="acSetFilter('open',this)">🔴 Open</button><button class="ac-filter-btn" id="acf-inprogress" onclick="acSetFilter('inprogress',this)">🟡 In Progress</button><button class="ac-filter-btn" id="acf-resolved" onclick="acSetFilter('resolved',this)">✅ Resolved</button><div style="width:1px;height:20px;background:var(--border2);margin:0 4px"></div><span style="font-size:11px;color:var(--muted);font-weight:600">Month:</span><button class="ac-filter-btn on" id="acfm-all" onclick="acSetMonthFilter('all',this)">All</button><button class="ac-filter-btn" onclick="acSetMonthFilter('05',this)">May</button><button class="ac-filter-btn" onclick="acSetMonthFilter('06',this)">Jun</button><button class="ac-filter-btn" onclick="acSetMonthFilter('07',this)">Jul</button><button class="ac-filter-btn" onclick="acSetMonthFilter('08',this)">Aug</button><button class="ac-filter-btn" onclick="acSetMonthFilter('09',this)">Sep</button><button class="ac-filter-btn" onclick="acSetMonthFilter('10',this)">Oct</button></div>
+    <div class="ac-tbl-wrap"><table class="ac-tbl"><thead><tr><th style="width:28px">#</th><th style="width:110px">Room / Unit</th><th style="min-width:200px">Issue</th><th style="width:80px">Priority</th><th style="min-width:150px">Action Taken</th><th style="width:100px">Technician</th><th style="width:105px">Date Reported</th><th style="width:105px">Resolved Date</th><th style="width:110px">Status</th><th style="width:34px"></th></tr></thead><tbody id="acTbody"></tbody></table></div>
   </div>
 </div>
 
@@ -1498,7 +1285,6 @@ function renderACHistory(){
       <button class="exp-subtab" id="expsub-vantours" onclick="expGoTab('vantours',this)" style="color:#7c5e2e"><i class="ti ti-steering-wheel"></i> Van Tours</button>
     </div>
 
-    <div id="exp-content">
     <!-- ── CARS PANEL ── -->
     <div id="exppanel-cars">
       <div class="car-toolbar">
@@ -1568,8 +1354,7 @@ function renderACHistory(){
             <th style="min-width:160px">Excursion</th><th style="width:80px">Pax</th>
             <th style="width:90px">Cost</th>
             <th style="min-width:110px">Company</th>
-            <th style="min-width:90px">Booked By</th>
-            <th style="width:105px">Status</th><th style="width:58px"></th>
+            <th style="min-width:90px">Booked By</th><th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
           <tbody id="excursionsTbody"></tbody>
         </table>
@@ -1670,10 +1455,7 @@ function renderACHistory(){
             <th style="width:52px">Room</th><th style="width:105px">Day of Booking</th>
             <th style="width:105px">Transfer Date</th><th style="width:80px">Time</th>
             <th style="min-width:180px">Route</th>
-            <th style="width:90px">Cost</th>
-            <th style="min-width:110px">Company</th>
-            <th style="min-width:90px">Booked By</th>
-            <th style="width:105px">Status</th><th style="width:58px"></th>
+            <th style="width:90px">Cost</th><th style="min-width:110px">Company</th><th style="min-width:90px">Booked By</th><th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
           <tbody id="transfersTbody"></tbody>
         </table>
@@ -1699,7 +1481,7 @@ function renderACHistory(){
             <th style="width:105px">Tour Date</th><th style="width:80px">Time</th>
             <th style="min-width:200px">Tour</th><th style="width:50px">Pax</th>
             <th style="width:80px">Type</th>
-            <th style="width:90px">Cost</th><th style="min-width:90px">Booked By</th><th style="width:105px">Status</th><th style="width:58px"></th>
+            <th style="width:90px">Cost</th><th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
           <tbody id="vantoursTbody"></tbody>
         </table>
@@ -1914,8 +1696,6 @@ function renderACHistory(){
   </div>
 </div>
 
-
-
 <!-- ── SUGGESTION EDIT MODAL ── -->
 <div class="modal-bg" id="sugEditModal">
   <div class="modal" style="width:600px;max-width:96vw;max-height:90vh;display:flex;flex-direction:column">
@@ -2125,9 +1905,6 @@ function expGoTab(tab,el){
 /* ── Generic data store ── */
 let GEN_DATA={excursions:[],moto:[],flowers:[],boats:[],transfers:[],vantours:[]};
 let GEN_OPEN={};
-
-
-
 let GEN_SORT={cars:'date_asc',excursions:'date_asc',moto:'date_asc',flowers:'date_asc',boats:'date_asc',transfers:'date_asc',vantours:'date_asc'};
 
 function genSortKey(r, tab){
@@ -2257,7 +2034,7 @@ function renderGenTab(tab){
       const vtSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #e2c97e;border-radius:8px;font-size:12px;outline:none" onchange="const vt=VAN_TOURS.find(t=>t.name===this.value);GEN_DATA[\'vantours\']['+i+'].tour=this.value;if(vt&&r.pax){const pk=r.pax<=2?2:r.pax<=4?4:6;const tier=(r.tourType===\'exclusive\'&&vt.prices.exclusive)?vt.prices.exclusive:vt.prices.standard;if(tier&&tier[pk])GEN_DATA[\'vantours\']['+i+'].cost=tier[pk];}svGen(\'vantours\')"><option value="">-- Select tour --</option>'+VAN_TOURS.map(t=>'<option value="'+t.name+'"'+(r.tour===t.name?' selected':'')+'>'+t.name+' ('+t.duration+')</option>').join('')+'</select>';
       const vtPrice=()=>{const vt=VAN_TOURS.find(t=>t.name===r.tour);if(!vt)return null;const pk=r.pax<=2?2:r.pax<=4?4:6;const tier=(r.tourType==='exclusive'&&vt.prices.exclusive)?vt.prices.exclusive:vt.prices.standard;return tier?tier[pk]||null:null;};
       const vtP=vtPrice();
-      html+='<tr class="'+rc+(isOpen_vt?' car-ep-open':'')+'" onclick="genToggleRow(\'vantours\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'tour',r.tour,'Tour name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:5px 7px"><select class="car-ci" style="font-size:11px;width:90px" onchange="GEN_DATA[\'vantours\']['+i+'].tourType=this.value;svGen(\'vantours\')"><option value="standard"'+((!r.tourType||r.tourType==='standard')?' selected':'')+'>Standard</option><option value="exclusive"'+(r.tourType==='exclusive'?' selected':'')+'>Exclusive</option></select></td><td style="padding:7px 9px;font-weight:700;color:#7c5e2e">'+(r.cost?'€'+r.cost:(vtP?'€'+vtP:''))+'</td><td>'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('vantours',i,'#7c5e2e')+'<button onclick="event.stopPropagation();genDel(\'vantours\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_vt?' car-ep-open':'')+'" onclick="genToggleRow(\'vantours\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'tour',r.tour,'Tour name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:5px 7px"><select class="car-ci" style="font-size:11px;width:90px" onchange="GEN_DATA[\'vantours\']['+i+'].tourType=this.value;svGen(\'vantours\')"><option value="standard"'+((!r.tourType||r.tourType==='standard')?' selected':'')+'>Standard</option><option value="exclusive"'+(r.tourType==='exclusive'?' selected':'')+'>Exclusive</option></select></td><td style="padding:7px 9px;font-weight:700;color:#7c5e2e">'+(r.cost?'€'+r.cost:(vtP?'€'+vtP:''))+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('vantours',i,'#7c5e2e')+'<button onclick="event.stopPropagation();genDel(\'vantours\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_vt){
         const vt=VAN_TOURS.find(t=>t.name===r.tour);
         const priceInfo=vt?(()=>{const s=vt.prices.standard;const e=vt.prices.exclusive;return 'Std: 2pax €'+(s[2]||'?')+' / 4pax €'+(s[4]||'?')+' / 6pax €'+(s[6]||'?')+(e?' · Excl: 2pax €'+(e[2]||'?')+' / 4pax €'+(e[4]||'?')+' / 6pax €'+(e[6]||'?'):'');})():'';
@@ -2368,8 +2145,7 @@ const GEN_FIELDS={
     {id:'pax',label:'Pax',type:'number',ph:'2'},
     {id:'tourType',label:'Type',type:'vantour_type'},
     {id:'cost',label:'Cost € (auto)',type:'number',ph:'0'},
-    {id:'status',label:'Status',type:'status'},
-    {id:'bookedBy',label:'Booked By',type:'text',ph:'Staff name'}
+    {id:'status',label:'Status',type:'status'}
   ]
 };
 
@@ -2863,7 +2639,7 @@ function renderCars(){
       </td>
       <td style="padding:4px 7px">
         <div style="display:flex;gap:3px;align-items:center;justify-content:center">
-          <button class="tog car-ep-btn${isOpen?' open':''}" onclick="carOpenEP=carOpenEP===${i}?null:${i};renderCars()" title="Edit">
+          <button class="tog${isOpen?' open':''}" onclick="carOpenEP=carOpenEP===${i}?null:${i};renderCars()" title="Edit">
             <i class="ti ti-${isOpen?'chevron-up':'pencil'}" style="font-size:12px"></i>
           </button>
           <button onclick="carDel(${i})" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center" title="Delete">
@@ -3374,13 +3150,7 @@ function goTab(t){
   if(t==='alerts')renderAlerts();
   if(t==='ac'){renderAC();const ad=document.getElementById('ac-date');if(ad&&!ad.value)ad.value=new Date().toISOString().split('T')[0];}
   if(t==='experiences')renderCars();
-  if(t==='suggestions'){
-    const tabSug=document.getElementById('tab-suggestions');
-    if(tabSug){tabSug.classList.remove('hidden');tabSug.style.display='';}
-    const ntSug=document.getElementById('nt-suggestions');
-    if(ntSug){ntSug.style.display='';ntSug.classList.add('on');}
-    setTimeout(renderSuggestions, 50);
-  }
+  if(t==='suggestions')renderSuggestions();
 }
 function renderStats(){
   const n=RES.length,a=RES.filter(r=>r.room&&r.room!=='').length,rt=RES.filter(r=>r.rating>0).length;
@@ -3536,189 +3306,6 @@ function renderReport(){
       '<div class="rr"><span>Avg rating</span><span class="rv">'+avg+'</span></div>'+
     '</div>';
 }
-
-/* ── A/C ISSUES ── */
-let AC_DATA=[];
-let acFilter='all';
-let acMonthFilter='all';
-const AC_STATUS_ORDER=['open','inprogress','resolved'];
-const AC_STATUS_LBL={open:'🔴 Open',inprogress:'🟡 In Progress',resolved:'✅ Resolved'};
-const AC_STATUS_CLS={open:'open',inprogress:'inprogress',resolved:'resolved'};
-const AC_ROW_CLS={open:'ac-open',inprogress:'ac-inprogress',resolved:'ac-resolved'};
-
-function svAC(){if(typeof fbdb!=='undefined')fbdb.ref('ac_issues').set(AC_DATA);}
-
-function acAdd(){
-  const room=(document.getElementById('ac-room')?.value||'').trim();
-  const issue=(document.getElementById('ac-issue')?.value||'').trim();
-  const pri=document.getElementById('ac-pri')?.value||'normal';
-  const by=(document.getElementById('ac-reportedby')?.value||'').trim();
-  const date=document.getElementById('ac-date')?.value||new Date().toISOString().split('T')[0];
-  if(!room||!issue){showToast('Room and Issue are required','w');return;}
-  AC_DATA.unshift({id:Date.now()+'',room,issue,pri,reportedBy:by,dateReported:date,action:'',technician:'',dateResolved:'',status:'open'});
-  svAC();renderAC();showToast('Issue added','s');
-  document.getElementById('ac-room').value='';
-  document.getElementById('ac-issue').value='';
-  document.getElementById('ac-reportedby').value='';
-}
-
-function acDel(i){
-  if(!confirm('Delete this issue?'))return;
-  AC_DATA.splice(i,1);svAC();renderAC();showToast('Deleted','w');
-}
-
-function acCycleStatus(i){
-  const o=AC_STATUS_ORDER;
-  const cur=AC_DATA[i].status||'open';
-  const next=o[(o.indexOf(cur)+1)%o.length];
-  AC_DATA[i].status=next;
-  if(next==='resolved'&&!AC_DATA[i].dateResolved)AC_DATA[i].dateResolved=new Date().toISOString().split('T')[0];
-  if(next!=='resolved')AC_DATA[i].dateResolved='';
-  svAC();renderAC();
-}
-
-function acUpd(i,field,val){AC_DATA[i][field]=val;svAC();}
-
-function acSetFilter(f,btn){
-  acFilter=f;
-  document.querySelectorAll('.ac-filters .ac-filter-btn[id^="acf-"]').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  renderAC();
-}
-
-function acSetMonthFilter(m,btn){
-  acMonthFilter=m;
-  document.querySelectorAll('.ac-filters .ac-filter-btn[id^="acfm-"]').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  renderAC();
-}
-
-function renderAC(){
-  // KPIs
-  const kpiEl=document.getElementById('ac-kpis');
-  if(kpiEl){
-    const open=AC_DATA.filter(r=>r.status==='open').length;
-    const inp=AC_DATA.filter(r=>r.status==='inprogress').length;
-    const res=AC_DATA.filter(r=>r.status==='resolved').length;
-    const urgent=AC_DATA.filter(r=>r.pri==='urgent'&&r.status!=='resolved').length;
-    kpiEl.innerHTML=
-      `<div class="ac-kpi"><div class="ac-kpi-val" style="color:#dc2626">${open}</div><div class="ac-kpi-lbl">Open</div></div>`+
-      `<div class="ac-kpi"><div class="ac-kpi-val" style="color:#d97706">${inp}</div><div class="ac-kpi-lbl">In Progress</div></div>`+
-      `<div class="ac-kpi"><div class="ac-kpi-val" style="color:#16a34a">${res}</div><div class="ac-kpi-lbl">Resolved</div></div>`+
-      `<div class="ac-kpi"><div class="ac-kpi-val" style="color:#dc2626">${urgent}</div><div class="ac-kpi-lbl">🔴 Urgent Active</div></div>`+
-      `<div class="ac-kpi"><div class="ac-kpi-val">${AC_DATA.length}</div><div class="ac-kpi-lbl">Total Issues</div></div>`;
-  }
-  // Filter data
-  let rows=AC_DATA.filter((r,i)=>{r._i=i;return true;});
-  if(acFilter!=='all')rows=rows.filter(r=>r.status===acFilter);
-  if(acMonthFilter!=='all')rows=rows.filter(r=>(r.dateReported||'').slice(5,7)===acMonthFilter);
-  // Render table
-  const tbody=document.getElementById('acTbody');if(!tbody)return;
-  if(!rows.length){tbody.innerHTML=`<tr><td colspan="10"><div class="ac-empty"><i class="ti ti-air-conditioning"></i>No issues found</div></td></tr>`;return;}
-  tbody.innerHTML=rows.map((r,n)=>{
-    const i=AC_DATA.indexOf(r);
-    const priCls={urgent:'urgent',normal:'normal',low:'low'}[r.pri]||'normal';
-    const priLbl={urgent:'🔴 Urgent',normal:'🟡 Normal',low:'🟢 Low'}[r.pri]||'Normal';
-    return `<tr class="${AC_ROW_CLS[r.status]||'ac-open'}">
-      <td style="color:var(--muted2);text-align:center;font-size:11px">${n+1}</td>
-      <td><input class="ac-ci" style="font-weight:700" value="${esc(r.room||'')}" placeholder="Room" onchange="acUpd(${i},'room',this.value)"></td>
-      <td><input class="ac-ci" value="${esc(r.issue||'')}" placeholder="Issue description" onchange="acUpd(${i},'issue',this.value)"></td>
-      <td><span class="ac-pri ${priCls}">${priLbl}</span></td>
-      <td><input class="ac-ci" value="${esc(r.action||'')}" placeholder="Action taken..." onchange="acUpd(${i},'action',this.value)"></td>
-      <td><input class="ac-ci" value="${esc(r.technician||'')}" placeholder="Name" onchange="acUpd(${i},'technician',this.value)"></td>
-      <td><input class="ac-ci" type="date" value="${r.dateReported||''}" style="font-size:11px" onchange="acUpd(${i},'dateReported',this.value)"></td>
-      <td><input class="ac-ci" type="date" value="${r.dateResolved||''}" style="font-size:11px" onchange="acUpd(${i},'dateResolved',this.value)"></td>
-      <td><button class="ac-badge ${AC_STATUS_CLS[r.status]||'open'}" onclick="acCycleStatus(${i})">${AC_STATUS_LBL[r.status]||'🔴 Open'}</button></td>
-      <td><button onclick="acDel(${i})" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></td>
-    </tr>`;
-  }).join('');
-}
-function acToggleHistory(){
-  const panel=document.getElementById('ac-history-panel');
-  const btn=document.getElementById('ac-hist-btn');
-  const isOpen=panel.style.display!=='none';
-  panel.style.display=isOpen?'none':'block';
-  btn.style.background=isOpen?'#0e7490':'#0e4a6e';
-  btn.innerHTML=isOpen
-    ?'<i class="ti ti-history" style="font-size:15px"></i> History'
-    :'<i class="ti ti-history" style="font-size:15px"></i> Close History';
-  if(!isOpen)renderACHistory();
-}
-
-function renderACHistory(){
-  const search=(document.getElementById('ac-hist-search')?.value||'').toLowerCase();
-  const statusF=document.getElementById('ac-hist-status')?.value||'all';
-  const monthF=document.getElementById('ac-hist-month')?.value||'all';
-  const priF=document.getElementById('ac-hist-pri')?.value||'all';
-
-  let rows=[...AC_DATA];
-  if(statusF!=='all')rows=rows.filter(r=>r.status===statusF);
-  if(monthF!=='all')rows=rows.filter(r=>(r.dateReported||'').slice(5,7)===monthF);
-  if(priF!=='all')rows=rows.filter(r=>r.pri===priF);
-  if(search)rows=rows.filter(r=>
-    (r.room||'').toLowerCase().includes(search)||
-    (r.issue||'').toLowerCase().includes(search)||
-    (r.technician||'').toLowerCase().includes(search)||
-    (r.action||'').toLowerCase().includes(search)
-  );
-
-  // Sort: unresolved first, then by date desc
-  rows.sort((a,b)=>{
-    const order={open:0,inprogress:1,resolved:2};
-    if((order[a.status]||0)!==(order[b.status]||0))return (order[a.status]||0)-(order[b.status]||0);
-    return (b.dateReported||'').localeCompare(a.dateReported||'');
-  });
-
-  // Stats bar
-  const statsEl=document.getElementById('ac-hist-stats');
-  if(statsEl){
-    const tot=rows.length;
-    const res=rows.filter(r=>r.status==='resolved').length;
-    const avg=rows.filter(r=>r.status==='resolved'&&r.dateReported&&r.dateResolved).map(r=>{
-      const d1=new Date(r.dateReported),d2=new Date(r.dateResolved);
-      return Math.max(0,Math.round((d2-d1)/(1000*60*60*24)));
-    });
-    const avgDays=avg.length?Math.round(avg.reduce((s,v)=>s+v,0)/avg.length):null;
-    statsEl.innerHTML=
-      `<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px">${tot}</div><div class="ac-kpi-lbl">Showing</div></div>`+
-      `<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px;color:#16a34a">${res}</div><div class="ac-kpi-lbl">Resolved</div></div>`+
-      `<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px;color:#dc2626">${rows.filter(r=>r.status==='open').length}</div><div class="ac-kpi-lbl">Still Open</div></div>`+
-      `<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px;color:#d97706">${avgDays!=null?avgDays+'d':'—'}</div><div class="ac-kpi-lbl">Avg Resolution</div></div>`;
-  }
-
-  const el=document.getElementById('ac-hist-list');if(!el)return;
-  if(!rows.length){
-    el.innerHTML='<div class="ac-empty"><i class="ti ti-search"></i>No issues match your filters</div>';
-    return;
-  }
-  const priLbl={urgent:'🔴 Urgent',normal:'🟡 Normal',low:'🟢 Low'};
-  const stLbl={open:'🔴 Open',inprogress:'🟡 In Progress',resolved:'✅ Resolved'};
-  el.innerHTML=rows.map(r=>{
-    const days=r.dateReported&&r.dateResolved?Math.max(0,Math.round((new Date(r.dateResolved)-new Date(r.dateReported))/(1000*60*60*24))):null;
-    return `<div class="ac-hist-item ${r.status||'open'}">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
-        <div style="flex:1">
-          <div class="ac-hist-room"><i class="ti ti-door" style="font-size:12px;margin-right:4px"></i>${esc(r.room||'—')}</div>
-          <div class="ac-hist-issue">${esc(r.issue||'')}</div>
-          ${r.action?`<div class="ac-hist-action"><i class="ti ti-tool" style="font-size:11px;margin-right:4px"></i>${esc(r.action)}</div>`:''}
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
-          <span class="ac-badge ${r.status||'open'}">${stLbl[r.status]||'🔴 Open'}</span>
-          <span class="ac-pri ${({urgent:'urgent',normal:'normal',low:'low'})[r.pri]||'normal'}">${priLbl[r.pri]||'🟡 Normal'}</span>
-        </div>
-      </div>
-      <div class="ac-hist-meta" style="margin-top:8px">
-        ${r.dateReported?`<span><i class="ti ti-calendar" style="font-size:10px"></i> Reported: ${r.dateReported}</span>`:''}
-        ${r.technician?`<span><i class="ti ti-user" style="font-size:10px"></i> Tech: ${esc(r.technician)}</span>`:''}
-        ${r.reportedBy?`<span><i class="ti ti-user-circle" style="font-size:10px"></i> By: ${esc(r.reportedBy)}</span>`:''}
-        ${r.dateResolved?`<span><i class="ti ti-circle-check" style="color:#16a34a;font-size:10px"></i> Resolved: ${r.dateResolved}</span>`:''}
-        ${days!=null?`<span style="font-weight:700;color:#0e7490"><i class="ti ti-clock" style="font-size:10px"></i> ${days===0?'Same day':days+'d to resolve'}</span>`:''}
-      </div>
-    </div>`;
-  }).join('');
-}
-/* ── END A/C ISSUES ── */
-
 function renderGrooms(){
   const dv=document.getElementById('groomDate').value;
   const d=dv?new Date(dv):null;
@@ -4679,7 +4266,7 @@ function sugToggleEdit() {
     document.getElementById('sug-edit-btn').innerHTML = '<i class="ti ti-pencil" style="font-size:14px"></i> Edit';
     document.getElementById('sug-edit-btn').style.background = 'rgba(255,255,255,.15)';
     document.getElementById('sug-edit-mode-badge').style.display = 'none';
-    setTimeout(renderSuggestions, 50);
+    renderSuggestions();
   }
 }
 
@@ -4967,7 +4554,7 @@ const TAB_DEFS = [
   {id:'massage',label:'Massage',        icon:'ti-heart-handshake',color:'#b45309',      visible:true,  order:12, group:''},
   {id:'experiences',label:'Experiences',icon:'ti-map-pin',       color:'#1a6644',       visible:true,  order:13, group:''},
   {id:'suggestions',label:'Suggestions',icon:'ti-map-2',         color:'#0e7490',       visible:true,  order:14, group:''},
-  {id:'ac',         label:'A/C Issues',  icon:'ti-air-conditioning',color:'#0e7490',       visible:true,  order:15, group:''},
+  {id:'ac',label:'A/C Issues',icon:'ti-air-conditioning',color:'#0e7490',visible:true,order:15,group:''},
 ];
 let tsmTabs = null;
 let tsmGroups = [];
@@ -4976,12 +4563,7 @@ let tsmDragSrc = null;
 function tsmLoad() {
   try {
     const saved = JSON.parse(localStorage.getItem('tsm_tabs') || 'null');
-    if (saved && Array.isArray(saved) && saved.some(t=>t.id==='ac') && saved.some(t=>t.id==='suggestions')) {
-      // Merge: add any new TAB_DEFS entries not in saved
-      const savedIds = new Set(saved.map(t => t.id));
-      TAB_DEFS.forEach(def => {
-        if (!savedIds.has(def.id)) saved.push({ ...def });
-      });
+    if (saved && Array.isArray(saved) && saved.length >= TAB_DEFS.length) {
       tsmTabs = saved;
     } else {
       tsmTabs = JSON.parse(JSON.stringify(TAB_DEFS));
@@ -5078,7 +4660,7 @@ function closeAllGroupDDs() {
 document.addEventListener('click', closeAllGroupDDs);
 
 function openTabSettings() {
-  try { tsmLoad(); } catch(e) { tsmTabs = JSON.parse(JSON.stringify(TAB_DEFS)); tsmGroups = []; }
+  tsmLoad();
   document.getElementById('tsm-lock').style.display = 'block';
   document.getElementById('tsm-editor').style.display = 'none';
   document.getElementById('tsm-pwd').value = '';
@@ -5186,6 +4768,145 @@ function tsmReset() {
 })();
 
 
+
+
+/* ── A/C ISSUES ── */
+let AC_DATA=[];
+let acFilter='all';
+let acMonthFilter='all';
+const AC_STATUS_ORDER=['open','inprogress','resolved'];
+const AC_STATUS_LBL={open:'🔴 Open',inprogress:'🟡 In Progress',resolved:'✅ Resolved'};
+const AC_STATUS_CLS={open:'open',inprogress:'inprogress',resolved:'resolved'};
+const AC_ROW_CLS={open:'ac-open',inprogress:'ac-inprogress',resolved:'ac-resolved'};
+
+function svAC(){if(typeof fbdb!=='undefined')fbdb.ref('ac_issues').set(AC_DATA);}
+
+function acAdd(){
+  const room=(document.getElementById('ac-room')?.value||'').trim();
+  const issue=(document.getElementById('ac-issue')?.value||'').trim();
+  if(!room||!issue){showToast('Room and Issue required','w');return;}
+  AC_DATA.unshift({id:Date.now()+'',room,issue,
+    pri:document.getElementById('ac-pri')?.value||'normal',
+    reportedBy:(document.getElementById('ac-reportedby')?.value||'').trim(),
+    dateReported:document.getElementById('ac-date')?.value||new Date().toISOString().split('T')[0],
+    action:'',technician:'',dateResolved:'',status:'open'});
+  svAC();renderAC();showToast('Issue added','s');
+  ['ac-room','ac-issue','ac-reportedby'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+
+function acDel(i){
+  if(!confirm('Delete this issue?'))return;
+  AC_DATA.splice(i,1);svAC();renderAC();showToast('Deleted','w');
+}
+
+function acCycleStatus(i){
+  const o=AC_STATUS_ORDER;
+  AC_DATA[i].status=o[(o.indexOf(AC_DATA[i].status||'open')+1)%o.length];
+  if(AC_DATA[i].status==='resolved'&&!AC_DATA[i].dateResolved)AC_DATA[i].dateResolved=new Date().toISOString().split('T')[0];
+  if(AC_DATA[i].status!=='resolved')AC_DATA[i].dateResolved='';
+  svAC();renderAC();
+}
+
+function acUpd(i,field,val){AC_DATA[i][field]=val;svAC();}
+
+function acSetFilter(f,btn){
+  acFilter=f;
+  document.querySelectorAll('#acf-all,#acf-open,#acf-inprogress,#acf-resolved').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');renderAC();
+}
+
+function acSetMonthFilter(m,btn){
+  acMonthFilter=m;
+  document.querySelectorAll('#acfm-all,[id^="acfm-"]').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');renderAC();
+}
+
+function renderAC(){
+  const kEl=document.getElementById('ac-kpis');
+  if(kEl){
+    const open=AC_DATA.filter(r=>r.status==='open').length;
+    const inp=AC_DATA.filter(r=>r.status==='inprogress').length;
+    const res=AC_DATA.filter(r=>r.status==='resolved').length;
+    const urg=AC_DATA.filter(r=>r.pri==='urgent'&&r.status!=='resolved').length;
+    kEl.innerHTML=
+      '<div class="ac-kpi"><div class="ac-kpi-val" style="color:#dc2626">'+open+'</div><div class="ac-kpi-lbl">Open</div></div>'+
+      '<div class="ac-kpi"><div class="ac-kpi-val" style="color:#d97706">'+inp+'</div><div class="ac-kpi-lbl">In Progress</div></div>'+
+      '<div class="ac-kpi"><div class="ac-kpi-val" style="color:#16a34a">'+res+'</div><div class="ac-kpi-lbl">Resolved</div></div>'+
+      '<div class="ac-kpi"><div class="ac-kpi-val" style="color:#dc2626">'+urg+'</div><div class="ac-kpi-lbl">Urgent Active</div></div>'+
+      '<div class="ac-kpi"><div class="ac-kpi-val">'+AC_DATA.length+'</div><div class="ac-kpi-lbl">Total</div></div>';
+  }
+  let rows=[...AC_DATA];
+  if(acFilter!=='all')rows=rows.filter(r=>r.status===acFilter);
+  if(acMonthFilter!=='all')rows=rows.filter(r=>(r.dateReported||'').slice(5,7)===acMonthFilter);
+  const tbody=document.getElementById('acTbody');if(!tbody)return;
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="10"><div class="ac-empty"><i class="ti ti-air-conditioning"></i>No issues found</div></td></tr>';return;}
+  const priLbl={urgent:'🔴 Urgent',normal:'🟡 Normal',low:'🟢 Low'};
+  const priCls={urgent:'urgent',normal:'normal',low:'low'};
+  tbody.innerHTML=rows.map((r,n)=>{
+    const i=AC_DATA.indexOf(r);
+    return '<tr class="'+(AC_ROW_CLS[r.status]||'ac-open')+'">'
+      +'<td style="color:var(--muted2);text-align:center;font-size:11px">'+(n+1)+'</td>'
+      +'<td><input class="ac-ci" style="font-weight:700" value="'+esc(r.room||'')+'" placeholder="Room" onchange="acUpd('+i+',\'room\',this.value)"></td>'
+      +'<td><input class="ac-ci" value="'+esc(r.issue||'')+'" placeholder="Issue" onchange="acUpd('+i+',\'issue\',this.value)"></td>'
+      +'<td><span class="ac-pri '+(priCls[r.pri]||'normal')+'">'+(priLbl[r.pri]||'🟡 Normal')+'</span></td>'
+      +'<td><input class="ac-ci" value="'+esc(r.action||'')+'" placeholder="Action taken..." onchange="acUpd('+i+',\'action\',this.value)"></td>'
+      +'<td><input class="ac-ci" value="'+esc(r.technician||'')+'" placeholder="Name" onchange="acUpd('+i+',\'technician\',this.value)"></td>'
+      +'<td><input class="ac-ci" type="date" value="'+(r.dateReported||'')+'" style="font-size:11px" onchange="acUpd('+i+',\'dateReported\',this.value)"></td>'
+      +'<td><input class="ac-ci" type="date" value="'+(r.dateResolved||'')+'" style="font-size:11px" onchange="acUpd('+i+',\'dateResolved\',this.value)"></td>'
+      +'<td><button class="ac-badge '+(AC_STATUS_CLS[r.status]||'open')+'" onclick="acCycleStatus('+i+')">'+(AC_STATUS_LBL[r.status]||'🔴 Open')+'</button></td>'
+      +'<td><button onclick="acDel('+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></td>'
+      +'</tr>';
+  }).join('');
+}
+
+function acToggleHistory(){
+  const panel=document.getElementById('ac-history-panel');
+  const btn=document.getElementById('ac-hist-btn');
+  const isOpen=panel.style.display!=='none';
+  panel.style.display=isOpen?'none':'block';
+  btn.style.background=isOpen?'#0e7490':'#0e4a6e';
+  btn.innerHTML=(isOpen?'<i class="ti ti-history" style="font-size:15px"></i> History':'<i class="ti ti-history" style="font-size:15px"></i> Close History');
+  if(!isOpen)renderACHistory();
+}
+
+function renderACHistory(){
+  const search=(document.getElementById('ac-hist-search')?.value||'').toLowerCase();
+  const statusF=document.getElementById('ac-hist-status')?.value||'all';
+  const monthF=document.getElementById('ac-hist-month')?.value||'all';
+  let rows=[...AC_DATA];
+  if(statusF!=='all')rows=rows.filter(r=>r.status===statusF);
+  if(monthF!=='all')rows=rows.filter(r=>(r.dateReported||'').slice(5,7)===monthF);
+  if(search)rows=rows.filter(r=>(r.room||'').toLowerCase().includes(search)||(r.issue||'').toLowerCase().includes(search)||(r.technician||'').toLowerCase().includes(search));
+  rows.sort((a,b)=>{const o={open:0,inprogress:1,resolved:2};return(o[a.status]||0)-(o[b.status]||0)||((b.dateReported||'').localeCompare(a.dateReported||''));});
+  const sEl=document.getElementById('ac-hist-stats');
+  if(sEl){
+    const avg=rows.filter(r=>r.status==='resolved'&&r.dateReported&&r.dateResolved).map(r=>Math.max(0,Math.round((new Date(r.dateResolved)-new Date(r.dateReported))/86400000)));
+    const avgD=avg.length?Math.round(avg.reduce((s,v)=>s+v,0)/avg.length):null;
+    sEl.innerHTML='<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px">'+rows.length+'</div><div class="ac-kpi-lbl">Showing</div></div>'
+      +'<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px;color:#16a34a">'+rows.filter(r=>r.status==='resolved').length+'</div><div class="ac-kpi-lbl">Resolved</div></div>'
+      +'<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px;color:#dc2626">'+rows.filter(r=>r.status==='open').length+'</div><div class="ac-kpi-lbl">Open</div></div>'
+      +'<div class="ac-kpi" style="padding:10px 14px"><div class="ac-kpi-val" style="font-size:20px;color:#0e7490">'+(avgD!=null?avgD+'d':'—')+'</div><div class="ac-kpi-lbl">Avg Resolution</div></div>';
+  }
+  const el=document.getElementById('ac-hist-list');if(!el)return;
+  const stLbl={open:'🔴 Open',inprogress:'🟡 In Progress',resolved:'✅ Resolved'};
+  el.innerHTML=rows.length?rows.map(r=>{
+    const days=r.dateReported&&r.dateResolved?Math.max(0,Math.round((new Date(r.dateResolved)-new Date(r.dateReported))/86400000)):null;
+    return '<div class="ac-hist-item '+(r.status||'open')+'">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">'
+      +'<div style="flex:1"><div class="ac-hist-room"><i class="ti ti-door" style="font-size:12px;margin-right:4px"></i>'+esc(r.room||'—')+'</div>'
+      +'<div style="font-size:13px;color:var(--ink);margin-bottom:4px">'+esc(r.issue||'')+'</div>'
+      +(r.action?'<div class="ac-hist-action"><i class="ti ti-tool" style="font-size:11px;margin-right:4px"></i>'+esc(r.action)+'</div>':'')
+      +'</div><span class="ac-badge '+(AC_STATUS_CLS[r.status]||'open')+'">'+(stLbl[r.status]||'🔴 Open')+'</span></div>'
+      +'<div class="ac-hist-meta" style="margin-top:8px">'
+      +(r.dateReported?'<span><i class="ti ti-calendar" style="font-size:10px"></i> '+r.dateReported+'</span>':'')
+      +(r.technician?' <span><i class="ti ti-user" style="font-size:10px"></i> '+esc(r.technician)+'</span>':'')
+      +(r.reportedBy?' <span><i class="ti ti-user-circle" style="font-size:10px"></i> '+esc(r.reportedBy)+'</span>':'')
+      +(r.dateResolved?' <span><i class="ti ti-circle-check" style="color:#16a34a;font-size:10px"></i> '+r.dateResolved+'</span>':'')
+      +(days!=null?' <span style="font-weight:700;color:#0e7490">'+(days===0?'Same day':days+'d to resolve')+'</span>':'')
+      +'</div></div>';
+  }).join(''):'<div class="ac-empty"><i class="ti ti-search"></i>No issues match filters</div>';
+}
+/* ── END A/C ISSUES ── */
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -5208,7 +4929,7 @@ fbdb.ref('ta_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.
 fbdb.ref('goo_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){gooHistory=d;localStorage.setItem('goo_reviews',JSON.stringify(d));renderRevHistory('goo');}});
 fbdb.ref('bk_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){bkHistory=d;localStorage.setItem('bk_reviews',JSON.stringify(d));renderBKHistory();}});
 fbdb.ref('alerts_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){alertsData=d;try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}checkOverdueTasks();}});
-fbdb.ref('ac_issues').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){AC_DATA=d;const t=document.getElementById('tab-ac');if(t&&!t.classList.contains('hidden'))renderAC();}});
+fbdb.ref('ac_issues').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){AC_DATA=d;}});
 fbdb.ref('alerts_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(alertsData)){alertsData=d;checkOverdueTasks();const alTab=document.getElementById('tab-alerts');if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();}});
 fbdb.ref('massage_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){massageData=d;try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}}});
 fbdb.ref('massage_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(massageData)){massageData=d;const msTab=document.getElementById('tab-massage');if(msTab&&!msTab.classList.contains('hidden')){msRenderFilterBars();renderMassage();}}});
