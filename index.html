@@ -1230,6 +1230,14 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div id="ms-month-tabs" style="display:flex;gap:4px;flex-wrap:wrap"></div>
       <div style="width:1px;height:22px;background:var(--border2);margin:0 4px"></div>
       <div id="ms-status-tabs" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+      <div style="width:1px;height:22px;background:var(--border2);margin:0 4px"></div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--muted);font-weight:600">Add Day:</span>
+        <input type="date" id="ms-add-day-date" style="padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--sans);outline:none">
+        <input type="time" id="ms-add-day-start" style="padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--sans);outline:none;width:90px">
+        <input type="time" id="ms-add-day-end" style="padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--sans);outline:none;width:90px">
+        <button onclick="msAddDay()" style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:#b45309;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-calendar-plus"></i> Add</button>
+      </div>
     </div>
     <div id="massageContent"></div>
   </div>
@@ -3993,10 +4001,57 @@ function wlPromote(type,dateKey,idx){const entries=clsData[type][dateKey]||[];if
 /* MASSAGE */
 let massageData=JSON.parse(localStorage.getItem('massage_data')||'{}');
 function svMassage(){try{localStorage.setItem('massage_data',JSON.stringify(massageData));}catch(e){}if(typeof fbdb!=='undefined')fbdb.ref('massage_data').set(massageData);}
-const MASSAGE_SCHEDULE={'2026-05-28':[{start:'11:00',end:'13:00'},{start:'17:30',end:'19:00'}],'2026-05-29':[{start:'15:00',end:'18:00'}],'2026-05-30':[{start:'12:30',end:'16:30'}],'2026-05-31':[{start:'10:00',end:'13:00'}],'2026-06-01':[{start:'10:00',end:'12:00'}],'2026-06-02':[{start:'11:00',end:'15:00'}],'2026-06-03':[{start:'10:00',end:'13:00'}],'2026-06-04':[{start:'11:00',end:'15:00'}],'2026-06-05':[{start:'12:00',end:'14:00'},{start:'17:00',end:'19:00'}],'2026-06-06':[{start:'12:30',end:'15:30'}],'2026-06-07':[{start:'11:00',end:'13:00'}]};
+const MASSAGE_SCHEDULE={
+  '2026-05-28':[{start:'11:00',end:'13:00'},{start:'17:30',end:'19:00'}],
+  '2026-05-29':[{start:'15:00',end:'18:00'}],
+  '2026-05-30':[{start:'12:30',end:'16:30'}],
+  '2026-05-31':[{start:'10:00',end:'13:00'}],
+  '2026-06-01':[{start:'10:00',end:'12:00'}],
+  '2026-06-02':[{start:'11:00',end:'15:00'}],
+  '2026-06-03':[{start:'10:00',end:'13:00'}],
+  '2026-06-04':[{start:'11:00',end:'15:00'}],
+  '2026-06-05':[{start:'12:00',end:'14:00'},{start:'17:00',end:'19:00'}],
+  '2026-06-06':[{start:'12:30',end:'15:30'}],
+  '2026-06-07':[{start:'11:00',end:'13:00'}],
+  '2026-06-08':[{start:'17:00',end:'19:00'}],
+  '2026-06-09':[{start:'12:00',end:'16:00'}],
+  '2026-06-10':[{start:'18:00',end:'20:00'}],
+  '2026-06-11':[{start:'17:00',end:'19:00'}],
+  '2026-06-12':[{start:'18:00',end:'19:00'}],
+  '2026-06-13':[{start:'12:00',end:'16:00'}],
+  '2026-06-14':[{start:'11:00',end:'13:00'}],
+  '2026-06-15':[{start:'13:00',end:'16:00'}],
+  '2026-06-16':[{start:'15:00',end:'18:00'}]
+};
 function timeToMins(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
 function minsToTime(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
 function getSlots(dateKey){const windows=MASSAGE_SCHEDULE[dateKey]||[];const slots=[];windows.forEach(w=>{let cur=timeToMins(w.start);const end=timeToMins(w.end);while(cur+60<=end){slots.push(minsToTime(cur));cur+=60;}});return slots;}
+function msAddDay(){
+  const dk=document.getElementById('ms-add-day-date')?.value;
+  const start=document.getElementById('ms-add-day-start')?.value;
+  const end=document.getElementById('ms-add-day-end')?.value;
+  if(!dk){showToast('Pick a date first','w');return;}
+  if(!start||!end||start>=end){showToast('Enter valid start and end times','w');return;}
+  // Add to MASSAGE_SCHEDULE (runtime only) or to massageData for persistence
+  if(!MASSAGE_SCHEDULE[dk]){
+    MASSAGE_SCHEDULE[dk]=[{start,end}];
+  } else {
+    // Add window if not already there
+    const exists=MASSAGE_SCHEDULE[dk].some(w=>w.start===start&&w.end===end);
+    if(!exists)MASSAGE_SCHEDULE[dk].push({start,end});
+    MASSAGE_SCHEDULE[dk].sort((a,b)=>a.start.localeCompare(b.start));
+  }
+  // Persist to Firebase via massageData marker
+  if(!massageData[dk])massageData[dk]={};
+  massageData[dk].__customSlots=MASSAGE_SCHEDULE[dk];
+  if(typeof fbdb!=='undefined')fbdb.ref('massage_data/'+dk+'/__customSlots').set(MASSAGE_SCHEDULE[dk]);
+  document.getElementById('ms-add-day-date').value='';
+  document.getElementById('ms-add-day-start').value='';
+  document.getElementById('ms-add-day-end').value='';
+  msMFilter='all';msRenderFilterBars();renderMassage();
+  showToast('Day added: '+dk+' '+start+'-'+end,'s');
+}
+
 let msMFilter='all'; // month filter: 'all' or '05','06',...
 let msSFilter='all'; // status filter: 'all','waiting','confirmed','commission','cancelled'
 
@@ -4932,7 +4987,14 @@ fbdb.ref('alerts_data').once('value').then(snap=>{const d=snap.val();if(d&&typeo
 fbdb.ref('ac_issues').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){AC_DATA=d;}});
 fbdb.ref('alerts_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(alertsData)){alertsData=d;checkOverdueTasks();const alTab=document.getElementById('tab-alerts');if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();}});
 fbdb.ref('massage_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){massageData=d;try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}}});
-fbdb.ref('massage_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(massageData)){massageData=d;const msTab=document.getElementById('tab-massage');if(msTab&&!msTab.classList.contains('hidden')){msRenderFilterBars();renderMassage();}}});
+fbdb.ref('massage_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(massageData)){massageData=d;
+      // Restore any custom slots saved in massageData
+      Object.keys(d).forEach(dk=>{
+        if(d[dk]&&d[dk].__customSlots&&Array.isArray(d[dk].__customSlots)){
+          MASSAGE_SCHEDULE[dk]=d[dk].__customSlots;
+        }
+      });
+      const msTab=document.getElementById('tab-massage');if(msTab&&!msTab.classList.contains('hidden')){msRenderFilterBars();renderMassage();}}});
 fbdb.ref('gym_bookings').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){gymBookings=d;try{localStorage.setItem('gym_bookings',JSON.stringify(d));}catch(e){}}});
 fbdb.ref('gym_bookings').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(gymBookings)){gymBookings=d;const gymTab=document.getElementById('tab-gym');if(gymTab&&!gymTab.classList.contains('hidden'))renderGym();}});
 fbdb.ref('cls_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){clsData=d;try{localStorage.setItem('cls_data',JSON.stringify(d));}catch(e){}}});
