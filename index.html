@@ -3658,7 +3658,24 @@ function renderBKStats(){
   const periodLbl=mNames[mFilter]||'Season 2026';
   if(statsEl){const allRated=getBKRated('all');const allAvg=allRated.length?(allRated.reduce((s,r)=>s+r.rating,0)/allRated.length).toFixed(1):'--';statsEl.innerHTML='<div class="stat"><div class="slbl2">Period</div><div class="sval" style="color:#0069ff">'+periodLbl+'</div></div><div class="stat"><div class="slbl2">Average</div><div class="sval" style="color:#0069ff">'+avgOut10+'/10</div></div><div class="stat"><div class="slbl2">Ratings</div><div class="sval">'+rated.length+'</div></div><div class="stat"><div class="slbl2">Season avg</div><div class="sval star">'+allAvg+'/10</div></div>';statsEl.classList.remove('hidden');}
   const distRows=[10,9,8,7,6,5,4,3,2,1].map(score=>{const cnt=dist[score]||0;if(!cnt)return '';return '<div class="bk-dist-row"><span class="bk-dist-lbl">'+score+'</span><div class="bk-dist-track"><div class="bk-dist-fill" style="width:'+Math.round(cnt/maxDist*100)+'%"></div></div><span class="bk-dist-cnt">'+cnt+'</span></div>';}).join('');
-  el.innerHTML='<div class="bk-score-big"><div><div class="bk-score-num">'+avgOut10+'</div><div style="font-size:12px;color:#0069ff;font-weight:600;margin-top:2px">'+avgOut5+'/5 · '+rated.length+' reviews</div></div><div style="flex:1">'+distRows+'</div></div><div style="margin-top:10px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px">Top ratings</div><div class="bk-top-guests">'+topGuests.map(r=>'<div class="bk-guest-chip"><span class="bk-guest-name">'+esc(r.name)+'<small style="display:block;font-size:10px;color:var(--muted);font-weight:400">'+(r.room||'TBA')+' \xb7 '+fd(r.arr)+'</small></span><span class="bk-guest-score">'+r.rating+'</span></div>').join('')+'</div></div>';
+  // Check if we have saved summary with positives/improvements for this period
+  const periodFull={'05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'September 2026','10':'October 2026','all':'Season 2026'}[mFilter]||'Season 2026';
+  const savedEntry=bkHistory.find(h=>h.period===periodFull);
+  const posHtml=savedEntry&&savedEntry.positives&&savedEntry.positives.length
+    ?'<div style="margin-top:14px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#16a34a;margin-bottom:8px">✓ What guests loved</div>'
+      +savedEntry.positives.map(p=>'<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px"><span style="color:#16a34a;font-size:14px;line-height:1.2">✓</span><span style="font-size:12px;color:var(--ink)">'+esc(p)+'</span></div>').join('')
+      +'</div>'
+    :'';
+  const impHtml=savedEntry&&savedEntry.improvements&&savedEntry.improvements.length
+    ?'<div style="margin-top:12px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#d97706;margin-bottom:8px">△ Points to improve</div>'
+      +savedEntry.improvements.map(p=>'<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px"><span style="color:#d97706;font-size:14px;line-height:1.2">△</span><span style="font-size:12px;color:var(--ink)">'+esc(p)+'</span></div>').join('')
+      +'</div>'
+    :'';
+  const topSection=(!posHtml&&!impHtml)
+    ?'<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px">Top ratings</div><div class="bk-top-guests">'+topGuests.map(r=>'<div class="bk-guest-chip"><span class="bk-guest-name">'+esc(r.name)+'<small style="display:block;font-size:10px;color:var(--muted);font-weight:400">'+(r.room||'TBA')+' \xb7 '+fd(r.arr)+'</small></span><span class="bk-guest-score">'+r.rating+'</span></div>').join('')+'</div></div>'
+    :'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'+posHtml+impHtml+'</div>'
+    +(savedEntry&&savedEntry.summary?'<div style="margin-top:12px;padding:12px 14px;background:#f8f9ff;border-radius:9px;font-size:12px;line-height:1.6;color:var(--ink)">'+esc(savedEntry.summary)+'</div>':'');
+  el.innerHTML='<div class="bk-score-big"><div><div class="bk-score-num">'+avgOut10+'</div><div style="font-size:12px;color:#0069ff;font-weight:600;margin-top:2px">'+avgOut5+'/5 · '+rated.length+' reviews</div></div><div style="flex:1">'+distRows+'</div></div>'+topSection;
 }
 function bkSaveAllMonths(){
   const months=['05','06','07','08','09','10'];
@@ -3717,64 +3734,45 @@ async function bkGenerateAllMonths(){
   sumEl.innerHTML='<div style="display:flex;align-items:center;gap:10px;color:#16a34a"><i class="ti ti-circle-check" style="font-size:18px"></i> Done! '+processed+' months summarised and saved.</div><div style="margin-top:8px"><button onclick="document.getElementById(\'bk-ai-summary\').style.display=\'none\'" style="padding:6px 12px;background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--sans)">&#x2715; Close</button></div>';
 }
 
-function bkGenerateSummary(){
+async function bkGenerateSummary(){
   const mFilter=document.getElementById('bk-period-m')?.value||'all';
   const rated=getBKRated(mFilter);
   if(!rated.length){showToast('No ratings for this period','w');return;}
   const mNames={'05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'September 2026','10':'October 2026','all':'Season 2026'};
   const period=mNames[mFilter]||'Season 2026';
   const avg=(rated.reduce((s,r)=>s+r.rating,0)/rated.length).toFixed(1);
-
-  // Collect notes from rated reservations
-  const notes=rated.filter(r=>r.notes&&r.notes.trim()).map(r=>`Room ${r.room||'?'} (${r.name||'Guest'}, rating ${r.rating}/10): ${r.notes.trim()}`);
-
-  // Show loading
+  const notes=rated.filter(r=>r.notes&&r.notes.trim()).map(r=>'Room '+(r.room||'?')+' ('+r.rating+'/10): '+r.notes.trim());
+  const notesBlock=notes.length?'Guest notes:\n'+notes.join('\n'):'No notes available.';
+  const scoreLines=[10,9,8,7,6,5,4,3].map(s=>{const n=rated.filter(r=>r.rating===s).length;return n?s+'/10: '+n+' guests':'';}).filter(Boolean).join(', ');
+  const prompt='Analyze Booking.com reviews for White Rocks Hotel Kefalonia. Period: '+period+'. Average: '+avg+'/10. '+rated.length+' guests. Scores: '+scoreLines+'. '+notesBlock+'. Reply ONLY with JSON: {"summary":"brief summary","positives":["p1","p2","p3"],"improvements":["i1","i2","i3"]}';
   const sumEl=document.getElementById('bk-ai-summary');
   sumEl.style.display='block';
-  sumEl.innerHTML='<div style="display:flex;align-items:center;gap:10px;color:#6366f1"><i class="ti ti-loader ti-spin" style="font-size:18px"></i> Generating AI summary...</div>';
-
-  const notesBlock=notes.length
-    ?'Guest notes/comments:\n'+notes.join('\n')
-    :'No individual guest notes available — analyze based on scores only.';
-
-  const scoreLines=[10,9,8,7,6,5,4,3].map(s=>{const n=rated.filter(r=>r.rating===s).length;return n?'  '+s+'/10: '+n+' guests':'';}).filter(Boolean).join('\n');
-  const topG=rated.sort((a,b)=>b.rating-a.rating).slice(0,5).map(r=>(r.name||'Guest')+' ('+r.rating+'/10)').join(', ');
-  const prompt='You are analyzing Booking.com guest reviews for White Rocks Hotel & Bungalows, Kefalonia.\n\nPeriod: '+period+'\nAverage: '+avg+'/10\nGuests rated: '+rated.length+'\n\nScore distribution:\n'+scoreLines+'\n\nTop rated: '+topG+'\n\n'+notesBlock+'\n\nWrite a 150-200 word management summary covering: overall performance, key positives, areas for improvement, notable mentions. English only.';
-
-  fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1000,
-      messages:[{role:'user',content:prompt}]
-    })
-  })
-  .then(r=>r.json())
-  .then(data=>{
-    const text=data.content?.[0]?.text||'No response';
-    const avgScore=parseFloat(avg);
-    const color=avgScore>=9?'#16a34a':avgScore>=7?'#0069ff':'#dc2626';
-    sumEl.innerHTML=
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
-      +'<i class="ti ti-sparkles" style="color:#6366f1;font-size:18px"></i>'
-      +'<div style="font-size:14px;font-weight:700;color:#1e1b4b">AI Summary — '+period+'</div>'
-      +'<div style="margin-left:auto;font-size:22px;font-weight:800;color:'+color+'">'+avg+'/10</div>'
-      +'</div>'
-      +'<div style="font-size:13px;line-height:1.7;color:var(--ink);white-space:pre-wrap">'+text+'</div>'
-      +'<div style="display:flex;gap:8px;margin-top:12px">'
-      +'<button onclick="bkSaveWithSummary()" style="padding:6px 14px;background:#0069ff;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-device-floppy"></i> Save with summary</button>'
-      +'<button onclick="document.getElementById(\'bk-ai-summary\').style.display=\'none\'" style="padding:6px 12px;background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--sans)">&#x2715; Close</button>'
-      +'</div>';
-    // Also store for save
-    sumEl.dataset.summary=text;
-    sumEl.dataset.period=period;
-    sumEl.dataset.avg=avg;
-    sumEl.dataset.count=rated.length;
-  })
-  .catch(err=>{
-    sumEl.innerHTML='<div style="color:#dc2626"><i class="ti ti-alert-circle"></i> Error: '+err.message+'</div>';
-  });
+  sumEl.innerHTML='<div style="color:#6366f1;padding:10px"><i class="ti ti-loader ti-spin"></i> Generating...</div>';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const raw=(data.content||[]).map(b=>b.text||'').join('');
+    let p={summary:'',positives:[],improvements:[]};
+    try{p=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){p.summary=raw;}
+    const col=avg>=9?'#16a34a':avg>=7?'#0069ff':'#dc2626';
+    const pos=(p.positives||[]).map(x=>'<div style="display:flex;gap:5px;margin-bottom:4px"><span style="color:#16a34a">&#10003;</span><span style="font-size:12px">'+esc(x)+'</span></div>').join('');
+    const imp=(p.improvements||[]).map(x=>'<div style="display:flex;gap:5px;margin-bottom:4px"><span style="color:#d97706">&#9651;</span><span style="font-size:12px">'+esc(x)+'</span></div>').join('');
+    sumEl.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><i class="ti ti-sparkles" style="color:#6366f1;font-size:18px"></i><b style="font-size:14px;color:#1e1b4b">'+period+'</b><span style="margin-left:auto;font-size:24px;font-weight:800;color:'+col+'">'+avg+'/10</span></div>'
+      +'<div style="font-size:13px;line-height:1.7;margin-bottom:12px">'+(p.summary||raw)+'</div>'
+      +(pos||imp?'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'+(pos?'<div><div style="font-size:10px;font-weight:700;color:#16a34a;margin-bottom:5px">WHAT GUESTS LOVED</div>'+pos+'</div>':'')+(imp?'<div><div style="font-size:10px;font-weight:700;color:#d97706;margin-bottom:5px">POINTS TO IMPROVE</div>'+imp+'</div>':'')+'</div>':'')
+      +'<div style="display:flex;gap:6px"><button onclick="bkSaveWithSummary()" style="padding:6px 13px;background:#0069ff;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer">Save</button>'
+      +'<button onclick="document.getElementById(\'bk-ai-summary\').style.display=\'none\'" style="padding:6px 12px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:7px;font-size:12px;cursor:pointer">Close</button></div>';
+    sumEl.dataset.summary=p.summary||raw;
+    sumEl.dataset.positives=JSON.stringify(p.positives||[]);
+    sumEl.dataset.improvements=JSON.stringify(p.improvements||[]);
+    sumEl.dataset.period=period;sumEl.dataset.avg=avg;sumEl.dataset.count=rated.length;
+  }catch(e){
+    sumEl.innerHTML='<div style="color:#dc2626;padding:10px"><i class="ti ti-alert-circle"></i> '+e.message+'</div>';
+  }
 }
 
 function bkSaveWithSummary(){
@@ -4036,7 +4034,10 @@ function renderCls(type){
     '<button class="cls-add-row" onclick="wlAddRow(\''+type+'\',\''+dateKey+'\')"><i class="ti ti-plus"></i> Add to waiting list</button></div>';
   document.getElementById(type+'-sessions').innerHTML=html;
 }
-function printCls(type){const dates=getClsDates(type);const d=dates[clsIdx[type]];if(!d)return;const DAY3=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const lbl=DAY3[d.getDay()]+' '+d.getDate()+' '+MON3[d.getMonth()]+' '+d.getFullYear();const dateKey=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');const entries=(clsData[type]&&clsData[type][dateKey])||[];const color=type==='yoga'?'#6b2d8f':'#7a1a3a';const title=type==='yoga'?'Yoga':'Pilates';const rows=entries.length?entries.map((e,i)=>'<tr><td style="padding:8px 12px;text-align:center;color:#888;font-size:12px">'+(i+1)+'</td><td style="padding:8px 12px;font-weight:600">'+e.name+'</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:'+color+'">'+e.room+'</td><td style="padding:8px 12px;text-align:center">'+(e.attended?'\u2713':'')+'</td></tr>').join(''):'<tr><td colspan="4" style="padding:20px;text-align:center;color:#aaa">No bookings</td></tr>';const win=window.open('','_blank','width=700,height=900');win.document.write('<!DOCTYPE html><html><head><title>'+title+' - '+lbl+'</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#1a2535;max-width:680px;margin:0 auto}table{width:100%;border-collapse:collapse;font-size:13px}thead{background:'+color+';color:#fff}th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:.8px;text-transform:uppercase}tbody tr{border-bottom:1px solid #e8e0f0}tbody tr:nth-child(even){background:#fdf8ff}@media print{body{padding:15px}}</style></head><body><h1 style="font-size:22px;color:'+color+';margin-bottom:4px">'+title+' Class</h1><div style="font-size:13px;color:#6b85a0;margin-bottom:20px">'+lbl+' • White Rocks Hotel & Bungalows</div><table><thead><tr><th style="width:40px">#</th><th>Guest Name</th><th style="width:100px;text-align:center">Room</th><th style="width:100px;text-align:center">Attended</th></tr></thead><tbody>'+rows+'</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>');win.document.close();}
+function printCls(type){const dates=getClsDates(type);const d=dates[clsIdx[type]];if(!d)return;const DAY3=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const lbl=DAY3[d.getDay()]+' '+d.getDate()+' '+MON3[d.getMonth()]+' '+d.getFullYear();const dateKey=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');const entries=(clsData[type]&&clsData[type][dateKey])||[];const wlEntries=(clsData[type+'_wl']&&clsData[type+'_wl'][dateKey])||[];const color=type==='yoga'?'#6b2d8f':'#7a1a3a';const title=type==='yoga'?'Yoga':'Pilates';const rows=entries.length?entries.map((e,i)=>'<tr><td style="padding:8px 12px;text-align:center;color:#888;font-size:12px">'+(i+1)+'</td><td style="padding:8px 12px;font-weight:600">'+e.name+'</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:'+color+'">'+e.room+'</td><td style="padding:8px 12px;text-align:center">'+(e.attended?'\u2713':'')+'</td></tr>').join(''):'<tr><td colspan="4" style="padding:20px;text-align:center;color:#aaa">No bookings</td></tr>';
+  const wlRows=wlEntries.length?wlEntries.map((e,i)=>'<tr><td style="padding:7px 12px;text-align:center;color:#888;font-size:12px">'+(i+1)+'</td><td style="padding:7px 12px;font-weight:600">'+e.name+'</td><td style="padding:7px 12px;text-align:center;font-weight:700;color:#92400e">'+e.room+'</td></tr>').join(''):'<tr><td colspan="3" style="padding:14px;text-align:center;color:#aaa">No one on waiting list</td></tr>';
+  const wlSection=wlEntries.length?'<div style="margin-top:30px"><h2 style="font-size:16px;color:#92400e;margin-bottom:4px;border-bottom:2px solid #fcd34d;padding-bottom:6px">&#9203; Waiting List ('+wlEntries.length+')</h2><table><thead style="background:#fef3c7"><tr><th style="width:40px;color:#92400e">#</th><th style="color:#92400e">Guest Name</th><th style="width:100px;text-align:center;color:#92400e">Room</th></tr></thead><tbody>'+wlRows+'</tbody></table></div>':'';
+  const win=window.open('','_blank','width=700,height=900');win.document.write('<!DOCTYPE html><html><head><title>'+title+' - '+lbl+'</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#1a2535;max-width:680px;margin:0 auto}table{width:100%;border-collapse:collapse;font-size:13px}thead{color:#fff}th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:.8px;text-transform:uppercase}tbody tr{border-bottom:1px solid #e8e0f0}tbody tr:nth-child(even){background:#fdf8ff}@media print{body{padding:15px}}</style></head><body><h1 style="font-size:22px;color:'+color+';margin-bottom:4px">'+title+' Class</h1><div style="font-size:13px;color:#6b85a0;margin-bottom:20px">'+lbl+' &#8226; White Rocks Hotel &amp; Bungalows &#8226; '+entries.length+' guests booked</div><table><thead style="background:'+color+'"><tr><th style="width:40px">#</th><th>Guest Name</th><th style="width:100px;text-align:center">Room</th><th style="width:100px;text-align:center">Attended</th></tr></thead><tbody>'+rows+'</tbody></table>'+wlSection+'<script>window.onload=function(){window.print();}<\/script></body></html>');win.document.close();}
 function clsUpdate(type,dateKey,idx,field,val){clsData[type][dateKey][idx][field]=val;svCls();}
 function clsAddRow(type,dateKey){if(!clsData[type])clsData[type]={};if(!clsData[type][dateKey])clsData[type][dateKey]=[];if(clsData[type][dateKey].length>=15){showToast('Class is full (15/15)','w');return;}clsData[type][dateKey].push({name:'',room:'',attended:false});svCls();renderCls(type);setTimeout(()=>{const rows=document.querySelectorAll('#'+type+'-sessions .cls-inp');if(rows.length)rows[rows.length-2].focus();},60);}
 function clsDelRow(type,dateKey,idx){clsData[type][dateKey].splice(idx,1);svCls();renderCls(type);showToast('Row removed','w');}
