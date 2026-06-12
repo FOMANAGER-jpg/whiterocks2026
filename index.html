@@ -2022,6 +2022,21 @@ function expPrintDaily(){
     sections.push({title:tab.label,color:tab.color,cols:'# | Guest | Room | Ref | Service | Time | Company | Booked By | Cost | Status',rows});
   });
 
+  if(typeof massageData!=='undefined'){var _md=massageData[date],_ms=[];if(_md){Object.keys(_md).forEach(function(sl){if(sl==='__customSlots')return;var b=_md[sl];if(b&&b.name)_ms.push({time:sl,name:b.name,room:b.room||'',duration:b.duration||60,status:b.status||'booked'});});}if(_ms.length){_ms.sort(function(a,b){return a.time.localeCompare(b.time);});sections.push({title:'Massage',icon:'M',color:'#b45309',rows:_ms.map(function(s){return {ref:'',name:s.name,room:s.room,detail:s.time+' - '+s.duration+'min',extra:'',cost:'',status:s.status};})});}}
+  if(typeof massageData!=='undefined'){
+    var _md=massageData[date],_ms=[];
+    if(_md){Object.keys(_md).forEach(function(sl){
+      if(sl==='__customSlots')return;
+      var b=_md[sl];
+      if(b&&b.name)_ms.push({time:sl,name:b.name,room:b.room||'',duration:b.duration||60,status:b.status||'booked'});
+    });}
+    if(_ms.length){
+      _ms.sort(function(a,b){return a.time.localeCompare(b.time);});
+      sections.push({title:'Massage',icon:'M',color:'#b45309',items:_ms.map(function(s){
+        return {ref:'',name:s.name,room:s.room,detail:s.time+' - '+s.duration+'min',extra:'',cost:'',status:s.status};
+      })});
+    }
+  }
   if(!sections.length){
     alert('No bookings found for '+lbl);
     return;
@@ -2051,101 +2066,6 @@ function expPrintDaily(){
   <div class="sub">${lbl} &bull; White Rocks Hotel &amp; Bungalows &bull; ${total} total bookings</div>
   <button onclick="window.print()" style="margin-bottom:16px;padding:7px 16px;background:#1a6644;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer">🖨️ Print</button>
   ${sectionsHtml}
-  </body></html>`);
-  win.document.close();
-}
-
-function expDailyView(){
-  const dateEl=document.getElementById('exp-daily-date');
-  const date=dateEl?.value||new Date().toISOString().split('T')[0];
-  if(!dateEl?.value)dateEl.value=date;
-  const [y,m,d]=date.split('-');
-  const fmt=new Date(date).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-
-  // Collect all bookings for this date from all tabs
-  const sections=[];
-
-  // CARS — match rentalDate
-  const cars=(CARS||[]).filter(c=>(c.rentalDate||'').slice(0,10)===date);
-  if(cars.length){
-    sections.push({title:'Car Rentals',icon:'🚗',color:'#1a6644',items:cars.map(c=>({
-      ref:c.ref||'',name:c.name||'',room:c.room||'',detail:(c.carType||c.category||'')+(c.days?' · '+c.days+'d':'')+(c.company?' · '+c.company:''),extra:c.bookedBy?'Booked by: '+c.bookedBy:'',status:c.status||''
-    }))});
-  }
-
-  // GEN TABS
-  const genTabs=[
-    {key:'excursions',label:'Excursions',icon:'🗺️',color:'#1a6ca8',dateField:'date',detailField:'excursion'},
-    {key:'moto',label:'Moto & Bikes',icon:'🏍️',color:'#5c3d8f',dateField:'date',detailField:'vehicle'},
-    {key:'flowers',label:'Flowers',icon:'💐',color:'#be185d',dateField:'delivDate',detailField:'arrangement'},
-    {key:'boats',label:'Boats & Cruises',icon:'⛵',color:'#0e7490',dateField:'date',detailField:'trip'},
-    {key:'transfers',label:'Transfers',icon:'🚌',color:'#92400e',dateField:'date',detailField:'route'},
-    {key:'vantours',label:'Van Tours',icon:'🚐',color:'#7c5e2e',dateField:'date',detailField:'tourType'},
-  ];
-  genTabs.forEach(({key,label,icon,color,dateField,detailField})=>{
-    const items=(GEN_DATA[key]||[]).filter(r=>(r[dateField]||'').slice(0,10)===date);
-    if(!items.length)return;
-    sections.push({title:label,icon,color,items:items.map(r=>({
-      ref:r.ref||'',name:r.name||'',room:r.room||'',detail:(r[detailField]||'')+(r.pax?' · '+r.pax+' pax':'')+(r.time?' · '+r.time:'')+(r.company?' · '+r.company:''),extra:r.bookedBy?'Booked by: '+r.bookedBy:'',cost:r.cost?'€'+r.cost:'',status:r.status||''
-    }))});
-  });
-
-  if(!sections.length){
-    showToast('No bookings found for '+fmt,'w');return;
-  }
-
-  // Build printable page
-  const statusBadge=(s)=>{const map={confirmed:'background:#f0fdf4;color:#16a34a',waiting:'background:#fffbeb;color:#d97706',cancelled:'background:#fce8e8;color:#dc2626;text-decoration:line-through',commission:'background:#fffbeb;color:#b45309'};const st=s||'waiting';return '<span style="'+( map[st]||map.waiting)+';padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;text-transform:capitalize">'+st+'</span>';};
-
-  const sectHtml=sections.map(sec=>`
-    <div style="margin-bottom:28px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid ${sec.color}">
-        <span style="font-size:18px">${sec.icon}</span>
-        <h2 style="font-size:15px;font-weight:700;color:${sec.color};margin:0">${sec.title}</h2>
-        <span style="font-size:12px;color:#9ca3af;margin-left:auto">${sec.items.length} booking${sec.items.length>1?'s':''}</span>
-      </div>
-      <table style="width:100%;border-collapse:collapse;font-size:12px">
-        <thead>
-          <tr style="background:#f9fafb">
-            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Room</th>
-            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Guest</th>
-            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Ref</th>
-            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Details</th>
-            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Cost</th>
-            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${sec.items.map((it,i)=>`<tr style="border-bottom:1px solid #f3f4f6;background:${i%2===0?'#fff':'#f9fafb'}">
-            <td style="padding:8px 10px;font-weight:700;color:${sec.color};font-size:14px">${it.room||'—'}</td>
-            <td style="padding:8px 10px"><div style="font-weight:600">${esc(it.name)}</div>${it.extra?'<div style="font-size:10px;color:#9ca3af">'+esc(it.extra)+'</div>':''}</td>
-            <td style="padding:8px 10px;color:#9ca3af;font-size:11px">${esc(it.ref)}</td>
-            <td style="padding:8px 10px;color:#374151">${esc(it.detail)}</td>
-            <td style="padding:8px 10px;font-weight:700;color:#1a6644">${it.cost||'—'}</td>
-            <td style="padding:8px 10px">${statusBadge(it.status)}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`).join('');
-
-  const total=sections.reduce((s,sec)=>s+sec.items.length,0);
-  const win=window.open('','_blank','width=900,height=800');
-  win.document.write(`<!DOCTYPE html><html><head><title>Daily Experiences — ${fmt}</title>
-  <style>
-    body{font-family:Arial,sans-serif;padding:28px;color:#1a2535;max-width:900px;margin:0 auto}
-    h1{font-size:22px;color:#1a6644;margin-bottom:2px}
-    .sub{font-size:13px;color:#6b7280;margin-bottom:24px;display:flex;align-items:center;gap:12px}
-    @media print{body{padding:14px;max-width:none}button{display:none!important}}
-  </style></head><body>
-  <h1>📋 Daily Experiences & Services</h1>
-  <div class="sub">
-    <span><strong>${fmt}</strong></span>
-    <span>·</span><span>White Rocks Hotel &amp; Bungalows</span>
-    <span>·</span><span>${total} total bookings</span>
-    <button onclick="window.print()" style="margin-left:auto;padding:7px 16px;background:#1a6644;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">🖨️ Print</button>
-  </div>
-  ${sectHtml}
-  <script>window.onload=function(){}<\/script>
   </body></html>`);
   win.document.close();
 }
@@ -3562,7 +3482,7 @@ function goTab(t){
   if(t==='analytics')renderAnalytics();
   if(t==='yoga'){initClsDates('yoga');renderCls('yoga');}
   if(t==='pilates'){initClsDates('pilates');renderCls('pilates');}
-  if(t==='massage'){msRenderFilterBars();renderMassage();}
+  if(t==='massage'){msRenderFilterBars();renderMassage();setTimeout(function(){var td=new Date().toISOString().split('T')[0];var el=document.querySelector('[data-msdate="'+td+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},200);}
   if(t==='alerts')renderAlerts();
   if(t==='comp'){renderComp();const cd=document.getElementById('comp-date');if(cd&&!cd.value)cd.value=new Date().toISOString().split('T')[0];}
   if(t==='ac'){renderAC();const ad=document.getElementById('ac-date');if(ad&&!ad.value)ad.value=new Date().toISOString().split('T')[0];}
@@ -4673,7 +4593,7 @@ function renderMassage(){
     filteredSlots.forEach(slotTime=>{slotsHtml+=slotRow(dateKey,slotTime,bookings);});
     if(!allSlots.length){slotsHtml+='<div style="padding:16px;text-align:center;color:var(--muted2);font-size:12px">No bookings</div>';}
     const windowsLbl=isManualOnly?'<span style="font-size:11px;color:rgba(255,255,255,.7)">Manual booking</span>':'<span style="font-size:11px;color:rgba(255,255,255,.7)">'+windows.map(w=>w.start+'\u2013'+w.end).join(' | ')+'</span>';
-    html+='<div class="ms-day-card"><div class="ms-day-hdr"><div class="ms-day-title"><i class="ti ti-calendar"></i>'+dateLbl+(isManualOnly?' <span style="background:rgba(255,255,255,.25);border-radius:6px;padding:2px 8px;font-size:11px;font-family:var(--sans)">Manual</span>':'')+'</div><div style="display:flex;align-items:center;gap:8px">'+windowsLbl+'<span class="ms-day-count">'+bookedCount+(scheduledSlots.length?'/'+allSlots.length:'')+'</span></div></div>'+slotsHtml+'<div class="ms-stats"><span class="ms-stat">Slots: <strong>'+allSlots.length+'</strong></span><span class="ms-stat">Booked: <strong>'+bookedCount+'</strong></span>'+(totalRevenue>0?'<span class="ms-stat" style="margin-left:auto">Revenue: <strong>\u20ac'+totalRevenue.toFixed(0)+'</strong></span>':'')+'</div></div>';
+    html+='<div class="ms-day-card" data-msdate="'+dk+'"><div class="ms-day-hdr"><div class="ms-day-title"><i class="ti ti-calendar"></i>'+dateLbl+(isManualOnly?' <span style="background:rgba(255,255,255,.25);border-radius:6px;padding:2px 8px;font-size:11px;font-family:var(--sans)">Manual</span>':'')+'</div><div style="display:flex;align-items:center;gap:8px">'+windowsLbl+'<span class="ms-day-count">'+bookedCount+(scheduledSlots.length?'/'+allSlots.length:'')+'</span></div></div>'+slotsHtml+'<div class="ms-stats"><span class="ms-stat">Slots: <strong>'+allSlots.length+'</strong></span><span class="ms-stat">Booked: <strong>'+bookedCount+'</strong></span>'+(totalRevenue>0?'<span class="ms-stat" style="margin-left:auto">Revenue: <strong>\u20ac'+totalRevenue.toFixed(0)+'</strong></span>':'')+'</div></div>';
   });
   if(!allDays.length)html='<div style="padding:40px;text-align:center;color:var(--muted2)"><i class="ti ti-calendar-off" style="font-size:36px;display:block;margin-bottom:10px;opacity:.3"></i>No massage schedule yet</div>';
   el.innerHTML=html;
@@ -5599,6 +5519,117 @@ function renderComp(){
 }
 
 /* ── END COMPLAINTS ── */
+
+function expDailyView(){
+  const dateEl=document.getElementById('exp-daily-date');
+  const date=dateEl?.value||new Date().toISOString().split('T')[0];
+  if(!dateEl?.value)dateEl.value=date;
+  const [y,m,d]=date.split('-');
+  const fmt=new Date(date).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Collect all bookings for this date from all tabs
+  const sections=[];
+
+  // CARS — match rentalDate
+  const cars=(CARS||[]).filter(c=>(c.rentalDate||'').slice(0,10)===date);
+  if(cars.length){
+    sections.push({title:'Car Rentals',icon:'🚗',color:'#1a6644',items:cars.map(c=>({
+      ref:c.ref||'',name:c.name||'',room:c.room||'',detail:(c.carType||c.category||'')+(c.days?' · '+c.days+'d':'')+(c.company?' · '+c.company:''),extra:c.bookedBy?'Booked by: '+c.bookedBy:'',status:c.status||''
+    }))});
+  }
+
+  // GEN TABS
+  const genTabs=[
+    {key:'excursions',label:'Excursions',icon:'🗺️',color:'#1a6ca8',dateField:'date',detailField:'excursion'},
+    {key:'moto',label:'Moto & Bikes',icon:'🏍️',color:'#5c3d8f',dateField:'date',detailField:'vehicle'},
+    {key:'flowers',label:'Flowers',icon:'💐',color:'#be185d',dateField:'delivDate',detailField:'arrangement'},
+    {key:'boats',label:'Boats & Cruises',icon:'⛵',color:'#0e7490',dateField:'date',detailField:'trip'},
+    {key:'transfers',label:'Transfers',icon:'🚌',color:'#92400e',dateField:'date',detailField:'route'},
+    {key:'vantours',label:'Van Tours',icon:'🚐',color:'#7c5e2e',dateField:'date',detailField:'tourType'},
+  ];
+  genTabs.forEach(({key,label,icon,color,dateField,detailField})=>{
+    const items=(GEN_DATA[key]||[]).filter(r=>(r[dateField]||'').slice(0,10)===date);
+    if(!items.length)return;
+    sections.push({title:label,icon,color,items:items.map(r=>({
+      ref:r.ref||'',name:r.name||'',room:r.room||'',detail:(r[detailField]||'')+(r.pax?' · '+r.pax+' pax':'')+(r.time?' · '+r.time:'')+(r.company?' · '+r.company:''),extra:r.bookedBy?'Booked by: '+r.bookedBy:'',cost:r.cost?'€'+r.cost:'',status:r.status||''
+    }))});
+  });
+
+  if(typeof massageData!=='undefined'){
+    var _md=massageData[date],_ms=[];
+    if(_md){Object.keys(_md).forEach(function(sl){
+      if(sl==='__customSlots')return;
+      var b=_md[sl];
+      if(b&&b.name)_ms.push({time:sl,name:b.name,room:b.room||'',duration:b.duration||60,status:b.status||'booked'});
+    });}
+    if(_ms.length){
+      _ms.sort(function(a,b){return a.time.localeCompare(b.time);});
+      sections.push({title:'Massage',icon:'M',color:'#b45309',items:_ms.map(function(s){
+        return {ref:'',name:s.name,room:s.room,detail:s.time+' - '+s.duration+'min',extra:'',cost:'',status:s.status};
+      })});
+    }
+  }
+
+  if(!sections.length){
+    showToast('No bookings found for '+fmt,'w');return;
+  }
+
+  // Build printable page
+  const statusBadge=(s)=>{const map={confirmed:'background:#f0fdf4;color:#16a34a',waiting:'background:#fffbeb;color:#d97706',cancelled:'background:#fce8e8;color:#dc2626;text-decoration:line-through',commission:'background:#fffbeb;color:#b45309'};const st=s||'waiting';return '<span style="'+( map[st]||map.waiting)+';padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;text-transform:capitalize">'+st+'</span>';};
+
+  const sectHtml=sections.map(sec=>`
+    <div style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid ${sec.color}">
+        <span style="font-size:18px">${sec.icon}</span>
+        <h2 style="font-size:15px;font-weight:700;color:${sec.color};margin:0">${sec.title}</h2>
+        <span style="font-size:12px;color:#9ca3af;margin-left:auto">${sec.items.length} booking${sec.items.length>1?'s':''}</span>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#f9fafb">
+            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Room</th>
+            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Guest</th>
+            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Ref</th>
+            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Details</th>
+            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Cost</th>
+            <th style="padding:7px 10px;text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e5e7eb">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sec.items.map((it,i)=>`<tr style="border-bottom:1px solid #f3f4f6;background:${i%2===0?'#fff':'#f9fafb'}">
+            <td style="padding:8px 10px;font-weight:700;color:${sec.color};font-size:14px">${it.room||'—'}</td>
+            <td style="padding:8px 10px"><div style="font-weight:600">${esc(it.name)}</div>${it.extra?'<div style="font-size:10px;color:#9ca3af">'+esc(it.extra)+'</div>':''}</td>
+            <td style="padding:8px 10px;color:#9ca3af;font-size:11px">${esc(it.ref)}</td>
+            <td style="padding:8px 10px;color:#374151">${esc(it.detail)}</td>
+            <td style="padding:8px 10px;font-weight:700;color:#1a6644">${it.cost||'—'}</td>
+            <td style="padding:8px 10px">${statusBadge(it.status)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`).join('');
+
+  const total=sections.reduce((s,sec)=>s+sec.items.length,0);
+  const win=window.open('','_blank','width=900,height=800');
+  win.document.write(`<!DOCTYPE html><html><head><title>Daily Experiences — ${fmt}</title>
+  <style>
+    body{font-family:Arial,sans-serif;padding:28px;color:#1a2535;max-width:900px;margin:0 auto}
+    h1{font-size:22px;color:#1a6644;margin-bottom:2px}
+    .sub{font-size:13px;color:#6b7280;margin-bottom:24px;display:flex;align-items:center;gap:12px}
+    @media print{body{padding:14px;max-width:none}button{display:none!important}}
+  </style></head><body>
+  <h1>📋 Daily Experiences & Services</h1>
+  <div class="sub">
+    <span><strong>${fmt}</strong></span>
+    <span>·</span><span>White Rocks Hotel &amp; Bungalows</span>
+    <span>·</span><span>${total} total bookings</span>
+    <button onclick="window.print()" style="margin-left:auto;padding:7px 16px;background:#1a6644;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">🖨️ Print</button>
+  </div>
+  ${sectHtml}
+  <script>window.onload=function(){}<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -5625,7 +5656,21 @@ fbdb.ref('comp_data').once('value').then(snap=>{const d=snap.val();if(d&&Array.i
 fbdb.ref('ac_issues').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){AC_DATA=d;}});
 fbdb.ref('alerts_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(alertsData)){alertsData=d;checkOverdueTasks();const alTab=document.getElementById('tab-alerts');if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();}});
 fbdb.ref('massage_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){massageData=d;try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}}});
-fbdb.ref('massage_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(massageData)){massageData=d;const msTab=document.getElementById('tab-massage');if(msTab&&!msTab.classList.contains('hidden')){msRenderFilterBars();renderMassage();}}});
+fbdb.ref('massage_data').on('value',snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'){
+    massageData=d;
+    // Restore custom slots to MASSAGE_SCHEDULE
+    Object.keys(d).forEach(dk=>{
+      if(d[dk]&&d[dk].__customSlots&&Array.isArray(d[dk].__customSlots)){
+        MASSAGE_SCHEDULE[dk]=d[dk].__customSlots;
+      }
+    });
+    try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}
+    const msTab=document.getElementById('tab-massage');
+    if(msTab&&!msTab.classList.contains('hidden')){msRenderFilterBars();renderMassage();}
+  }
+});
 fbdb.ref('gym_bookings').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){gymBookings=d;try{localStorage.setItem('gym_bookings',JSON.stringify(d));}catch(e){}}});
 fbdb.ref('gym_bookings').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(gymBookings)){gymBookings=d;const gymTab=document.getElementById('tab-gym');if(gymTab&&!gymTab.classList.contains('hidden'))renderGym();}});
 fbdb.ref('cls_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){clsData=d;try{localStorage.setItem('cls_data',JSON.stringify(d));}catch(e){}}});
