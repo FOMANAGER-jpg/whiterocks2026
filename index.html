@@ -4853,7 +4853,7 @@ function renderMassage(){
   }
 
   // Merge scheduled days + any extra days with manual bookings
-  const extraDays=Object.keys(massageData).filter(dk=>!MASSAGE_SCHEDULE[dk]&&Object.values(massageData[dk]||{}).some(b=>b.name||b.room));
+  const extraDays=Object.keys(massageData).filter(dk=>!MASSAGE_SCHEDULE[dk]&&(Object.keys(massageData[dk]||{}).some(k=>k!=='__customSlots'&&(massageData[dk][k].name||massageData[dk][k].room))||(massageData[dk]&&massageData[dk].__customSlots&&Array.isArray(massageData[dk].__customSlots)&&massageData[dk].__customSlots.length>0)));
   let allDays=[...Object.keys(MASSAGE_SCHEDULE),...extraDays].sort();
   // Apply month filter
   if(msMFilter!=='all') allDays=allDays.filter(dk=>dk.slice(5,7)===msMFilter);
@@ -5910,8 +5910,8 @@ fbdb.ref('alerts_data').once('value').then(snap=>{const d=snap.val();if(d&&typeo
 fbdb.ref('comp_data').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d))COMP_DATA=d;});
 fbdb.ref('ac_issues').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){AC_DATA=d;}});
 fbdb.ref('alerts_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(alertsData)){alertsData=d;checkOverdueTasks();const alTab=document.getElementById('tab-alerts');if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();}});
-fbdb.ref('massage_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){massageData=d;try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}}});
-fbdb.ref('massage_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(massageData)){massageData=d;const msTab=document.getElementById('tab-massage');if(msTab&&!msTab.classList.contains('hidden')){msRenderFilterBars();renderMassage();}}});
+fbdb.ref('massage_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){massageData=d;Object.keys(d).forEach(dk=>{if(d[dk]&&d[dk].__customSlots&&Array.isArray(d[dk].__customSlots)){MASSAGE_SCHEDULE[dk]=d[dk].__customSlots;}});try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}const msTab=document.getElementById('tab-massage');if(msTab&&!msTab.classList.contains('hidden')){msRenderFilterBars();renderMassage();}}});
+fbdb.ref('massage_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'){massageData=d;Object.keys(d).forEach(dk=>{if(d[dk]&&d[dk].__customSlots&&Array.isArray(d[dk].__customSlots)){MASSAGE_SCHEDULE[dk]=d[dk].__customSlots;}});try{localStorage.setItem('massage_data',JSON.stringify(d));}catch(e){}const msTab=document.getElementById('tab-massage');if(msTab&&!msTab.classList.contains('hidden')){msRenderFilterBars();renderMassage();}}});
 fbdb.ref('gym_bookings').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){gymBookings=d;try{localStorage.setItem('gym_bookings',JSON.stringify(d));}catch(e){}}});
 fbdb.ref('gym_bookings').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(gymBookings)){gymBookings=d;const gymTab=document.getElementById('tab-gym');if(gymTab&&!gymTab.classList.contains('hidden'))renderGym();}});
 fbdb.ref('cls_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){clsData=d;try{localStorage.setItem('cls_data',JSON.stringify(d));}catch(e){}}});
