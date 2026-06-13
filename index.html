@@ -871,7 +871,8 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div class="ac-hdr">
       <div class="ac-hdr-ico"><i class="ti ti-air-conditioning"></i></div>
       <div><div class="ac-hdr-t">A/C Issues Log</div><div class="ac-hdr-s">Report issues &bull; Track actions &bull; Monitor resolutions</div></div>
-      <button id="ac-hist-btn" onclick="acToggleHistory()" style="margin-left:auto;display:flex;align-items:center;gap:6px;padding:8px 16px;background:#0e7490;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-history" style="font-size:15px"></i> History</button>
+      <button onclick="acPrint()" style="margin-left:auto;display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--white);color:#0e7490;border:1.5px solid #b2ebf2;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-printer" style="font-size:15px"></i> Print</button>
+      <button id="ac-hist-btn" onclick="acToggleHistory()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:#0e7490;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-history" style="font-size:15px"></i> History</button>
     </div>
     <div id="ac-history-panel" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);padding:18px 20px;margin-bottom:16px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px"><div style="font-size:15px;font-weight:800;color:#0e4a6e"><i class="ti ti-history" style="color:#0e7490"></i> Issue History</div><div style="display:flex;gap:6px;flex-wrap:wrap"><input type="text" id="ac-hist-search" placeholder="Search..." oninput="renderACHistory()" style="padding:7px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none;width:200px"><select id="ac-hist-status" onchange="renderACHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none"><option value="all">All statuses</option><option value="open">🔴 Open</option><option value="inprogress">🟡 In Progress</option><option value="resolved">✅ Resolved</option></select><select id="ac-hist-month" onchange="renderACHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none"><option value="all">All months</option><option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option><option value="09">Sep</option><option value="10">Oct</option></select></div></div>
@@ -4923,6 +4924,24 @@ function addAlert(){
   alertsData[date].sort((a,b)=>a.time.localeCompare(b.time));
   svAlerts();alCurrentDate=date;renderAlerts();document.getElementById('al-add-desc').value='';showToast('Task added!','s');checkOverdueTasks();
 }
+function alToggleEP(id){
+  window._alOpenEP=window._alOpenEP||{};
+  window._alOpenEP[id]=!window._alOpenEP[id];
+  renderAlerts();
+}
+function alertUpd(dateKey,id,field,val){
+  const tasks=alertsData[dateKey]||[];
+  const task=tasks.find(t=>t.id===id);
+  if(!task)return;
+  task[field]=val;
+  if(field==='time'){tasks.sort((a,b)=>a.time.localeCompare(b.time));}
+  svAlerts();renderAlerts();
+}
+function alertEditDesc(dateKey,id,val){
+  const tasks=alertsData[dateKey]||[];
+  const task=tasks.find(t=>t.id===id);
+  if(task){task.desc=val;svAlerts();}
+}
 function toggleAlert(dateKey,id){const tasks=alertsData[dateKey]||[];const task=tasks.find(t=>t.id===id);if(!task)return;task.done=!task.done;task.doneAt=task.done?new Date().toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'}):'';svAlerts();renderAlerts();checkOverdueTasks();if(task.done)showToast('\u2713 Task completed!','s');}
 function deleteAlert(dateKey,id){if(!confirm('Delete this task?'))return;alertsData[dateKey]=(alertsData[dateKey]||[]).filter(t=>t.id!==id);svAlerts();renderAlerts();checkOverdueTasks();showToast('Deleted','w');}
 function renderAlerts(){
@@ -4938,7 +4957,39 @@ function renderAlerts(){
   document.getElementById('al-stats').innerHTML=total?'<div class="al-stat-pill"><i class="ti ti-list" style="color:var(--sea)"></i> Total: <strong>'+total+'</strong></div><div class="al-stat-pill"><i class="ti ti-check" style="color:#16a34a"></i> Done: <strong style="color:#16a34a">'+done+'</strong></div><div class="al-stat-pill"><i class="ti ti-clock" style="color:#f5a623"></i> Pending: <strong style="color:#f5a623">'+(total-done)+'</strong></div>'+(overdue?'<div class="al-stat-pill" style="background:#fef2f2;border-color:#fecaca"><i class="ti ti-alert-triangle" style="color:#dc2626"></i> Overdue: <strong style="color:#dc2626">'+overdue+'</strong></div>':''):'';
   const el=document.getElementById('al-list');
   if(!tasks.length){el.innerHTML='<div class="al-empty"><i class="ti ti-bell-off"></i><div style="font-size:14px;font-weight:600;color:var(--muted)">No tasks for this day</div></div>';return;}
-  el.innerHTML=tasks.map(task=>{const[h,m]=task.time.split(':').map(Number);const taskMins=h*60+m;const isOverdue=isToday&&!task.done&&taskMins<nowMins;const priLabel={high:'\ud83d\udd34 Urgent',mid:'\ud83d\udfe1 Normal',low:'\ud83d\udfe2 Low'}[task.pri]||'\ud83d\udfe1 Normal';return '<div class="al-task pri-'+task.pri+(task.done?' done':'')+(isOverdue?' overdue':'')+'"><input type="checkbox" class="al-chk" '+(task.done?'checked':'')+' onchange="toggleAlert(\''+alCurrentDate+'\',\''+task.id+'\')"><div class="al-task-time'+(isOverdue?' overdue':'')+'">'+task.time+'</div><div class="al-task-desc'+(task.done?' done':'')+'">'+esc(task.desc)+'</div><span class="al-pri-badge '+(task.pri||'mid')+'">'+priLabel+'</span>'+(task.done&&task.doneAt?'<span class="al-task-who">\u2713 '+task.doneAt+'</span>':'')+'<button class="al-task-del" onclick="deleteAlert(\''+alCurrentDate+'\',\''+task.id+'\')"><i class="ti ti-trash" style="font-size:13px"></i></button></div>';}).join('');
+  const alOpenEP=window._alOpenEP||{};
+  el.innerHTML=tasks.map(task=>{
+    const[h,m]=task.time.split(':').map(Number);
+    const taskMins=h*60+m;
+    const isOverdue=isToday&&!task.done&&taskMins<nowMins;
+    const priLbl={high:'\ud83d\udd34 Urgent',mid:'\ud83d\udfe1 Normal',low:'\ud83d\udfe2 Low'}[task.pri]||'\ud83d\udfe1 Normal';
+    const isOpen=!!alOpenEP[task.id];
+    let html='<div class="al-task pri-'+task.pri+(task.done?' done':'')+(isOverdue?' overdue':'')+'\">';
+    html+='<input type="checkbox" class="al-chk" '+(task.done?'checked':'')+' onchange="toggleAlert(\''+alCurrentDate+'\',\''+task.id+'\')">';
+    html+='<div class="al-task-time'+(isOverdue?' overdue':'')+'">'+task.time+'</div>';
+    html+='<div class="al-task-desc'+(task.done?' done':'')+'">'+esc(task.desc||'')+'</div>';
+    html+='<span class="al-pri-badge '+(task.pri||'mid')+'">'+priLbl+'</span>';
+    if(task.done&&task.doneAt)html+='<span class="al-task-who">\u2713 '+task.doneAt+'</span>';
+    html+='<button onclick="alToggleEP(\''+task.id+'\')" style="width:28px;height:28px;background:'+(isOpen?'var(--sea)':'var(--sea-light)')+';border:none;border-radius:7px;cursor:pointer;color:'+(isOpen?'#fff':'var(--sea)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-pencil" style="font-size:13px"></i></button>';
+    html+='<button class="al-task-del" onclick="deleteAlert(\''+alCurrentDate+'\',\''+task.id+'\')"><i class="ti ti-trash" style="font-size:13px"></i></button>';
+    html+='</div>';
+    if(isOpen){
+      html+='<div style="background:#f0f7ff;border:1px solid var(--sea-mid);border-radius:10px;padding:12px 16px;margin-top:4px;display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end">';
+      html+='<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Description</label>';
+      html+='<input value="'+esc(task.desc||'')+'" style="width:100%;padding:7px 10px;border:1.5px solid var(--sea-mid);border-radius:8px;font-family:var(--sans);font-size:13px;color:var(--ink);outline:none" onchange="alertUpd(\''+alCurrentDate+'\',\''+task.id+'\',\'desc\',this.value)"></div>';
+      html+='<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Time</label>';
+      html+='<input type="time" value="'+task.time+'" style="padding:7px 10px;border:1.5px solid var(--sea-mid);border-radius:8px;font-family:var(--sans);font-size:13px;outline:none;width:110px" onchange="alertUpd(\''+alCurrentDate+'\',\''+task.id+'\',\'time\',this.value)"></div>';
+      html+='<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Priority</label>';
+      html+='<select style="padding:7px 10px;border:1.5px solid var(--sea-mid);border-radius:8px;font-family:var(--sans);font-size:13px;outline:none" onchange="alertUpd(\''+alCurrentDate+'\',\''+task.id+'\',\'pri\',this.value)">';
+      html+='<option value="high"'+(task.pri==='high'?' selected':'')+'>🔴 Urgent</option>';
+      html+='<option value="mid"'+((!task.pri||task.pri==='mid')?' selected':'')+'>🟡 Normal</option>';
+      html+='<option value="low"'+(task.pri==='low'?' selected':'')+'>🟢 Low</option>';
+      html+='</select></div>';
+      html+='<button onclick="alToggleEP(\''+task.id+'\')" style="padding:8px 14px;background:var(--sea);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">Done</button>';
+      html+='</div>';
+    }
+    return html;
+  }).join('');
 }
 function checkOverdueTasks(){const today=new Date().toISOString().split('T')[0];const tasks=alertsData[today]||[];const now=new Date();const nowMins=now.getHours()*60+now.getMinutes();const hasOverdue=tasks.some(t=>{if(t.done)return false;const[h,m]=t.time.split(':').map(Number);return(h*60+m)<nowMins;});const tabEl=document.getElementById('nt-alerts');if(tabEl){if(hasOverdue){tabEl.classList.add('tab-alert-pulse');tabEl.style.color='#dc2626';}else{tabEl.classList.remove('tab-alert-pulse');tabEl.style.color='';}}}
 setInterval(()=>{checkOverdueTasks();const alertTab=document.getElementById('tab-alerts');if(alertTab&&!alertTab.classList.contains('hidden'))renderAlerts();},60000);
@@ -5599,6 +5650,34 @@ function acAdd(){
   ['ac-room','ac-issue','ac-reportedby'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
 }
 
+function acPrint(){
+  const rows=[...AC_DATA];
+  if(!rows.length){showToast('No issues to print','w');return;}
+  const stLbl={open:'Open',inprogress:'In Progress',resolved:'Resolved'};
+  const priLbl={urgent:'Urgent',normal:'Normal',low:'Low'};
+  const rowsHtml=rows.map((r,i)=>'<tr>'
+    +'<td>'+(i+1)+'</td>'
+    +'<td style="font-weight:700">'+esc(r.room||'')+'</td>'
+    +'<td>'+esc(r.issue||'')+'</td>'
+    +'<td>'+( priLbl[r.pri]||'Normal')+'</td>'
+    +'<td>'+esc(r.action||'')+'</td>'
+    +'<td>'+esc(r.technician||'')+'</td>'
+    +'<td>'+esc(r.dateReported||'')+'</td>'
+    +'<td>'+esc(r.dateResolved||'')+'</td>'
+    +'<td>'+( stLbl[r.status]||'Open')+'</td>'
+    +'</tr>').join('');
+  const win=window.open('','_blank','width=1000,height=700');
+  win.document.write('<!DOCTYPE html><html><head><title>A/C Issues</title>'
+    +'<style>body{font-family:Arial,sans-serif;padding:24px;color:#1a2535}h1{font-size:20px;color:#0e7490;margin-bottom:4px}.sub{font-size:12px;color:#6b7280;margin-bottom:18px}table{width:100%;border-collapse:collapse;font-size:12px}thead{background:#e0f7fa}th{padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;color:#0e4a6e}td{padding:7px 10px;border-bottom:1px solid #e5e7eb}tr:nth-child(even){background:#f0f9ff}@media print{body{padding:12px}}</style>'
+    +'</head><body>'
+    +'<h1>A/C Issues Log</h1>'
+    +'<div class="sub">White Rocks Hotel &amp; Bungalows &middot; '+rows.length+' issues</div>'
+    +'<table><thead><tr><th>#</th><th>Room</th><th>Issue</th><th>Priority</th><th>Action Taken</th><th>Technician</th><th>Reported</th><th>Resolved</th><th>Status</th></tr></thead>'
+    +'<tbody>'+rowsHtml+'</tbody></table>'
+    +'<script>window.onload=function(){window.print();}<\/script>'
+    +'</body></html>');
+  win.document.close();
+}
 function acDel(i){
   if(!confirm('Delete this issue?'))return;
   AC_DATA.splice(i,1);svAC();renderAC();showToast('Deleted','w');
