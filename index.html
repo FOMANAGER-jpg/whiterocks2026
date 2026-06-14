@@ -1196,6 +1196,8 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div class="an-stat-card"><div class="an-stat-lbl">TA Overall Avg</div><div class="an-stat-val" id="an-ta-avg" style="color:#2d9c68">-</div><div class="an-stat-sub">/ 5.0</div></div>
       <div class="an-stat-card"><div class="an-stat-lbl">Google Periods</div><div class="an-stat-val" id="an-goo-periods" style="color:#4285f4">-</div><div class="an-stat-sub">saved</div></div>
       <div class="an-stat-card"><div class="an-stat-lbl">Google Overall Avg</div><div class="an-stat-val" id="an-goo-avg" style="color:#4285f4">-</div><div class="an-stat-sub">/ 5.0</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">Booking.com Periods</div><div class="an-stat-val" id="an-bk-periods" style="color:#003580">-</div><div class="an-stat-sub">saved</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">Booking.com Avg</div><div class="an-stat-val" id="an-bk-avg" style="color:#003580">-</div><div class="an-stat-sub">/ 10.0</div></div>
     </div>
     <div class="an-card">
       <h3><i class="ti ti-chart-line"></i> Score Trend per period</h3>
@@ -1203,6 +1205,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div class="an-legend">
         <div class="an-leg-item"><div class="an-leg-dot" style="background:#2d9c68"></div> TripAdvisor</div>
         <div class="an-leg-item"><div class="an-leg-dot" style="background:#4285f4"></div> Google Reviews</div>
+        <div class="an-leg-item"><div class="an-leg-dot" style="background:#003580"></div> Booking.com (/5 scale)</div>
       </div>
     </div>
     <div class="an-themes" id="an-themes">
@@ -1436,7 +1439,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
             <th style="width:28px">#</th><th style="width:95px">Ref No</th><th style="min-width:130px">Full Name</th>
             <th style="width:52px">Room</th><th style="width:105px">Day of Booking</th>
             <th style="width:105px">Date</th><th style="width:80px">Pick-up Time</th>
-            <th style="min-width:160px">Excursion</th><th style="width:80px">Pax</th>
+            <th style="min-width:160px">Excursion</th><th style="width:65px">Adults</th><th style="width:55px">Child</th>
             <th style="width:90px">Cost</th>
             <th style="min-width:110px">Company</th><th style="min-width:90px">Booked By</th><th style="width:105px">Status</th><th style="width:58px"></th>
           </tr></thead>
@@ -2317,8 +2320,8 @@ function renderGenTab(tab){
       const isOpen_excursions=genIsOpen('excursions',i);
       const excSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #93c5fd;border-radius:8px;font-size:12px;outline:none;font-family:var(--sans)" onchange="GEN_DATA[\'excursions\']['+i+'].excursion=this.value;svGen(\'excursions\')"><option value="">-- Select --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'"'+(r.excursion===e.name?' selected':'')+'>'+e.name+'</option>').join('')+'</select>';
       const ep_ex=EXC_CATALOG.find(e=>e.name===r.excursion);
-      html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
-      if(isOpen_excursions){const pi=ep_ex?'<div style="font-size:10px;color:#1a6ca8;font-weight:600;margin-top:4px">Adult: €'+(ep_ex.priceAdult||'?')+' · Child: €'+(ep_ex.priceChild||'?')+' · Pickup WR: '+(ep_ex.pickupWR||'--')+'</div>':'';html+='<tr class="car-ep" style="background:#ebf5ff"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('excursions',i,r,'#1a6ca8')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Excursion','#1a6ca8',excSel+pi)+epField('Tour Date','#1a6ca8',epDate('excursions',i,'date',r.date))+epField('Pickup Time WR','#1a6ca8',epTime('excursions',i,'time',r.time))+epField('Pax','#1a6ca8',epNum('excursions',i,'pax',r.pax,'2','1',null))+epField('Cost €','#1a6ca8',epNum('excursions',i,'cost',r.cost,'0','0',null))+epField('Notes','#1a6ca8',epInp('excursions',i,'notes',r.notes,'Special requests...'))+epStatus('excursions',i,r.status,4)+'</div></td></tr>';}
+      html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td>'+inpNum(i,'childPax',r.childPax||0,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      if(isOpen_excursions){const pi=ep_ex?'<div style="font-size:10px;color:#1a6ca8;font-weight:600;margin-top:4px">Adult: €'+(ep_ex.priceAdult||'?')+' · Child: €'+(ep_ex.priceChild||'?')+' · Pickup WR: '+(ep_ex.pickupWR||'--')+'</div>':'';html+='<tr class="car-ep" style="background:#ebf5ff"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('excursions',i,r,'#1a6ca8')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Excursion','#1a6ca8',excSel+pi)+epField('Tour Date','#1a6ca8',epDate('excursions',i,'date',r.date))+epField('Pickup Time WR','#1a6ca8',epTime('excursions',i,'time',r.time))+epField('Adults','#1a6ca8',epNum('excursions',i,'pax',r.pax,'2','1',null))+epField('Children','#1a6ca8',epNum('excursions',i,'childPax',r.childPax||0,'0','0',null))+epField('Cost €','#1a6ca8',epNum('excursions',i,'cost',r.cost,'0','0',null))+epField('Notes','#1a6ca8',epInp('excursions',i,'notes',r.notes,'Special requests...'))+epStatus('excursions',i,r.status,4)+'</div></td></tr>';}
     }
     else if(tab==='moto'){
       const isOpen=genIsOpen('moto',i);
@@ -2439,9 +2442,9 @@ const GEN_FIELDS={
     {id:'date',label:'Date of Excursion',type:'date'},
     {id:'time',label:'Pick-up Time WR',type:'time'},
     {id:'excursion',label:'Excursion',type:'exc_select'},
-    {id:'pax',label:'Pax',type:'number',ph:'2'},
+    {id:'pax',label:'Adults',type:'number',ph:'2'},
+    {id:'childPax',label:'Children',type:'number',ph:'0'},
     {id:'cost',label:'Cost €',type:'number',ph:'0'},
-    {id:'status',label:'Status',type:'status'},
     {id:'bookedBy',label:'Booked By',type:'text',ph:'Staff name'}
   ],
   moto:[
@@ -2536,7 +2539,7 @@ function gmBoatsUpdateTrips(){
   } else {
     if(notesWrap)notesWrap.style.display='none';
     if(co==='Ego'){
-      opts+=EGO_CATALOG.map(t=>'<option value="'+t.name+'">'+t.name+' — €'+t.price+'/pp, Excl €'+t.privateCost+'</option>').join('');
+      opts+=EGO_CATALOG.map(t=>'<option value="'+t.name+'">'+t.name+(t.priceType==="fixed"?' — €'+t.price:' — €'+t.price+'/pp')+'</option>').join('');
     } else if(co==='SIW'){
       opts+=SIW_CATALOG.map(t=>'<option value="'+t.name+'">'+t.name+' — Low €'+t.priceLS+' / High €'+t.priceHS+'</option>').join('');
     }
@@ -2559,7 +2562,7 @@ function gmBoatsAutoFillCost(){
     });
   } else if(co==='Ego'){
     const t=EGO_CATALOG.find(x=>x.name===tripVal);
-    if(t)price=t.privateCost;
+    if(t)price=t.priceType==='fixed'?t.price:t.price;
   } else if(co==='SIW'){
     const t=SIW_CATALOG.find(x=>x.name===tripVal);
     const month=new Date().getMonth()+1;
@@ -2641,8 +2644,13 @@ function gmExcUpdateInfo(){
   const exc=EXC_CATALOG.find(e=>e.name===name);
   const el=document.getElementById('gm-exc-info');
   if(el&&exc)el.textContent='Adult €'+(exc.priceAdult||'?')+' · Child €'+(exc.priceChild||'?')+' · Days: '+exc.dayNames.join(', ')+' · Pickup WR: '+exc.pickupWR;
+  const pax=parseInt(document.getElementById('gm-pax')?.value)||0;
+  const childPax=parseInt(document.getElementById('gm-childPax')?.value)||0;
   const costEl=document.getElementById('gm-cost');
-  if(costEl&&exc&&exc.priceAdult&&!costEl.value)costEl.value=exc.priceAdult;
+  if(costEl&&exc){
+    const total=(pax*(exc.priceAdult||0))+(childPax*(exc.priceChild||0));
+    if(total>0)costEl.value=total;
+  }
   const timeEl=document.getElementById('gm-time');
   if(timeEl&&exc&&exc.pickupWR&&!timeEl.value)timeEl.value=exc.pickupWR;
   const compEl=document.getElementById('gm-company');
@@ -2735,8 +2743,24 @@ function genAdd(tab){
   document.getElementById('gm-fields').innerHTML=html;
   const bd=document.getElementById('gm-bookDate');if(bd)bd.value=new Date().toISOString().split('T')[0];
   // Set default pax for moto
-  if(tab==='moto'){const dp=document.getElementById('gm-days');if(dp)dp.value='3';}
-  if(tab==='vantours'){const pp=document.getElementById('gm-pax');if(pp)pp.value='2';}
+  if(tab==='moto'){
+    const dp=document.getElementById('gm-days');if(dp)dp.value='3';
+    const daysEl=document.getElementById('gm-days');
+    const dateEl=document.getElementById('gm-rentalDate');
+    if(daysEl)daysEl.oninput=gmMotoUpdatePrice;
+    if(dateEl)dateEl.onchange=gmMotoUpdatePrice;
+  }
+  if(tab==='vantours'){
+    const pp=document.getElementById('gm-pax');if(pp)pp.value='2';
+    const paxEl=document.getElementById('gm-pax');
+    if(paxEl)paxEl.oninput=gmVanUpdatePrice;
+  }
+  if(tab==='excursions'){
+    const paxEl=document.getElementById('gm-pax');
+    const childEl=document.getElementById('gm-childPax');
+    if(paxEl){paxEl.value='1';paxEl.oninput=gmExcUpdateInfo;}
+    if(childEl){childEl.value='0';childEl.oninput=gmExcUpdateInfo;}
+  }
   document.getElementById('genModal').classList.add('open');
   setTimeout(()=>{const f=document.getElementById('gm-ref');if(f)f.focus();},100);
 }
@@ -2940,7 +2964,7 @@ function renderPLMBody(tab){
     MAK_CATALOG.vessels.forEach(v=>{const cruises=MAK_CATALOG.cruises[v.id]||[];if(!cruises.length)return;cruises.forEach((t,ti)=>{html+='<tr style="border-bottom:1px solid var(--border2)">';if(ti===0)html+='<td style="padding:6px 10px;font-weight:600;border-right:1px solid var(--border2);vertical-align:top" rowspan="'+cruises.length+'">'+v.name+'</td>';html+='<td style="padding:5px 10px;border-right:1px solid var(--border2)">'+esc(t.name)+'</td><td style="padding:5px 8px;text-align:center;border-right:1px solid var(--border2);color:var(--muted)">'+t.hours+'</td><td style="padding:5px 8px;text-align:center;font-weight:700;color:#0e4a6e">'+(t.onRequest?'On Request':'\u20ac'+t.price)+'</td></tr>';});});
     html+='</tbody></table></div>';
     // Ego
-    html+='<div style="font-size:13px;font-weight:700;color:#0e7490;margin:0 0 6px;padding:8px 12px;background:#e0f7fa;border-radius:8px;border-left:4px solid #0e7490">\u26f5 Ego Cruises (Catamaran) \u00b7 Up to 18 pax \u00b7 Dep: Sami</div>';
+    html+='<div style="font-size:13px;font-weight:700;color:#0e7490;margin:0 0 6px;padding:8px 12px;background:#e0f7fa;border-radius:8px;border-left:4px solid #0e7490">\u26f5 Ego Cruises (Catamaran) \u00b7 Tel: +30 693 667 2943<br><span style=\'font-size:11px;font-weight:500\'>?? Location: Sami Port (transfer not included in price)</span></div>';
     html+='<div style="overflow-x:auto;margin-bottom:16px"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:linear-gradient(180deg,#e0f7fa,#b2ebf2)"><th style="padding:7px 10px;text-align:left;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase;border-right:1px solid #80deea">Cruise</th><th style="padding:7px 10px;text-align:center;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase;border-right:1px solid #80deea">Per Person \u20ac</th><th style="padding:7px 10px;text-align:center;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase;border-right:1px solid #80deea">Private \u20ac</th><th style="padding:7px 10px;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase">Notes</th></tr></thead><tbody>';
     EGO_CATALOG.forEach(t=>{html+='<tr style="border-bottom:1px solid var(--border2)"><td style="padding:6px 10px;font-weight:600;border-right:1px solid var(--border2)">'+esc(t.name)+'</td><td style="padding:6px 8px;text-align:center;font-weight:700;color:#0e7490;border-right:1px solid var(--border2)">\u20ac'+t.price+'</td><td style="padding:6px 8px;text-align:center;font-weight:700;color:#006064;border-right:1px solid var(--border2)">\u20ac'+t.privateCost+'</td><td style="padding:6px 10px;font-size:11px;color:var(--muted)">'+esc(t.notes)+'</td></tr>';});
     html+='</tbody></table></div>';
@@ -3002,7 +3026,44 @@ function plmPrint(){
 }
 
 function expPrintTable(tab){
-  if(tab==='cars'){window.print();return;}
+  if(tab==='cars'){
+    if(!CARS.length){showToast('No bookings to print','w');return;}
+    const statusMap={confirmed:'Confirmed',waiting:'Waiting',cancelled:'Cancelled',commission:'Commission'};
+    const rowsHtml=CARS.map((c,idx)=>{
+      const{base,ins,total}=carCalc(c);
+      const extras=ACE_EXTRAS.filter(e=>c.extras&&c.extras[e.id]).map(e=>e.label+(e.qty&&c.extras[e.id]>1?' x'+c.extras[e.id]:'')+' (+\u20ac'+(e.price*(e.qty?parseInt(c.extras[e.id]||1):1)*(c.days||1))+')').join(', ');
+      return '<tr>'
+        +'<td>'+(idx+1)+'</td><td>'+esc(c.ref||'')+'</td>'
+        +'<td style="font-weight:600">'+esc(c.name||'')+'</td>'
+        +'<td>'+esc(c.room||'')+'</td>'
+        +'<td>'+esc(c.bookDate||'')+'</td>'
+        +'<td>'+esc(c.rentalDate||'')+'</td>'
+        +'<td>'+esc(c.rentalTime||'')+'</td>'
+        +'<td>'+esc(c.carType||'')+'</td>'
+        +'<td style="text-align:center">'+(c.days||1)+'</td>'
+        +'<td>'+esc(c.bookedBy||'')+'</td>'
+        +'<td>'+esc(c.company||'')+'</td>'
+        +'<td style="color:#1a6644;font-weight:700">'+(base!=null?'\u20ac'+base:'')+'</td>'
+        +'<td>'+(c.insurance&&ins?'\u20ac'+ins:'')+'</td>'
+        +'<td style="font-size:10px;color:#555">'+extras+'</td>'
+        +'<td style="font-weight:700;color:#0d4a2f">'+(total!=null?'\u20ac'+total:'')+'</td>'
+        +'<td>'+(statusMap[c.status]||c.status||'')+'</td>'
+        +'</tr>';
+    }).join('');
+    const rev=CARS.filter(c=>c.status!=='cancelled').reduce((s,c)=>{const{total:t}=carCalc(c);return s+(t||0);},0);
+    const win=window.open('','_blank','width=1200,height=800');
+    win.document.write('<!DOCTYPE html><html><head><title>Car Rentals 2026</title>'
+      +'<style>body{font-family:Arial,sans-serif;padding:20px;font-size:11px;color:#1a2535}h1{font-size:17px;color:#1a6644;margin-bottom:2px}.sub{font-size:11px;color:#888;margin-bottom:14px}table{width:100%;border-collapse:collapse}thead{background:#f0fff4}th{padding:6px 8px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;color:#0d4a2f;border-bottom:2px solid #a8d5b8;white-space:nowrap}td{padding:5px 8px;border-bottom:1px solid #e8f5ee}tr:nth-child(even){background:#fafffe}.foot{font-weight:700;background:#e8f5ee}@media print{body{padding:8px}@page{size:A4 landscape}}</style>'
+      +'</head><body>'
+      +'<h1>Car Rentals \u2014 ACE Rent a Car</h1>'
+      +'<div class="sub">White Rocks Hotel &amp; Bungalows \u00b7 Season 2026 \u00b7 '+CARS.length+' bookings \u00b7 Revenue: \u20ac'+rev.toFixed(0)+'</div>'
+      +'<table><thead><tr><th>#</th><th>Ref</th><th>Name</th><th>Room</th><th>Booking</th><th>Rental</th><th>Time</th><th>Car</th><th>Days</th><th>Booked By</th><th>Company</th><th>Base</th><th>Ins</th><th>Extras</th><th>Total</th><th>Status</th></tr></thead>'
+      +'<tbody>'+rowsHtml+'</tbody>'
+      +'<tfoot><tr class="foot"><td colspan="14" style="text-align:right">Total (excl. cancelled):</td><td>\u20ac'+rev.toFixed(0)+'</td><td></td></tr></tfoot>'
+      +'</table><script>window.onload=function(){window.print();}<\/script></body></html>');
+    win.document.close();
+    return;
+  }
   const col=EXP_COLORS[tab];const label=EXP_LABELS[tab];
   const rows=GEN_DATA[tab]||[];
   if(!rows.length){showToast('No bookings to print','w');return;}
@@ -3480,9 +3541,12 @@ const MAK_CATALOG={
   }
 };
 const EGO_CATALOG=[
-  {id:'eg1',name:'Full Day 8h (10:00-18:00, up to 18 pax)',price:160,priceType:'per_person',privateCost:2400,notes:'Lunch, wine, SUP, snorkeling, fuel. Dep: Sami.'},
-  {id:'eg2',name:'Half Day 5h (10:00-15:00, up to 18 pax)',price:130,priceType:'per_person',privateCost:1500,notes:'Lunch, wine, SUP, snorkeling, fuel. Dep: Sami.'},
-  {id:'eg3',name:'Sunset 3h (18:00-21:00, up to 18 pax)',price:100,priceType:'per_person',privateCost:900,notes:'Snacks, wine, SUP, fuel. Dep: Sami.'},
+  {id:'eg1p',name:'Full Day 8h — Private',price:2400,priceType:'fixed',privateCost:2400,notes:'Lunch, wine, SUP, snorkeling, fuel. Dep: Sami. Private charter.'},
+  {id:'eg1g',name:'Full Day 8h — Group €160/pp (up to 18 pax)',price:160,priceType:'per_person',privateCost:2400,notes:'Lunch, wine, SUP, snorkeling, fuel. Dep: Sami.'},
+  {id:'eg2p',name:'Half Day 5h — Private',price:1500,priceType:'fixed',privateCost:1500,notes:'Lunch, wine, SUP, snorkeling, fuel. Dep: Sami. Private charter.'},
+  {id:'eg2g',name:'Half Day 5h — Group €130/pp (up to 18 pax)',price:130,priceType:'per_person',privateCost:1500,notes:'Lunch, wine, SUP, snorkeling, fuel. Dep: Sami.'},
+  {id:'eg3p',name:'Sunset 3h — Private',price:900,priceType:'fixed',privateCost:900,notes:'Snacks, wine, SUP, fuel. Dep: Sami. Private charter.'},
+  {id:'eg3g',name:'Sunset 3h — Group €100/pp (up to 18 pax)',price:100,priceType:'per_person',privateCost:900,notes:'Snacks, wine, SUP, fuel. Dep: Sami.'},
 ];
 const SIW_CATALOG=[
   {id:'si1a',name:'TOUR 1: Turquoise Fantasy (Argostoli)',dep:'Argostoli',hours:'7h',priceLS:1400,priceHS:1500},
@@ -4428,18 +4492,21 @@ function renderAnalytics(){
   document.getElementById('an-ta-avg').textContent=taAvg;
   document.getElementById('an-goo-periods').textContent=gooHistory.length||'-';
   document.getElementById('an-goo-avg').textContent=gooAvg;
+  const bkAvg=bkHistory.length?(bkHistory.reduce((s,r)=>s+(r.score||r.rating||0)*(r.count||1),0)/bkHistory.reduce((s,r)=>s+(r.count||1),0)).toFixed(1):'-';
+  const bkPEl=document.getElementById('an-bk-periods');if(bkPEl)bkPEl.textContent=bkHistory.length||'-';
+  const bkAEl=document.getElementById('an-bk-avg');if(bkAEl)bkAEl.textContent=bkAvg;
   renderAnChart();renderTopThemes();renderAIRevList();
 }
 function renderAnChart(){
   const canvas=document.getElementById('anChart');if(!canvas)return;
-  const allPeriods=[...new Set([...taHistory.map(r=>r.period),...gooHistory.map(r=>r.period)])];
+  const allPeriods=[...new Set([...taHistory.map(r=>r.period),...gooHistory.map(r=>r.period),...bkHistory.map(r=>r.period)])];
   const monthOrder=['January','February','March','April','May','June','July','August','September','October','November','December'];
   allPeriods.sort((a,b)=>{const[am2,ay]=(a+' ').split(' ');const[bm2,by]=(b+' ').split(' ');return(parseInt(ay)-parseInt(by))||monthOrder.indexOf(am2)-monthOrder.indexOf(bm2);});
   if(!allPeriods.length){canvas.parentElement.innerHTML='<div class="an-empty"><i class="ti ti-chart-line"></i>No data for chart</div>';return;}
   const taScores=allPeriods.map(p=>{const r=taHistory.find(x=>x.period===p);return r?r.score:null;});
   const gooScores=allPeriods.map(p=>{const r=gooHistory.find(x=>x.period===p);return r?r.score:null;});
   if(anChartInstance)anChartInstance.destroy();
-  anChartInstance=new Chart(canvas.getContext('2d'),{type:'line',data:{labels:allPeriods,datasets:[{label:'TripAdvisor',data:taScores,borderColor:'#2d9c68',backgroundColor:'rgba(45,156,104,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#2d9c68'},{label:'Google',data:gooScores,borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#4285f4'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:3.5,max:5.0,ticks:{callback:v=>v.toFixed(1)}},x:{grid:{color:'rgba(0,0,0,.04)'}}}}});
+  anChartInstance=new Chart(canvas.getContext('2d'),{type:'line',data:{labels:allPeriods,datasets:[{label:'TripAdvisor',data:taScores,borderColor:'#2d9c68',backgroundColor:'rgba(45,156,104,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#2d9c68'},{label:'Google',data:gooScores,borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#4285f4'},{label:'Booking.com',data:allPeriods.map(p=>{const r=bkHistory.find(x=>x.period===p);return r?(r.score||r.rating||0)/2:null;}),borderColor:'#003580',backgroundColor:'rgba(0,53,128,.08)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#003580',borderDash:[5,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:3.5,max:5.0,ticks:{callback:v=>v.toFixed(1)}},x:{grid:{color:'rgba(0,0,0,.04)'}}}}});
 }
 function renderTopThemes(){
   const allPos={};const allNeg={};
