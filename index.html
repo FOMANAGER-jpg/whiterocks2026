@@ -2527,8 +2527,8 @@ function gmBoatsUpdateTrips(){
     MAK_CATALOG.vessels.forEach(v=>{
       const cruises=MAK_CATALOG.cruises[v.id]||[];
       if(!cruises.length)return;
-      opts+='<optgroup label="'+v.name+'">';
-      opts+=cruises.map(t=>'<option value="'+t.name+'">'+t.name+(t.price&&!t.onRequest?' (€'+t.price+')':t.onRequest?' (On Request)':'')+'</option>').join('');
+      opts+='<optgroup label="'+(v.short||v.name)+'">';
+      opts+=cruises.map(t=>'<option value="'+v.id+'|'+t.name+'">'+t.name+(t.price&&!t.onRequest?' (€'+t.price+')':'')+(t.onRequest?' (On Request)':'')+'</option>').join('');
       opts+='</optgroup>';
     });
     opts+='<option value="Custom / Private">Custom / Private Charter</option>';
@@ -2545,22 +2545,23 @@ function gmBoatsUpdateTrips(){
 }
 function gmBoatsAutoFillCost(){
   const co=document.getElementById('gm-company')?.value||'';
-  const trip=document.getElementById('gm-trip')?.value||'';
+  const tripVal=document.getElementById('gm-trip')?.value||'';
   const costEl=document.getElementById('gm-cost');
-  if(!costEl||!trip)return;
-  // Find price from catalogs
+  if(!costEl||!tripVal)return;
   let price=null;
   if(co==='MAK'){
-    MAK_CATALOG.vessels.forEach(v=>{
-      const t=(MAK_CATALOG.cruises[v.id]||[]).find(x=>x.name===trip);
-      if(t&&!t.onRequest&&t.price)price=t.price;
+    const vid=tripVal.includes('|')?tripVal.split('|')[0]:null;
+    const tname=tripVal.includes('|')?tripVal.split('|').slice(1).join('|'):tripVal;
+    const vessels=vid?MAK_CATALOG.vessels.filter(v=>v.id===vid):MAK_CATALOG.vessels;
+    vessels.forEach(v=>{
+      const t=(MAK_CATALOG.cruises[v.id]||[]).find(x=>x.name===tname);
+      if(t&&!t.onRequest&&t.price&&price===null)price=t.price;
     });
   } else if(co==='Ego'){
-    const t=EGO_CATALOG.find(x=>x.name===trip);
+    const t=EGO_CATALOG.find(x=>x.name===tripVal);
     if(t)price=t.privateCost;
   } else if(co==='SIW'){
-    const t=SIW_CATALOG.find(x=>x.name===trip);
-    const pax=parseInt(document.getElementById('gm-pax')?.value)||4;
+    const t=SIW_CATALOG.find(x=>x.name===tripVal);
     const month=new Date().getMonth()+1;
     const hs=(month>=7&&month<=9);
     if(t&&!t.onRequest)price=hs?t.priceHS:t.priceLS;
@@ -2758,6 +2759,7 @@ function genModalSave(){
   if(tab==='vantours'&&!row.cost){const vp=vanTourAutoPrice(row.tour,row.pax||2,row.tourType||'standard');if(vp)row.cost=vp;}
   // Boats: store full company name
   if(tab==='boats'&&row.company){
+    if(tab==='boats'&&row.trip&&row.trip.includes('|'))row.trip=row.trip.split('|').slice(1).join('|');
     const coMap={'MAK':'MAK Yachting','Ego':'Ego Cruises','SIW':'Seven Islands Ways'};
     if(coMap[row.company])row.company=coMap[row.company];
   }
@@ -2933,7 +2935,7 @@ function renderPLMBody(tab){
   // ── BOATS ──
   } else if(tab==='boats'){
     // MAK
-    html+='<div style="font-size:13px;font-weight:700;color:#0e4a6e;margin:0 0 6px;padding:8px 12px;background:#e8f4fd;border-radius:8px;border-left:4px solid #0e4a6e">\ud83d\udea4 MAK Yachting \u00b7 Tel: 0030 6978 203510</div>';
+    html+='<div style="font-size:13px;font-weight:700;color:#0e4a6e;margin:0 0 6px;padding:8px 12px;background:#e8f4fd;border-radius:8px;border-left:4px solid #0e4a6e">\ud83d\udea4 MAK Yachting \u00b7 Tel: 0030 6978 203510 \u00b7 \ud83d\udccd Across Kritikos Supermarket</div>';
     html+='<div style="overflow-x:auto;margin-bottom:16px"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:linear-gradient(180deg,#e8f4fd,#d0eaf8)"><th style="padding:7px 10px;text-align:left;font-size:10px;color:#0e4a6e;font-weight:700;text-transform:uppercase;border-right:1px solid #b3d9ef">Vessel</th><th style="padding:7px 10px;font-size:10px;color:#0e4a6e;font-weight:700;text-transform:uppercase;border-right:1px solid #b3d9ef">Cruise</th><th style="padding:7px 10px;font-size:10px;color:#0e4a6e;font-weight:700;text-transform:uppercase;text-align:center;border-right:1px solid #b3d9ef">Hours</th><th style="padding:7px 10px;font-size:10px;color:#0e4a6e;font-weight:700;text-transform:uppercase;text-align:center">Price \u20ac</th></tr></thead><tbody>';
     MAK_CATALOG.vessels.forEach(v=>{const cruises=MAK_CATALOG.cruises[v.id]||[];if(!cruises.length)return;cruises.forEach((t,ti)=>{html+='<tr style="border-bottom:1px solid var(--border2)">';if(ti===0)html+='<td style="padding:6px 10px;font-weight:600;border-right:1px solid var(--border2);vertical-align:top" rowspan="'+cruises.length+'">'+v.name+'</td>';html+='<td style="padding:5px 10px;border-right:1px solid var(--border2)">'+esc(t.name)+'</td><td style="padding:5px 8px;text-align:center;border-right:1px solid var(--border2);color:var(--muted)">'+t.hours+'</td><td style="padding:5px 8px;text-align:center;font-weight:700;color:#0e4a6e">'+(t.onRequest?'On Request':'\u20ac'+t.price)+'</td></tr>';});});
     html+='</tbody></table></div>';
@@ -3432,13 +3434,13 @@ const BOAT_COMPANIES=[
 ];
 const MAK_CATALOG={
   vessels:[
-    {id:'mars',name:'Speedboat "MARS" (Ocean Master 630WA)',cap:7},
-    {id:'zeys',name:'Speedboat "ZEYS" (Karnic SL651)',cap:7},
-    {id:'katerina',name:'RIB "KATERINA" (Fost Obsession 740)',cap:9},
-    {id:'zakar',name:'RIB "ZAKAR" (Marvel 960)',cap:9},
-    {id:'hire1',name:'Boat Hire - Compass 165cc (up to 6 pax)',cap:6},
-    {id:'hire2',name:'Boat Hire - Compass 160e (up to 6 pax)',cap:6},
-    {id:'hire3',name:'Boat Hire - Compass 150cc (up to 5 pax)',cap:5},
+    {id:'mars',name:'Speedboat "MARS" (Ocean Master 630WA)',short:'⛵ MARS (Speedboat)',cap:7},
+    {id:'zeys',name:'Speedboat "ZEYS" (Karnic SL651)',short:'⛵ ZEYS (Speedboat)',cap:7},
+    {id:'katerina',name:'Speedboat "KATERINA" (Fost Obsession 740)',short:'⛵ KATERINA (Speedboat)',cap:9},
+    {id:'zakar',name:'RIB "ZAKAR" (Marvel 960)',short:'🚤 ZAKAR (RIB)',cap:9},
+    {id:'hire1',name:'Boat Hire - Compass 165cc (up to 6 pax)',short:'🛥️ Hire: Compass 165cc',cap:6},
+    {id:'hire2',name:'Boat Hire - Compass 160e (up to 6 pax)',short:'🛥️ Hire: Compass 160e',cap:6},
+    {id:'hire3',name:'Boat Hire - Compass 150cc (up to 5 pax)',short:'🛥️ Hire: Compass 150cc',cap:5},
   ],
   cruises:{
     mars:[
