@@ -3181,18 +3181,16 @@ function carAdd(){
   svCars();carOpenEP=0;renderCars();showToast('New car booking added','s');
 }
 
-const CAR_EMAIL_CONTACTS_DEFAULT=[
-  {name:'ACE Rent a Car Kefalonia',email:'acerentacarkefalonia@gmail.com',tabs:['cars']},
-  {name:'KCG Services',email:'info@kcgservices.gr',tabs:['excursions']},
-  {name:'Kefalonia Excursions',email:'info@kefaloniaexcursions.com',tabs:['excursions']},
-  {name:'ATS Kefalonia',email:'excursions@atskefalonia.gr',tabs:['excursions']},
-  {name:'Moto Round Kefalonia',email:'motoroundkefalonia@gmail.com',tabs:['moto']},
-  {name:'Ezy Bike Rental',email:'info@ezybikerental.gr',tabs:['moto']},
-  {name:'Bosoni Flowers',email:'info@bosoni.gr',tabs:['flowers']},
-  {name:'Seven Islands Ways',email:'info@sevenislandsways.com',tabs:['boats','transfers','vantours']},
-  {name:'Argostoli Boat Hire',email:'argostoliboathire@gmail.com',tabs:['boats']},
-  {name:'Ego Cruise',email:'b2b@egocruise.com',tabs:['boats']},
-];
+const TAB_EMAIL_DEFAULTS={
+  cars:['acerentacarkefalonia@gmail.com'],
+  excursions:['info@kcgservices.gr','info@kefaloniaexcursions.com','excursions@atskefalonia.gr'],
+  moto:['motoroundkefalonia@gmail.com','info@ezybikerental.gr'],
+  flowers:['info@bosoni.gr'],
+  boats:['info@sevenislandsways.com','argostoliboathire@gmail.com','b2b@egocruise.com'],
+  transfers:['info@sevenislandsways.com'],
+  vantours:['info@sevenislandsways.com'],
+};
+const CAR_EMAIL_CONTACTS_DEFAULT=Object.entries(TAB_EMAIL_DEFAULTS).flatMap(([tab,emails])=>emails.map(email=>({name:email,email,tabs:[tab]})));
 let CAR_EMAIL_CONTACTS=(function(){try{const s=localStorage.getItem('wr_email_contacts');if(s){const saved=JSON.parse(s);return saved.length?saved:CAR_EMAIL_CONTACTS_DEFAULT;}return CAR_EMAIL_CONTACTS_DEFAULT;}catch(e){return CAR_EMAIL_CONTACTS_DEFAULT;}})();
 function carSaveContacts(){try{localStorage.setItem('wr_email_contacts',JSON.stringify(CAR_EMAIL_CONTACTS));}catch(e){}}
 function carSaveLastTo(){try{localStorage.setItem('wr_last_email_to',JSON.stringify(carEmailTos));}catch(e){}}
@@ -3285,10 +3283,10 @@ function genEmailDraft(tab,i){
     +'<div style="display:flex;gap:8px;margin-top:12px">'
     +'<button onclick="const s=encodeURIComponent(document.getElementById(\'car-email-subj\').value);const b=encodeURIComponent(document.getElementById(\'car-email-body\').value);window.open(\'mailto:?subject=\'+s+\'&body=\'+b)" style="flex:1;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-mail-forward"></i> Open in Mail</button>'
     +'</div></div>';
-  try{const _s=localStorage.getItem('wr_last_email_to');carEmailTos=_s?JSON.parse(_s):[];}catch(e){carEmailTos=[];}
+  carEmailTos=[];
   carEmailRenderTos();
   // Auto-add default emails for this tab
-  if(window._curDraftTab){CAR_EMAIL_CONTACTS_DEFAULT.filter(ct=>ct.tabs&&ct.tabs.includes(window._curDraftTab)).forEach(ct=>{if(!carEmailTos.includes(ct.email))carEmailTos.push(ct.email);});carSaveLastTo();}
+  if(window._curDraftTab){(TAB_EMAIL_DEFAULTS[window._curDraftTab]||[]).forEach(email=>{if(!carEmailTos.includes(email))carEmailTos.push(email);});}
   ov.style.display='flex';
   carEmailRenderTos();
 }
@@ -3330,10 +3328,10 @@ function excEmailDraft(i){
     +'<div style="display:flex;gap:8px;margin-top:12px">'
     +'<button onclick="const s=encodeURIComponent(document.getElementById(\'car-email-subj\').value);const b=encodeURIComponent(document.getElementById(\'car-email-body\').value);window.open(\'mailto:?subject=\'+s+\'&body=\'+b)" style="flex:1;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-mail-forward"></i> Open in Mail</button>'
     +'</div></div>';
-  try{const _s=localStorage.getItem('wr_last_email_to');carEmailTos=_s?JSON.parse(_s):[];}catch(e){carEmailTos=[];}
+  carEmailTos=[];
   carEmailRenderTos();
   // Auto-add default emails for this tab
-  if(window._curDraftTab){CAR_EMAIL_CONTACTS_DEFAULT.filter(ct=>ct.tabs&&ct.tabs.includes(window._curDraftTab)).forEach(ct=>{if(!carEmailTos.includes(ct.email))carEmailTos.push(ct.email);});carSaveLastTo();}
+  if(window._curDraftTab){(TAB_EMAIL_DEFAULTS[window._curDraftTab]||[]).forEach(email=>{if(!carEmailTos.includes(email))carEmailTos.push(email);});}
   ov.style.display='flex';
   carEmailRenderTos();
 }
@@ -3387,10 +3385,10 @@ function carEmailDraft(i){
     +'<div style="display:flex;gap:8px;margin-top:12px">'
     +'<button onclick="const s=encodeURIComponent(document.getElementById(\'car-email-subj\').value);const b=encodeURIComponent(document.getElementById(\'car-email-body\').value);window.open(\'mailto:?subject=\'+s+\'&body=\'+b)" style="flex:1;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-mail-forward"></i> Open in Mail</button>'
     +'</div></div>';
-  try{const _s=localStorage.getItem('wr_last_email_to');carEmailTos=_s?JSON.parse(_s):[];}catch(e){carEmailTos=[];}
+  carEmailTos=[];
   carEmailRenderTos();
   // Auto-add default emails for this tab
-  if(window._curDraftTab){CAR_EMAIL_CONTACTS_DEFAULT.filter(ct=>ct.tabs&&ct.tabs.includes(window._curDraftTab)).forEach(ct=>{if(!carEmailTos.includes(ct.email))carEmailTos.push(ct.email);});carSaveLastTo();}
+  if(window._curDraftTab){(TAB_EMAIL_DEFAULTS[window._curDraftTab]||[]).forEach(email=>{if(!carEmailTos.includes(email))carEmailTos.push(email);});}
   ov.style.display='flex';
   carEmailRenderTos();
 }
@@ -5513,7 +5511,7 @@ function msEmailDraft(dateKey,slotTime){
     +(b.notes?'Notes: '+esc(b.notes)+'\n':'');
   let ov=document.getElementById('car-email-ov');
   if(!ov){ov=document.createElement('div');ov.id='car-email-ov';ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';document.body.appendChild(ov);}
-  try{const _s=localStorage.getItem('wr_last_email_to');carEmailTos=_s?JSON.parse(_s):[];}catch(e){carEmailTos=[];}
+  carEmailTos=[];
   ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:22px;width:100%;max-width:600px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
     +'<div style="font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px"><i class="ti ti-mail" style="color:#b45309"></i> Massage Draft</div>'
@@ -6716,6 +6714,16 @@ fbdb.ref('tsm_layout').once('value').then(snap=>{
   if(d&&d.tabs){tsmApplyFirebaseData(d);applyTabLayout();setSyncStatus('ok','Layout loaded ☁');}
 });
 fbdb.ref('tsm_layout').on('value',snap=>{
+
+// Draft Email Contacts sync
+fbdb.ref('draft_tab_emails').once('value').then(snap=>{
+  const d=snap.val();
+  if(d&&typeof d==='object'){
+    Object.keys(d).forEach(tab=>{if(Array.isArray(d[tab]))TAB_EMAIL_DEFAULTS[tab]=d[tab];});
+  } else {
+    fbdb.ref('draft_tab_emails').set(TAB_EMAIL_DEFAULTS);
+  }
+});
   const d=snap.val();
   if(!d||!d.tabs)return;
   const curStr=JSON.stringify({tabs:tsmTabs,groups:tsmGroups});
