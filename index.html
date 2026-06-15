@@ -379,6 +379,7 @@ table.gtbl{width:100%;border-collapse:collapse;font-size:13px}
 .gym-nav{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:12px 18px;margin-bottom:14px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
 .gym-nav-btn{width:32px;height:32px;background:var(--sea-light);border:1px solid var(--sea-mid);border-radius:8px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center;font-size:16px;border:none}
 .gym-nav-btn:hover{background:var(--sea);color:#fff}
+.gymst-btn{padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)}.gymst-btn.on{background:var(--sea);color:#fff;border-color:var(--sea)}
 .gym-month-lbl{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);flex:1;text-align:center}
 .gym-tbl-wrap{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:auto;max-height:72vh}
 table.gym-tbl{border-collapse:collapse;font-size:12px}
@@ -1111,12 +1112,31 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <button onclick="addGymBookingSimple()" style="padding:9px 18px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px;height:38px"><i class="ti ti-check"></i> Save</button>
       </div>
     </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      <button id="gym-tab-sched" onclick="gymSetView('schedule')" style="padding:7px 16px;background:var(--sea);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:5px"><i class="ti ti-calendar-stats"></i> Schedule</button>
+      <button id="gym-tab-stats" onclick="gymSetView('stats')" style="padding:7px 16px;background:var(--white);color:var(--sea);border:1.5px solid var(--sea);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:5px"><i class="ti ti-chart-bar"></i> Stats &amp; History</button>
+    </div>
+    <div id="gym-view-schedule">
     <div class="gym-nav">
       <button class="gym-nav-btn" onclick="gymPrevMonth()"><i class="ti ti-chevron-left"></i></button>
       <div class="gym-month-lbl" id="gymMonthLbl"></div>
       <button class="gym-nav-btn" onclick="gymNextMonth()"><i class="ti ti-chevron-right"></i></button>
     </div>
     <div class="gym-tbl-wrap"><table class="gym-tbl" id="gymTbl"></table></div>
+    </div><!-- /gym-view-schedule -->
+    <div id="gym-view-stats" style="display:none">
+      <div id="gymst-filter" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+        <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">Month:</span>
+        <button class="gymst-btn on" data-m="all" onclick="gymStatMonth='all';gymStatBtnActive(this);renderGymStats()">All</button>
+        <button class="gymst-btn" data-m="4" onclick="gymStatMonth=4;gymStatBtnActive(this);renderGymStats()">May</button>
+        <button class="gymst-btn" data-m="5" onclick="gymStatMonth=5;gymStatBtnActive(this);renderGymStats()">June</button>
+        <button class="gymst-btn" data-m="6" onclick="gymStatMonth=6;gymStatBtnActive(this);renderGymStats()">July</button>
+        <button class="gymst-btn" data-m="7" onclick="gymStatMonth=7;gymStatBtnActive(this);renderGymStats()">August</button>
+        <button class="gymst-btn" data-m="8" onclick="gymStatMonth=8;gymStatBtnActive(this);renderGymStats()">September</button>
+        <button class="gymst-btn" data-m="9" onclick="gymStatMonth=9;gymStatBtnActive(this);renderGymStats()">October</button>
+      </div>
+      <div id="gymst-content"></div>
+    </div>
   </div>
 </div>
 
@@ -1190,14 +1210,17 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div class="an-hdr">
       <div class="an-hdr-ico"><i class="ti ti-chart-dots"></i></div>
       <div><div class="an-hdr-t">Analytics &amp; AI Responses</div><div class="an-hdr-s">Period comparison &middot; Trends &middot; AI review responses</div></div>
+      <div style="margin-left:auto"><button onclick="anPrintAll()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-printer" style="font-size:15px"></i> Print Report</button></div>
     </div>
     <div class="an-grid" id="an-stats-grid">
-      <div class="an-stat-card"><div class="an-stat-lbl">TA Periods</div><div class="an-stat-val" id="an-ta-periods" style="color:#2d9c68">-</div><div class="an-stat-sub">saved</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">TA Periods</div><div class="an-stat-val" id="an-ta-periods" style="color:#2d9c68">-</div><div class="an-stat-sub" id="an-ta-reviews">saved</div></div>
       <div class="an-stat-card"><div class="an-stat-lbl">TA Overall Avg</div><div class="an-stat-val" id="an-ta-avg" style="color:#2d9c68">-</div><div class="an-stat-sub">/ 5.0</div></div>
-      <div class="an-stat-card"><div class="an-stat-lbl">Google Periods</div><div class="an-stat-val" id="an-goo-periods" style="color:#4285f4">-</div><div class="an-stat-sub">saved</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">Google Periods</div><div class="an-stat-val" id="an-goo-periods" style="color:#4285f4">-</div><div class="an-stat-sub" id="an-goo-reviews">saved</div></div>
       <div class="an-stat-card"><div class="an-stat-lbl">Google Overall Avg</div><div class="an-stat-val" id="an-goo-avg" style="color:#4285f4">-</div><div class="an-stat-sub">/ 5.0</div></div>
-      <div class="an-stat-card"><div class="an-stat-lbl">Booking.com Periods</div><div class="an-stat-val" id="an-bk-periods" style="color:#003580">-</div><div class="an-stat-sub">saved</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">Booking.com Periods</div><div class="an-stat-val" id="an-bk-periods" style="color:#003580">-</div><div class="an-stat-sub" id="an-bk-reviews">saved</div></div>
       <div class="an-stat-card"><div class="an-stat-lbl">Booking.com Avg</div><div class="an-stat-val" id="an-bk-avg" style="color:#003580">-</div><div class="an-stat-sub">/ 10.0</div></div>
+      <div class="an-stat-card" style="border-top:3px solid #1a6ca8"><div class="an-stat-lbl">Experiences Revenue</div><div class="an-stat-val" id="an-exp-rev" style="color:#1a6ca8">€-</div><div class="an-stat-sub" id="an-exp-rev-sub">excl. cancelled</div></div>
+      <div class="an-stat-card" style="border-top:3px solid #b45309"><div class="an-stat-lbl">Massage Revenue</div><div class="an-stat-val" id="an-ms-rev" style="color:#b45309">€-</div><div class="an-stat-sub" id="an-ms-rev-sub">excl. no-cost</div></div>
     </div>
     <div class="an-card">
       <h3><i class="ti ti-chart-line"></i> Score Trend per period</h3>
@@ -1305,6 +1328,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       </div>
     </div>
     <div id="massageContent"></div>
+    <div id="ms-sum" style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:14px"></div>
   </div>
 </div>
 
@@ -1413,7 +1437,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
           <tbody id="carTbody"></tbody>
         </table>
       </div>
-      <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh)">
+      <div id="car-sum-section" style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh)">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px">
           <i class="ti ti-chart-bar" style="font-size:14px;color:#1a6644"></i> Monthly Summary
         </div>
@@ -2320,7 +2344,7 @@ function renderGenTab(tab){
       const isOpen_excursions=genIsOpen('excursions',i);
       const excSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #93c5fd;border-radius:8px;font-size:12px;outline:none;font-family:var(--sans)" onchange="GEN_DATA[\'excursions\']['+i+'].excursion=this.value;svGen(\'excursions\')"><option value="">-- Select --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'"'+(r.excursion===e.name?' selected':'')+'>'+e.name+'</option>').join('')+'</select>';
       const ep_ex=EXC_CATALOG.find(e=>e.name===r.excursion);
-      html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td>'+inpNum(i,'childPax',r.childPax||0,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td>'+inpNum(i,'childPax',r.childPax||0,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();excEmailDraft('+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_excursions){const pi=ep_ex?'<div style="font-size:10px;color:#1a6ca8;font-weight:600;margin-top:4px">Adult: €'+(ep_ex.priceAdult||'?')+' · Child: €'+(ep_ex.priceChild||'?')+' · Pickup WR: '+(ep_ex.pickupWR||'--')+'</div>':'';html+='<tr class="car-ep" style="background:#ebf5ff"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('excursions',i,r,'#1a6ca8')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Excursion','#1a6ca8',excSel+pi)+epField('Tour Date','#1a6ca8',epDate('excursions',i,'date',r.date))+epField('Pickup Time WR','#1a6ca8',epTime('excursions',i,'time',r.time))+epField('Adults','#1a6ca8',epNum('excursions',i,'pax',r.pax,'2','1',null))+epField('Children','#1a6ca8',epNum('excursions',i,'childPax',r.childPax||0,'0','0',null))+epField('Cost €','#1a6ca8',epNum('excursions',i,'cost',r.cost,'0','0',null))+epField('Notes','#1a6ca8',epInp('excursions',i,'notes',r.notes,'Special requests...'))+epStatus('excursions',i,r.status,4)+'</div></td></tr>';}
     }
     else if(tab==='moto'){
@@ -2330,7 +2354,7 @@ function renderGenTab(tab){
       const autoCost=mt?motoAutoPrice(r.vehicle,r.days||3,r.rentalDate):null;
       const hasOv=r.costOverride!=null;
       const displayCost=hasOv?r.costOverride:(r.cost||autoCost||null);
-      const actM='<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('moto',i,'#5c3d8f')+'<button onclick="event.stopPropagation();genDel(\'moto\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td>';
+      const actM='<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+'<button onclick="event.stopPropagation();genEmailDraft(\'moto\','+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+genExpandBtn('moto',i,'#5c3d8f')+'<button onclick="event.stopPropagation();genDel(\'moto\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td>';
       const vehSel='<td><select class="car-ci" style="min-width:200px" onchange="GEN_DATA[\'moto\']['+i+'].vehicle=this.value;GEN_DATA[\'moto\']['+i+'].costOverride=null;motoRowAutoPrice('+i+')">'+MOTO_CATALOG.map(m=>'<option value="'+m.name+'"'+(r.vehicle===m.name?' selected':'')+'>'+m.name+'</option>').join('')+'</select>'+(mt?'<div style="font-size:9px;color:var(--muted);margin-top:2px">'+mt.cc+' · Lic: '+mt.licence+(hs?' · ☀ High':' · Low')+'</div>':'')+'</td>';
       const daysCell='<td>'+inpNum(i,'days',r.days||3,'50px',`motoRowAutoPrice(${i})`)+'</td>';
       const costCell='<td style="padding:4px 7px;text-align:right"><input type="number" min="0" value="'+(displayCost||'')+'" placeholder="'+(autoCost||'?')+'" style="width:75px;padding:4px 7px;border:1.5px solid '+(hasOv?'#b45309':'#d8b4fe')+';border-radius:7px;font-size:13px;font-weight:700;color:'+(hasOv?'#b45309':'#5c3d8f')+';font-family:var(--serif);background:'+(hasOv?'#fef7e6':'#fff')+';text-align:right;outline:none" oninput="GEN_DATA[\'moto\']['+i+'].costOverride=this.value===\'\'?null:parseFloat(this.value);svGen(\'moto\')"><div style="font-size:9px;color:'+(hasOv?'#b45309':'var(--muted2)')+';text-align:right;margin-top:1px">'+(hasOv?'⚠ custom':autoCost?'auto €'+autoCost:'')+'</div></td>';
@@ -2340,12 +2364,12 @@ function renderGenTab(tab){
     else if(tab==='flowers'){
       const isOpen_flowers=genIsOpen('flowers',i);
       const flSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #fbcfe8;border-radius:8px;font-size:12px;outline:none" onchange="const _f=flowersGetByName(this.value);GEN_DATA[\'flowers\']['+i+'].arrangement=this.value;if(_f){GEN_DATA[\'flowers\']['+i+'].bosoniPrice=_f.bosoni;GEN_DATA[\'flowers\']['+i+'].grossPrice=_f.gross;}svGen(\'flowers\');">'+FLOWERS_CATALOG.map(f=>'<option value="'+f.name+'"'+(r.arrangement===f.name?' selected':'')+'>'+f.name+(f.gross?' (€'+f.gross+')':'')+'</option>').join('')+'</select>';
-      html+='<tr class="'+rc+(isOpen_flowers?' car-ep-open':'')+'" onclick="genToggleRow(\'flowers\','+i+')">'+baseFields+'<td>'+inpDate(i,'delivDate',r.delivDate)+'</td><td>'+inpTime(i,'delivTime',r.delivTime)+'</td><td>'+inp(i,'arrangement',r.arrangement,'Arrangement')+'</td><td style="padding:7px 9px;font-weight:700;color:#be185d">'+(r.bosoniPrice?'€'+r.bosoniPrice:'')+'</td><td style="padding:7px 9px;font-weight:700;color:#0d4a2f">'+(r.grossPrice?'€'+r.grossPrice:'')+'</td><td>'+inp(i,'bookedBy',r.bookedBy,'Staff name')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('flowers',i,'#be185d')+'<button onclick="event.stopPropagation();genDel(\'flowers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_flowers?' car-ep-open':'')+'" onclick="genToggleRow(\'flowers\','+i+')">'+baseFields+'<td>'+inpDate(i,'delivDate',r.delivDate)+'</td><td>'+inpTime(i,'delivTime',r.delivTime)+'</td><td>'+inp(i,'arrangement',r.arrangement,'Arrangement')+'</td><td style="padding:7px 9px;font-weight:700;color:#be185d">'+(r.bosoniPrice?'€'+r.bosoniPrice:'')+'</td><td style="padding:7px 9px;font-weight:700;color:#0d4a2f">'+(r.grossPrice?'€'+r.grossPrice:'')+'</td><td>'+inp(i,'bookedBy',r.bookedBy,'Staff name')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+'<button onclick="event.stopPropagation();genEmailDraft(\'flowers\','+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+genExpandBtn('flowers',i,'#be185d')+'<button onclick="event.stopPropagation();genDel(\'flowers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_flowers){html+='<tr class="car-ep" style="background:#fff0f7"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('flowers',i,r,'#be185d')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Arrangement','#be185d',flSel)+epField('Delivery Date','#be185d',epDate('flowers',i,'delivDate',r.delivDate))+epField('Delivery Time','#be185d',epTime('flowers',i,'delivTime',r.delivTime))+epField('Bosoni €','#be185d',epNum('flowers',i,'bosoniPrice',r.bosoniPrice,'0','0',null))+epField('Gross €','#1a6644',epNum('flowers',i,'grossPrice',r.grossPrice,'0','0',null))+epField('Notes','#be185d',epInp('flowers',i,'notes',r.notes,'Room decoration...'))+epStatus('flowers',i,r.status,4)+'</div></td></tr>';}
     }
     else if(tab==='boats'){
       const isOpen_boats=genIsOpen('boats',i);
-      html+='<tr class="'+rc+(isOpen_boats?' car-ep-open':'')+'" onclick="genToggleRow(\'boats\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'trip',r.trip,'Trip / Cruise')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:7px 9px;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('boats',i,'#0e7490')+'<button onclick="event.stopPropagation();genDel(\'boats\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_boats?' car-ep-open':'')+'" onclick="genToggleRow(\'boats\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'trip',r.trip,'Trip / Cruise')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:7px 9px;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+'<button onclick="event.stopPropagation();genEmailDraft(\'boats\','+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+genExpandBtn('boats',i,'#0e7490')+'<button onclick="event.stopPropagation();genDel(\'boats\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
     // Normalize company codes to full names for display
   const _coMap={'mak':'MAK Yachting','ego':'Ego Cruises','siw':'Seven Islands Ways','MAK':'MAK Yachting','Ego':'Ego Cruises','SIW':'Seven Islands Ways'};
   if(tab==='boats'){GEN_DATA['boats'].forEach(r=>{if(r.company&&_coMap[r.company])r.company=_coMap[r.company];});}
@@ -2353,7 +2377,7 @@ function renderGenTab(tab){
     }
     else if(tab==='transfers'){
       const isOpen_transfers=genIsOpen('transfers',i);
-      const bwBadge=r.bothWays?'<span style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">⇔ Both Ways</span>':'';const extraCost=(r.bothWays?parseFloat(r.returnCost)||0:0);const totalAll=(parseFloat(r.cost)||0)+extraCost;const displayCost=totalAll>parseFloat(r.cost||0)?'€'+totalAll+' total':r.cost?'€'+r.cost:'';html+='<tr class="'+rc+(isOpen_transfers?' car-ep-open':'')+' " onclick="genToggleRow(\'transfers\','+i+')">'  +baseFields+'<td>'+inpDate(i,'date',r.date)+'</td>'+'<td>'+inpTime(i,'time',r.time)+'</td>'+'<td style="padding:5px 7px">'+'<div style="display:flex;align-items:center;gap:3px">'+inp(i,'route',r.route,'Hotel → Airport')+bwBadge+'</div>'+(r.bothWays?(r.returnRoute||r.returnDate?'<div style="font-size:10px;color:#92400e;padding:2px 9px">↩ '+(r.returnRoute||'')+(r.returnDate?' '+r.returnDate:'')+(r.returnTime?' '+r.returnTime:'')+(r.returnCost?' €'+r.returnCost:'')+'</div>':''):'')+(r.transfer2?(r.route2||r.date2?'<div style="font-size:10px;color:#7c3aed;padding:2px 9px">➕ '+(r.route2||'')+(r.date2?' '+r.date2:'')+(r.time2?' '+r.time2:'')+'</div>':''):'')+(r.notes?'<div style="font-size:10px;color:var(--muted);padding:1px 9px;font-style:italic">ℹ '+esc(r.notes)+'</div>':'')+'</td>'+'<td style="padding:7px 9px;font-weight:700;color:'+col+'">'+displayCost+'</td>'+'<td>'+inp(i,'bookedBy',r.bookedBy,'Staff name')+'</td>'+'<td>'+inp(i,'company',r.company,'Company...')+'</td>'+'<td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('transfers',i,'#92400e')+'<button onclick="event.stopPropagation();genDel(\'transfers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td>'+'</tr>';
+      const bwBadge=r.bothWays?'<span style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">⇔ Both Ways</span>':'';const extraCost=(r.bothWays?parseFloat(r.returnCost)||0:0);const totalAll=(parseFloat(r.cost)||0)+extraCost;const displayCost=totalAll>parseFloat(r.cost||0)?'€'+totalAll+' total':r.cost?'€'+r.cost:'';html+='<tr class="'+rc+(isOpen_transfers?' car-ep-open':'')+' " onclick="genToggleRow(\'transfers\','+i+')">'  +baseFields+'<td>'+inpDate(i,'date',r.date)+'</td>'+'<td>'+inpTime(i,'time',r.time)+'</td>'+'<td style="padding:5px 7px">'+'<div style="display:flex;align-items:center;gap:3px">'+inp(i,'route',r.route,'Hotel → Airport')+bwBadge+'</div>'+(r.bothWays?(r.returnRoute||r.returnDate?'<div style="font-size:10px;color:#92400e;padding:2px 9px">↩ '+(r.returnRoute||'')+(r.returnDate?' '+r.returnDate:'')+(r.returnTime?' '+r.returnTime:'')+(r.returnCost?' €'+r.returnCost:'')+'</div>':''):'')+(r.transfer2?(r.route2||r.date2?'<div style="font-size:10px;color:#7c3aed;padding:2px 9px">➕ '+(r.route2||'')+(r.date2?' '+r.date2:'')+(r.time2?' '+r.time2:'')+'</div>':''):'')+(r.notes?'<div style="font-size:10px;color:var(--muted);padding:1px 9px;font-style:italic">ℹ '+esc(r.notes)+'</div>':'')+'</td>'+'<td style="padding:7px 9px;font-weight:700;color:'+col+'">'+displayCost+'</td>'+'<td>'+inp(i,'bookedBy',r.bookedBy,'Staff name')+'</td>'+'<td>'+inp(i,'company',r.company,'Company...')+'</td>'+'<td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+'<button onclick="event.stopPropagation();genEmailDraft(\'transfers\','+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+genExpandBtn('transfers',i,'#92400e')+'<button onclick="event.stopPropagation();genDel(\'transfers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td>'+'</tr>';
       if(isOpen_transfers){
         const bwChkd=r.bothWays?'checked':'';
         const bwReturnFields=r.bothWays?
@@ -2401,7 +2425,7 @@ function renderGenTab(tab){
       const vtSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #e2c97e;border-radius:8px;font-size:12px;outline:none" onchange="const vt=VAN_TOURS.find(t=>t.name===this.value);GEN_DATA[\'vantours\']['+i+'].tour=this.value;if(vt&&r.pax){const pk=r.pax<=2?2:r.pax<=4?4:6;const tier=(r.tourType===\'exclusive\'&&vt.prices.exclusive)?vt.prices.exclusive:vt.prices.standard;if(tier&&tier[pk])GEN_DATA[\'vantours\']['+i+'].cost=tier[pk];}svGen(\'vantours\')"><option value="">-- Select tour --</option>'+VAN_TOURS.map(t=>'<option value="'+t.name+'"'+(r.tour===t.name?' selected':'')+'>'+t.name+' ('+t.duration+')</option>').join('')+'</select>';
       const vtPrice=()=>{const vt=VAN_TOURS.find(t=>t.name===r.tour);if(!vt)return null;const pk=r.pax<=2?2:r.pax<=4?4:6;const tier=(r.tourType==='exclusive'&&vt.prices.exclusive)?vt.prices.exclusive:vt.prices.standard;return tier?tier[pk]||null:null;};
       const vtP=vtPrice();
-      html+='<tr class="'+rc+(isOpen_vt?' car-ep-open':'')+'" onclick="genToggleRow(\'vantours\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'tour',r.tour,'Tour name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:5px 7px"><select class="car-ci" style="font-size:11px;width:90px" onchange="GEN_DATA[\'vantours\']['+i+'].tourType=this.value;svGen(\'vantours\')"><option value="standard"'+((!r.tourType||r.tourType==='standard')?' selected':'')+'>Standard</option><option value="exclusive"'+(r.tourType==='exclusive'?' selected':'')+'>Exclusive</option></select></td><td style="padding:7px 9px;font-weight:700;color:#7c5e2e">'+(r.cost?'€'+r.cost:(vtP?'€'+vtP:''))+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('vantours',i,'#7c5e2e')+'<button onclick="event.stopPropagation();genDel(\'vantours\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_vt?' car-ep-open':'')+'" onclick="genToggleRow(\'vantours\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'tour',r.tour,'Tour name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:5px 7px"><select class="car-ci" style="font-size:11px;width:90px" onchange="GEN_DATA[\'vantours\']['+i+'].tourType=this.value;svGen(\'vantours\')"><option value="standard"'+((!r.tourType||r.tourType==='standard')?' selected':'')+'>Standard</option><option value="exclusive"'+(r.tourType==='exclusive'?' selected':'')+'>Exclusive</option></select></td><td style="padding:7px 9px;font-weight:700;color:#7c5e2e">'+(r.cost?'€'+r.cost:(vtP?'€'+vtP:''))+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+'<button onclick="event.stopPropagation();genEmailDraft(\'vantours\','+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+genExpandBtn('vantours',i,'#7c5e2e')+'<button onclick="event.stopPropagation();genDel(\'vantours\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_vt){
         const vt=VAN_TOURS.find(t=>t.name===r.tour);
         const priceInfo=vt?(()=>{const s=vt.prices.standard;const e=vt.prices.exclusive;return 'Std: 2pax €'+(s[2]||'?')+' / 4pax €'+(s[4]||'?')+' / 6pax €'+(s[6]||'?')+(e?' · Excl: 2pax €'+(e[2]||'?')+' / 4pax €'+(e[4]||'?')+' / 6pax €'+(e[6]||'?'):'');})():'';
@@ -2414,7 +2438,9 @@ function renderGenTab(tab){
 }
 
 function renderGenSum(tab){
-  const el=document.getElementById(tab+'-sum');if(!el)return;
+  const el=document.getElementById(tab+'-sum');
+  if(!el)return;
+  if(WR_ROLE==='frontoffice'){el.style.display='none';return;}
   const col=EXP_COLORS[tab];
   const MN={'05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'Sep 2026','10':'Oct 2026'};
   let html='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-chart-bar" style="font-size:14px;color:'+col+'"></i> Monthly Summary</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
@@ -2424,8 +2450,36 @@ function renderGenSum(tab){
     const conf=mc.filter(r=>r.status==='confirmed').length;
     const wait=mc.filter(r=>r.status==='waiting').length;
     const canc=mc.filter(r=>r.status==='cancelled').length;
-    let rev=0;mc.filter(r=>r.status!=='cancelled').forEach(r=>{rev+=parseFloat(r.grossPrice||r.cost||0)||0;});
-    html+='<div class="car-sum-card"><div class="car-sum-month">'+MN[m]+'</div><div class="car-sum-count">'+mc.length+' bookings</div>'+(rev>0?'<div class="car-sum-rev">\u20ac'+rev.toFixed(0)+'</div>':'')+'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'+(conf?'<span style="color:#1a6644;font-size:11px;font-weight:700">\u2713 '+conf+'</span>':'')+(wait?'<span style="color:#b45309;font-size:11px;font-weight:700">\u23f3 '+wait+'</span>':'')+(canc?'<span style="color:#c0392b;font-size:11px;font-weight:700">\u2717 '+canc+'</span>':'')+'</div></div>';
+    let rev=0,comm=0;const byCompany={};
+    mc.filter(r=>r.status==='confirmed').forEach(r=>{
+      const cost=parseFloat(r.grossPrice||r.cost||0)||0;
+      rev+=cost;
+      const coKey=r.company||'Unknown';
+      if(!byCompany[coKey])byCompany[coKey]={rev:0,comm:0,count:0};
+      byCompany[coKey].rev+=cost;
+      byCompany[coKey].count++;
+      if(tab==='boats'){
+        const co=coKey.toLowerCase();
+        const rate=co.includes('ego')?0.20:0.10;
+        const c=Math.round(cost*rate);
+        comm+=c;byCompany[coKey].comm+=c;
+      } else {
+        const c=Math.round(cost*0.20);
+        comm+=c;byCompany[coKey].comm+=c;
+      }
+    });
+    const mRev=rev;const mMo=MN[m];const mComm=comm;
+    if(!window._boatsBreakdown)window._boatsBreakdown={};
+    if(tab==='boats')window._boatsBreakdown[mMo]=byCompany;
+    html+='<div class="car-sum-card" style="cursor:pointer" onclick="carShowCommission(\''+mMo+'\','+mRev+','+mComm+',\''+tab+'\')" title="Click for commission">'
+      +'<div class="car-sum-month">'+MN[m]+'</div>'
+      +'<div class="car-sum-count">'+mc.length+' bookings</div>'
+      +(rev>0?'<div class="car-sum-rev">€'+rev.toFixed(0)+' confirmed</div>':'')
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'
+      +(conf?'<span style="color:#1a6644;font-size:11px;font-weight:700">✓ '+conf+'</span>':'')
+      +(wait?'<span style="color:#b45309;font-size:11px;font-weight:700">⏳ '+wait+'</span>':'')
+      +(canc?'<span style="color:#c0392b;font-size:11px;font-weight:700">✗ '+canc+'</span>':'')
+      +'</div></div>';
   });
   html+='</div>';
   el.innerHTML=any?html:'<div style="font-size:12px;color:var(--muted2);padding:6px">No data yet</div>';
@@ -2562,7 +2616,11 @@ function gmBoatsAutoFillCost(){
     });
   } else if(co==='Ego'){
     const t=EGO_CATALOG.find(x=>x.name===tripVal);
-    if(t)price=t.priceType==='fixed'?t.price:t.price;
+    if(t){
+      const paxEl=document.getElementById('gm-pax');
+      const pax=parseInt(paxEl?.value)||1;
+      price=t.priceType==='fixed'?t.price:t.price*pax;
+    }
   } else if(co==='SIW'){
     const t=SIW_CATALOG.find(x=>x.name===tripVal);
     const month=new Date().getMonth()+1;
@@ -2755,6 +2813,10 @@ function genAdd(tab){
     const paxEl=document.getElementById('gm-pax');
     if(paxEl)paxEl.oninput=gmVanUpdatePrice;
   }
+  if(tab==='boats'){
+    const boatPax=document.getElementById('gm-pax');
+    if(boatPax)boatPax.oninput=gmBoatsAutoFillCost;
+  }
   if(tab==='excursions'){
     const paxEl=document.getElementById('gm-pax');
     const childEl=document.getElementById('gm-childPax');
@@ -2898,10 +2960,20 @@ function renderPLMBody(tab){
     html+='<th style="padding:8px 11px;text-align:center;font-size:10px;color:#1a6ca8;font-weight:700;text-transform:uppercase;border-right:1px solid #c5dff2">Child \u20ac</th>';
     html+='<th style="padding:8px 11px;font-size:10px;color:#1a6ca8;font-weight:700;text-transform:uppercase">Departure / Notes</th></tr></thead><tbody>';
     const inpE='padding:5px 8px;border:1.5px solid transparent;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:700;text-align:center;background:transparent;outline:none;color:#1a6ca8;width:70px';
+    let lastCompany='';
     EXC_CATALOG.forEach((exc,i)=>{
+      if((exc.company||'')!==lastCompany){
+        if(exc.company){
+          html+='<tr><td colspan="6" style="padding:8px 11px;background:#f8f9fa">'
+            +'<div style="font-size:12px;font-weight:700;color:#374151">'+esc(exc.company)+'</div>'
+            +(exc.company==='Katsouris Travel'?'<div style="font-size:11px;color:#555;margin-top:2px">With transfer: Pick-up WR Hotel 09:15 · Without transfer: Own way to Argostoli port by 09:30</div>':'')
+            +'</td></tr>';
+        }
+        lastCompany=exc.company||'';
+      }
       html+='<tr style="border-bottom:1px solid var(--border2)"><td style="padding:7px 11px;font-weight:600;border-right:1px solid var(--border2)">'+esc(exc.name)+'</td>';
       html+='<td style="padding:7px 8px;text-align:center;font-size:11px;color:var(--muted);border-right:1px solid var(--border2)">'+exc.dayNames.join(', ')+'</td>';
-      html+='<td style="padding:5px 8px;text-align:center;border-right:1px solid var(--border2)"><input type="time" value="'+exc.pickupWR+'" style="'+inpE+'" onchange="EXC_CATALOG['+i+'].pickupWR=this.value"></td>';
+      html+='<td style="padding:5px 8px;text-align:center;border-right:1px solid var(--border2)"><input type="time" value="'+exc.pickupWR+'" style="padding:4px 4px;border:1.5px solid transparent;border-radius:7px;font-family:var(--sans);font-size:12px;font-weight:700;background:transparent;outline:none;color:#1a6ca8;width:92px" onchange="EXC_CATALOG['+i+'].pickupWR=this.value"></td>';
       html+='<td style="padding:5px 8px;text-align:center;border-right:1px solid var(--border2)"><input type="number" min="0" value="'+(exc.priceAdult||'')+'" style="'+inpE+'" placeholder="0" onchange="EXC_CATALOG['+i+'].priceAdult=parseFloat(this.value)||0"></td>';
       html+='<td style="padding:5px 8px;text-align:center;border-right:1px solid var(--border2)"><input type="number" min="0" value="'+(exc.priceChild||'')+'" style="'+inpE+';color:#0e7490" placeholder="0" onchange="EXC_CATALOG['+i+'].priceChild=parseFloat(this.value)||0"></td>';
       html+='<td style="padding:7px 11px;font-size:11px;color:var(--muted)">'+esc(exc.departure||exc.notes||'')+'</td></tr>';
@@ -2964,9 +3036,9 @@ function renderPLMBody(tab){
     MAK_CATALOG.vessels.forEach(v=>{const cruises=MAK_CATALOG.cruises[v.id]||[];if(!cruises.length)return;cruises.forEach((t,ti)=>{html+='<tr style="border-bottom:1px solid var(--border2)">';if(ti===0)html+='<td style="padding:6px 10px;font-weight:600;border-right:1px solid var(--border2);vertical-align:top" rowspan="'+cruises.length+'">'+v.name+'</td>';html+='<td style="padding:5px 10px;border-right:1px solid var(--border2)">'+esc(t.name)+'</td><td style="padding:5px 8px;text-align:center;border-right:1px solid var(--border2);color:var(--muted)">'+t.hours+'</td><td style="padding:5px 8px;text-align:center;font-weight:700;color:#0e4a6e">'+(t.onRequest?'On Request':'\u20ac'+t.price)+'</td></tr>';});});
     html+='</tbody></table></div>';
     // Ego
-    html+='<div style="font-size:13px;font-weight:700;color:#0e7490;margin:0 0 6px;padding:8px 12px;background:#e0f7fa;border-radius:8px;border-left:4px solid #0e7490">\u26f5 Ego Cruises (Catamaran) \u00b7 Tel: +30 693 667 2943<br><span style=\'font-size:11px;font-weight:500\'>?? Location: Sami Port (transfer not included in price)</span></div>';
-    html+='<div style="overflow-x:auto;margin-bottom:16px"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:linear-gradient(180deg,#e0f7fa,#b2ebf2)"><th style="padding:7px 10px;text-align:left;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase;border-right:1px solid #80deea">Cruise</th><th style="padding:7px 10px;text-align:center;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase;border-right:1px solid #80deea">Per Person \u20ac</th><th style="padding:7px 10px;text-align:center;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase;border-right:1px solid #80deea">Private \u20ac</th><th style="padding:7px 10px;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase">Notes</th></tr></thead><tbody>';
-    EGO_CATALOG.forEach(t=>{html+='<tr style="border-bottom:1px solid var(--border2)"><td style="padding:6px 10px;font-weight:600;border-right:1px solid var(--border2)">'+esc(t.name)+'</td><td style="padding:6px 8px;text-align:center;font-weight:700;color:#0e7490;border-right:1px solid var(--border2)">\u20ac'+t.price+'</td><td style="padding:6px 8px;text-align:center;font-weight:700;color:#006064;border-right:1px solid var(--border2)">\u20ac'+t.privateCost+'</td><td style="padding:6px 10px;font-size:11px;color:var(--muted)">'+esc(t.notes)+'</td></tr>';});
+    html+='<div style="font-size:13px;font-weight:700;color:#0e7490;margin:0 0 6px;padding:8px 12px;background:#e0f7fa;border-radius:8px;border-left:4px solid #0e7490">⛵ Ego Cruises (Catamaran) · Tel: +30 693 667 2943<br><span style="font-size:11px;font-weight:500">?? Location: Sami Port (transfer not included in price)</span></div>';
+    html+='<div style="overflow-x:auto;margin-bottom:16px"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:linear-gradient(180deg,#e0f7fa,#b2ebf2)"><th style="padding:7px 10px;text-align:left;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase;border-right:1px solid #80deea">Cruise</th><th style="padding:7px 10px;text-align:center;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase;border-right:1px solid #80deea">Price €</th><th style="padding:7px 10px;font-size:10px;color:#0e7490;font-weight:700;text-transform:uppercase">Notes</th></tr></thead><tbody>';
+    EGO_CATALOG.forEach(t=>{const priceLabel=t.priceType==='fixed'?'€'+t.price:'€'+t.price+'/pp';html+='<tr style="border-bottom:1px solid var(--border2)"><td style="padding:6px 10px;font-weight:600;border-right:1px solid var(--border2)">'+esc(t.name)+'</td><td style="padding:6px 8px;text-align:center;font-weight:700;color:#0e7490;border-right:1px solid var(--border2)">'+priceLabel+'</td><td style="padding:6px 10px;font-size:11px;color:var(--muted)">'+esc(t.notes)+'</td></tr>';});
     html+='</tbody></table></div>';
     // SIW
     html+='<div style="font-size:13px;font-weight:700;color:#7c5e2e;margin:0 0 6px;padding:8px 12px;background:#fef3c7;border-radius:8px;border-left:4px solid #7c5e2e">\ud83d\udea3 Seven Islands Ways (RIB) \u00b7 Max 10 pax \u00b7 10:00-17:00</div>';
@@ -3109,6 +3181,228 @@ function carAdd(){
   svCars();carOpenEP=0;renderCars();showToast('New car booking added','s');
 }
 
+const CAR_EMAIL_CONTACTS=[{name:'ACE Rent a Car',email:'ace@example.com'},{name:'MAK Yachting',email:'mak@example.com'},{name:'Katsouris Travel',email:'katsouris@example.com'},];
+let carEmailTos=[];
+function carEmailRenderTos(){const el=document.getElementById('car-email-to-tags');if(!el)return;el.innerHTML=carEmailTos.map((e,i)=>'<span style="display:inline-flex;align-items:center;gap:4px;background:var(--sea-light);color:var(--sea-dark);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600">'+e+'<button onclick="carEmailTos.splice('+i+',1);carEmailRenderTos()" style="background:none;border:none;cursor:pointer;color:var(--sea-dark);font-size:13px;line-height:1;padding:0">×</button></span>').join('');}
+function carEmailSuggest(v){const el=document.getElementById('car-email-to-suggest');if(!el)return;if(!v){el.style.display='none';return;}const matches=CAR_EMAIL_CONTACTS.filter(c=>c.name.toLowerCase().includes(v.toLowerCase())||c.email.toLowerCase().includes(v.toLowerCase()));if(!matches.length){el.style.display='none';return;}el.style.display='block';el.innerHTML=matches.map(m=>'<div onclick="carEmailTos.push(\''+m.email+'\');document.getElementById(\'car-email-to\').value=\'\';carEmailRenderTos();document.getElementById(\'car-email-to-suggest\').style.display=\'none\'" style="padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border2)" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'"><span style="font-weight:600">'+m.name+'</span><br><span style="color:var(--muted);font-size:11px">'+m.email+'</span></div>').join('');}
+function carCopyField(id,label){const el=document.getElementById(id);if(!el)return;const val=el.tagName==='TEXTAREA'?el.value:el.value;navigator.clipboard.writeText(val).then(()=>showToast(label+' copied!','s'));}
+function genEmailDraft(tab,i){
+  const r=GEN_DATA[tab][i];if(!r)return;
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function fmtDate(d){if(!d)return'';try{const dt=new Date(d);if(!isNaN(dt))return dt.getDate()+' '+MN[dt.getMonth()]+' '+dt.getFullYear();}catch(e){}return d;}
+  const titles={moto:'Motorbike/Scooter Rental',flowers:'Flower Arrangement Order',boats:'Boat/Cruise Booking',transfers:'Transfer Booking',vantours:'Van Tour Booking'};
+  let subject='',body='';
+  const gd='GUEST DETAILS\nName: '+esc(r.name||'')+'\nRoom: '+esc(r.room||'')+'\n';
+  if(tab==='moto'){
+    subject='Motorbike Rental \u2014 '+esc(r.name||'')+' \u2014 '+fmtDate(r.rentalDate);
+    body='Dear Partners,\n\nPlease confirm the following booking:\n\n'
+      +gd+'\nRENTAL DETAILS\n'
+      +'Vehicle: '+esc(r.vehicle||'')+'\n'
+      +'Rental Date: '+fmtDate(r.rentalDate)+'\n'
+      +'No. of Days: '+(r.days||1)+'\n'
+      +'Pick-up Location: White Rocks Hotel\n'
+      +'Drop-off Location: White Rocks Hotel & Bungalows\n\n'
+      +'PRICING\n'
+      +'\u20ac'+(r.cost||0)+' total\n\n'
+      +(r.notes?'Notes: '+esc(r.notes)+'\n\n':'')
+      +'Please confirm.';
+  } else if(tab==='flowers'){
+    subject='Flower Order \u2014 '+esc(r.name||'')+' \u2014 '+fmtDate(r.delivDate);
+    body='Dear Partners,\n\nPlease confirm the following order:\n\n'
+      +gd+'\nORDER DETAILS\n'
+      +'Arrangement: '+esc(r.arrangement||'')+'\n'
+      +'Delivery Date: '+fmtDate(r.delivDate)+'\n'
+      +'Delivery Time: '+esc(r.delivTime||'')+'\n\n'
+      +'PRICING\n'
+      +'€'+(r.bosoniPrice||r.cost||0)+' total\n\n'
+      +(r.notes?'Notes: '+esc(r.notes)+'\n\n':'')
+      +'Please confirm.';
+  } else if(tab==='boats'){
+    subject='Boat/Cruise Booking \u2014 '+esc(r.name||'')+' \u2014 '+fmtDate(r.date);
+    body='Dear Partners,\n\nPlease confirm the following booking:\n\n'
+      +gd+'Passport Number: (please fill in)\nDate of Birth: (please fill in)\n\nBOOKING DETAILS\n'
+      +'Trip / Cruise: '+esc(r.trip||'')+'\n'
+      +'Date: '+fmtDate(r.date)+'\n'
+      +'Pick-up Time: '+esc(r.time||'')+'\n'
+      +'Passengers: '+(r.pax||1)+'\n'
+      +'Company: '+esc(r.company||'')+'\n\n'
+      +'PRICING\n'
+      +'\u20ac'+(r.cost||0)+' total\n\n'
+      +(r.notes?'Notes: '+esc(r.notes)+'\n\n':'')
+      +'Please confirm.';
+  } else if(tab==='transfers'){
+    subject='Transfer Booking \u2014 '+esc(r.name||'')+' \u2014 '+fmtDate(r.date);
+    const returnPart=r.bothWays?'\nRETURN JOURNEY\nRoute: '+esc(r.returnRoute||'')+'\nDate: '+fmtDate(r.returnDate)+'\nTime: '+esc(r.returnTime||'')+(r.returnCost?'\nCost: \u20ac'+r.returnCost:''):''
+    const t2Part=r.transfer2?'\n2ND TRANSFER\nRoute: '+esc(r.route2||'')+'\nDate: '+fmtDate(r.date2)+'\nTime: '+esc(r.time2||''):''
+    body='Dear Partners,\n\nPlease confirm the following booking:\n\n'
+      +gd+'\nTRANSFER DETAILS\n'
+      +'Route: '+esc(r.route||'')+'\n'
+      +'Date: '+fmtDate(r.date)+'\n'
+      +'Time: '+esc(r.time||'')+'\n'
+      +returnPart+t2Part+'\n\n'
+      +'PRICING\n'
+      +'\u20ac'+(r.cost||0)+(r.returnCost&&r.bothWays?' + \u20ac'+r.returnCost+' return':'')+' total\n\n'
+      +(r.notes?'Notes: '+esc(r.notes)+'\n\n':'')
+      +'Please confirm.';
+  } else if(tab==='vantours'){
+    subject='Van Tour Booking \u2014 '+esc(r.name||'')+' \u2014 '+fmtDate(r.date);
+    body='Dear Partners,\n\nPlease confirm the following booking:\n\n'
+      +gd+'\nTOUR DETAILS\n'
+      +'Tour: '+esc(r.tour||'')+'\n'
+      +'Date: '+fmtDate(r.date)+'\n'
+      +'Pick-up Time: '+esc(r.time||'')+'\n'
+      +'Passengers: '+(r.pax||1)+'\n'
+      +'Type: '+(r.tourType==='exclusive'?'Exclusive':'Standard')+'\n\n'
+      +'PRICING\n'
+      +'\u20ac'+(r.cost||0)+' total\n\n'
+      +(r.notes?'Notes: '+esc(r.notes)+'\n\n':'')
+      +'Please confirm.';
+  }
+  let ov=document.getElementById('car-email-ov');
+  if(!ov){ov=document.createElement('div');ov.id='car-email-ov';ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';document.body.appendChild(ov);}
+  ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:22px;width:100%;max-width:600px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+    +'<div style="font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px"><i class="ti ti-mail" style="color:var(--sea)"></i> Email Draft</div>'
+    +'<button onclick="document.getElementById(\'car-email-ov\').remove()" style="width:30px;height:30px;background:var(--bg);border:none;border-radius:8px;cursor:pointer;font-size:16px;color:var(--muted)">\u2715</button></div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px">To</div>'+'<div style="position:relative;margin-bottom:12px">'+'<input id="car-email-to" placeholder="email@example.com" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;box-sizing:border-box" onkeydown="if(event.key===\'Enter\'){const v=this.value.trim();if(v&&!carEmailTos.includes(v)){carEmailTos.push(v);this.value=\'\';carEmailRenderTos();}}" oninput="carEmailSuggest(this.value)">'+'<div id="car-email-to-tags" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px"></div>'+'<div id="car-email-to-suggest" style="position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:8px;box-shadow:var(--sh);z-index:10;display:none;max-height:180px;overflow-y:auto"></div>'+'</div>'+'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;justify-content:space-between">Subject <button onclick="carCopyField(\'car-email-subj\',\'Subject\')" style="padding:2px 10px;background:var(--sea);color:#fff;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans)">Copy</button></div>'
+    +'<input id="car-email-subj" value="'+subject.replace(/"/g,'&quot;')+'" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;margin-bottom:12px;box-sizing:border-box">'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;justify-content:space-between">Body <button onclick="carCopyField(\'car-email-body\',\'Body\')" style="padding:2px 10px;background:var(--sea);color:#fff;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans)">Copy</button></div>'
+    +'<textarea id="car-email-body" style="width:100%;height:320px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace;color:var(--ink);outline:none;resize:vertical;box-sizing:border-box;line-height:1.6">'+body.replace(/</g,'&lt;')+'</textarea>'
+    +'<div style="display:flex;gap:8px;margin-top:12px">'
+    +'<button onclick="const s=encodeURIComponent(document.getElementById(\'car-email-subj\').value);const b=encodeURIComponent(document.getElementById(\'car-email-body\').value);window.open(\'mailto:?subject=\'+s+\'&body=\'+b)" style="flex:1;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-mail-forward"></i> Open in Mail</button>'
+    +'</div></div>';
+  carEmailTos=[];carEmailRenderTos();
+  ov.style.display='flex';
+}
+
+function excEmailDraft(i){
+  const r=GEN_DATA['excursions'][i];if(!r)return;
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function fmtDate(d){if(!d)return'';try{const dt=new Date(d);if(!isNaN(dt))return dt.getDate()+' '+MN[dt.getMonth()]+' '+dt.getFullYear();}catch(e){}return d;}
+  const subject='Excursion Booking \u2014 '+esc(r.name||'')+' \u2014 '+fmtDate(r.date);
+  const adults=r.pax||1;const children=r.childPax||0;
+  const body=
+    'Dear Partners,\n\n'
+    +'Please confirm the following excursion booking:\n\n'
+    +'GUEST DETAILS\n'
+    +'Name: '+esc(r.name||'')+'\n'
+    +'Room: '+esc(r.room||'')+'\n'
+    +'Passport Number: (please fill in)\n'
+    +'Date of Birth: (please fill in)\n\n'
+    +'Excursion: '+esc(r.excursion||'')+'\n'
+    +'Date: '+fmtDate(r.date)+'\n'
+    +'Pick-up Time WR: '+esc(r.time||'')+'\n'
+    +'Adults: '+adults+(children?' / Children: '+children:'')+'\n\n'
+    +'PRICING\n'
+    +'\u20ac'+(r.cost||0)+' total\n\n'
+    +(r.notes?'Notes: '+esc(r.notes)+'\n\n':'')
+    +'Pay: Cash or Card\n\n'
+    +'Please confirm.';
+  let ov=document.getElementById('car-email-ov');
+  if(!ov){ov=document.createElement('div');ov.id='car-email-ov';ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';document.body.appendChild(ov);}
+  ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:22px;width:100%;max-width:600px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+    +'<div style="font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px"><i class="ti ti-mail" style="color:var(--sea)"></i> Email Draft \u2014 Excursion</div>'
+    +'<button onclick="document.getElementById(\'car-email-ov\').remove()" style="width:30px;height:30px;background:var(--bg);border:none;border-radius:8px;cursor:pointer;font-size:16px;color:var(--muted)">\u2715</button></div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px">To</div>'+'<div style="position:relative;margin-bottom:12px">'+'<input id="car-email-to" placeholder="email@example.com" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;box-sizing:border-box" onkeydown="if(event.key===\'Enter\'){const v=this.value.trim();if(v&&!carEmailTos.includes(v)){carEmailTos.push(v);this.value=\'\';carEmailRenderTos();}}" oninput="carEmailSuggest(this.value)">'+'<div id="car-email-to-tags" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px"></div>'+'<div id="car-email-to-suggest" style="position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:8px;box-shadow:var(--sh);z-index:10;display:none;max-height:180px;overflow-y:auto"></div>'+'</div>'+'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;justify-content:space-between">Subject <button onclick="carCopyField(\'car-email-subj\',\'Subject\')" style="padding:2px 10px;background:var(--sea);color:#fff;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans)">Copy</button></div>'
+    +'<input id="car-email-subj" value="'+subject.replace(/"/g,'&quot;')+'" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;margin-bottom:12px;box-sizing:border-box">'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;justify-content:space-between">Body <button onclick="carCopyField(\'car-email-body\',\'Body\')" style="padding:2px 10px;background:var(--sea);color:#fff;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans)">Copy</button></div>'
+    +'<textarea id="car-email-body" style="width:100%;height:320px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace;color:var(--ink);outline:none;resize:vertical;box-sizing:border-box;line-height:1.6">'+body.replace(/</g,'&lt;')+'</textarea>'
+    +'<div style="display:flex;gap:8px;margin-top:12px">'
+    +'<button onclick="const s=encodeURIComponent(document.getElementById(\'car-email-subj\').value);const b=encodeURIComponent(document.getElementById(\'car-email-body\').value);window.open(\'mailto:?subject=\'+s+\'&body=\'+b)" style="flex:1;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-mail-forward"></i> Open in Mail</button>'
+    +'</div></div>';
+  carEmailTos=[];carEmailRenderTos();
+  ov.style.display='flex';
+}
+function carEmailDraft(i){
+  const c=CARS[i];if(!c)return;
+  const{base,ins,total}=carCalc(c);
+  const extras=ACE_EXTRAS.filter(e=>c.extras&&c.extras[e.id]).map(e=>{
+    const qty=e.qty&&c.extras[e.id]>1?c.extras[e.id]:1;
+    return e.label+(qty>1?' x'+qty:'')+' (\u20ac'+(e.price*qty*(c.days||1))+')';
+  }).join(', ');
+  const insLine=c.insurance&&ins?'Full Insurance: \u20ac'+ins+'\n':'';
+  const extLine=extras?'Extras: '+extras+'\n':'';
+  const totalLine='TOTAL: \u20ac'+total;
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const rdRaw=c.rentalDate||'';let rdFmt=rdRaw;
+  try{const d=new Date(rdRaw);if(!isNaN(d))rdFmt=d.getDate()+' '+MN[d.getMonth()]+' '+d.getFullYear();}catch(e){}
+  const subject='Car Rental Request — '+esc(c.name||'')+' — '+rdFmt;
+  const priceLine='€'+(base||0)+' base'+(c.insurance&&ins?' + €'+ins+' insurance':'');
+  const body=
+    'Dear Partners,\n\n'
+    +'Please confirm the following booking:\n\n'
+    +'GUEST DETAILS\n'
+    +'Name: '+esc(c.name||'')+'\n'
+    +'Room: '+esc(c.room||'')+'\n'
+    +'\n'
+    +'RENTAL DETAILS\n'
+    +'Car Type: '+(()=>{const car=ACE_CARS.find(a=>a.id===(c.carType||c.category));return car?car.s+' — '+car.l:esc(c.carType||c.category||'');})()+'\n'
+    +'Rental Date: '+rdFmt+'\n'
+    +'No. of Days: '+(c.days||1)+'\n'
+    +'Pick-up Time: '+esc(c.rentalTime||'')+' White Rocks Hotel\n'
+    +'Drop-off Location: White Rocks Hotel & Bungalows\n\n'
+    +'PRICING\n'
+    +priceLine+'\n'
+    +(extras?extras+'\n':'')
+    +totalLine+'\n\n'
+    +(c.notes?'Notes: '+esc(c.notes)+'\n\n':'')
+    +'Please confirm.';
+
+  let ov=document.getElementById('car-email-ov');
+  if(!ov){ov=document.createElement('div');ov.id='car-email-ov';ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';document.body.appendChild(ov);}
+  ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:22px;width:100%;max-width:600px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+    +'<div style="font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px"><i class="ti ti-mail" style="color:var(--sea)"></i> Email Draft</div>'
+    +'<button onclick="document.getElementById(\'car-email-ov\').remove()" style="width:30px;height:30px;background:var(--bg);border:none;border-radius:8px;cursor:pointer;font-size:16px;color:var(--muted)">✕</button></div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px">To</div>'+'<div style="position:relative;margin-bottom:12px">'+'<input id="car-email-to" placeholder="email@example.com" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;box-sizing:border-box" onkeydown="if(event.key===\'Enter\'){const v=this.value.trim();if(v&&!carEmailTos.includes(v)){carEmailTos.push(v);this.value=\'\';carEmailRenderTos();}}" oninput="carEmailSuggest(this.value)">'+'<div id="car-email-to-tags" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px"></div>'+'<div id="car-email-to-suggest" style="position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:8px;box-shadow:var(--sh);z-index:10;display:none;max-height:180px;overflow-y:auto"></div>'+'</div>'+'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;justify-content:space-between">Subject <button onclick="carCopyField(\'car-email-subj\',\'Subject\')" style="padding:2px 10px;background:var(--sea);color:#fff;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans)">Copy</button></div>'
+    +'<input id="car-email-subj" value="'+subject.replace(/"/g,'&quot;')+'" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;margin-bottom:12px;box-sizing:border-box">'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;justify-content:space-between">Body <button onclick="carCopyField(\'car-email-body\',\'Body\')" style="padding:2px 10px;background:var(--sea);color:#fff;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans)">Copy</button></div>'
+    +'<textarea id="car-email-body" style="width:100%;height:320px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace;color:var(--ink);outline:none;resize:vertical;box-sizing:border-box;line-height:1.6">'+body.replace(/</g,'&lt;')+'</textarea>'
+    +'<div style="display:flex;gap:8px;margin-top:12px">'
+    +'<div style="display:flex;gap:8px;margin-top:12px">'
+    +'<button onclick="const s=encodeURIComponent(document.getElementById(\'car-email-subj\').value);const b=encodeURIComponent(document.getElementById(\'car-email-body\').value);window.open(\'mailto:?subject=\'+s+\'&body=\'+b)" style="flex:1;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-mail-forward"></i> Open in Mail</button>'
+    +'</div></div>';
+  carEmailTos=[];carEmailRenderTos();
+  ov.style.display='flex';
+}
+function carShowCommission(month,rev,comm,tabName){
+  const breakdown=(tabName==='boats')?(window._boatsBreakdown&&window._boatsBreakdown[month])||null:null;
+  let breakdownHtml='';
+  if(breakdown&&Object.keys(breakdown).length>=1){
+    const rows=Object.entries(breakdown).map(([co,d])=>{
+      const rate=co.toLowerCase().includes('ego')?20:10;
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px">'
+        +'<div style="text-align:left"><div style="font-size:12px;font-weight:700;color:var(--ink)">'+co+'</div>'
+        +'<div style="font-size:10px;color:var(--muted);margin-top:2px">€'+d.rev.toFixed(0)+' revenue · '+rate+'%</div></div>'
+        +'<div style="font-size:20px;font-weight:700;color:#d97706;font-family:var(--serif)">€'+d.comm.toFixed(0)+'</div>'
+        +'</div>';
+    }).join('');
+    breakdownHtml='<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">'+rows+'</div>';
+  }
+
+  const popW=breakdown?'400px':'320px';
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center';
+  ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:26px;width:'+popW+';box-shadow:0 20px 60px rgba(0,0,0,.3)">'
+    +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px">Commission Summary</div>'
+    +'<div style="font-size:18px;font-weight:700;color:#0d4a2f;margin-bottom:18px">'+month+'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">'
+    +'<div style="background:#e8f5ee;border-radius:10px;padding:14px">'
+    +'<div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Revenue</div>'
+    +'<div style="font-size:24px;font-weight:700;color:#1a6644;font-family:var(--serif)">\u20ac'+rev.toFixed(0)+'</div>'
+    +'</div>'
+    +'<div style="background:#fff8f0;border:2px solid #fcd34d;border-radius:10px;padding:14px">'
+    +'<div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Commission (20%)</div>'
+    +'<div style="font-size:24px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+comm.toFixed(0)+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:16px">Revenue \u00d7 20% = Commission</div>'
+    +'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="width:100%;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)">Close</button>'
+    +'</div>';
+  document.body.appendChild(ov);
+  ov.onclick=function(e){if(e.target===ov)ov.remove();};
+}
 function carDel(i){
   const saved=CARS.splice(i,1)[0];svCars();carOpenEP=null;renderCars();
   setTimeout(function(){showToast('Deleted','w',function(){CARS.splice(i,0,saved);svCars();renderCars();});},50);
@@ -3197,10 +3491,12 @@ function renderCars(){
           <button class="tog${isOpen?' open':''}" onclick="carOpenEP=carOpenEP===${i}?null:${i};renderCars()" title="Edit">
             <i class="ti ti-${isOpen?'chevron-up':'pencil'}" style="font-size:12px"></i>
           </button>
+          <button onclick="event.stopPropagation();carEmailDraft(${i})" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft">
+            <i class="ti ti-mail" style="font-size:12px"></i>
+          </button>
           <button onclick="carDel(${i})" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center" title="Delete">
             <i class="ti ti-trash" style="font-size:12px"></i>
           </button>
-        </div>
       </td>
     </tr>`;
 
@@ -3283,11 +3579,13 @@ function renderCarSum(){
     const conf=mc.filter(c=>c.status==='confirmed').length;
     const wait=mc.filter(c=>c.status==='waiting').length;
     const canc=mc.filter(c=>c.status==='cancelled').length;
-    const rev=mc.filter(c=>c.status!=='cancelled').reduce((s,c)=>{const{total}=carCalc(c);return s+(total||0);},0);
-    html+='<div class="car-sum-card">'
+    const confCards=mc.filter(c=>c.status==='confirmed');
+    const rev=confCards.reduce((s,c)=>{const{total}=carCalc(c);return s+(total||0);},0);
+    const comm=Math.round(rev*0.20);
+    html+='<div class="car-sum-card" style="cursor:pointer" onclick="carShowCommission(\''+MN[m]+'\','+rev+','+comm+')" title="Click for commission breakdown">'
       +'<div class="car-sum-month">'+MN[m]+'</div>'
       +'<div class="car-sum-count">'+mc.length+' bookings</div>'
-      +(rev>0?'<div class="car-sum-rev">€'+rev.toFixed(0)+' revenue</div>':'')
+      +(rev>0&&!window._hideCarsRevenue?'<div class="car-sum-rev">€'+rev.toFixed(0)+' confirmed</div>':'')
       +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'
       +(conf?'<span style="color:#1a6644;font-size:11px;font-weight:700">&#10003; '+conf+'</span>':'')
       +(wait?'<span style="color:#b45309;font-size:11px;font-weight:700">&#9203; '+wait+'</span>':'')
@@ -3295,6 +3593,7 @@ function renderCarSum(){
       +'</div></div>';
   });
   grid.innerHTML=any?html:'<div style="font-size:12px;color:var(--muted2);padding:6px">No data yet</div>';
+  if(WR_ROLE==='frontoffice'){const s=document.getElementById('car-sum-section');if(s)s.style.display='none';}
 }
 
 
@@ -3412,8 +3711,8 @@ const EXC_CATALOG = [
   {id:'arg_eve',name:'Argostoli Evening Cruise',priceAdult:38,priceChild:19,pickupWR:'',days:[1],dayNames:['Monday'],departure:'Departs Arg/li 22:00',notes:'Evening cruise - own way'},
   {id:'priv_disc',name:'Private Discover Kefalonia',priceAdult:0,priceChild:0,pickupWR:'',days:[1,3,5],dayNames:['Monday','Wednesday','Friday'],departure:'On request',notes:'Up to 7 pax'},
   {id:'priv_assos',name:'Private Assos & Fiskardo',priceAdult:0,priceChild:0,pickupWR:'',days:[1,3,5],dayNames:['Monday','Wednesday','Friday'],departure:'On request',notes:'Up to 7 pax'},
-  {id:'wr_cruise_tr',name:'White Rocks Cruise (with transfer)',priceAdult:85,priceChild:85,pickupWR:'',days:[0,1,2,3,4,5,6],dayNames:['Daily'],departure:'Hotel departure included',notes:'€85/person incl. transfer',company:'Katsouris Travel'},
-  {id:'wr_cruise_no',name:'White Rocks Cruise (without transfer)',priceAdult:65,priceChild:65,pickupWR:'',days:[0,1,2,3,4,5,6],dayNames:['Daily'],departure:'Own way to port',notes:'€65/person excl. transfer',company:'Katsouris Travel'},
+  {id:'wr_cruise_tr',name:'White Rocks Cruise (with transfer)',priceAdult:86,priceChild:43,pickupWR:'09:15',days:[2,5],dayNames:['Tuesday','Friday'],departure:'09:15 from WR Hotel',notes:'€86/adult · €43/child · Incl. transfer from hotel',company:'Katsouris Travel'},
+  {id:'wr_cruise_no',name:'White Rocks Cruise (without transfer)',priceAdult:65,priceChild:32,pickupWR:'09:30',days:[0,1,2,3,4,5,6],dayNames:['Daily'],departure:'Argostoli port 09:30',notes:'€65/adult · €32.50/child · Own way to Argostoli port',company:'Katsouris Travel'},
 ];
 function excGetByName(n){return EXC_CATALOG.find(e=>e.name===n)||null;}
 function excAutoPrice(n,pax,childPax){const e=excGetByName(n);if(!e||!e.priceAdult)return null;const a=(pax||1)-(childPax||0);return a*e.priceAdult+(childPax||0)*e.priceChild;}
@@ -4495,6 +4794,22 @@ function renderAnalytics(){
   const bkAvg=bkHistory.length?(bkHistory.reduce((s,r)=>s+(r.score||r.rating||0)*(r.count||1),0)/bkHistory.reduce((s,r)=>s+(r.count||1),0)).toFixed(1):'-';
   const bkPEl=document.getElementById('an-bk-periods');if(bkPEl)bkPEl.textContent=bkHistory.length||'-';
   const bkAEl=document.getElementById('an-bk-avg');if(bkAEl)bkAEl.textContent=bkAvg;
+  const taTotal=taHistory.reduce((s,r)=>s+(r.count||0),0);
+  const gooTotal=gooHistory.reduce((s,r)=>s+(r.count||0),0);
+  const bkTotal=bkHistory.reduce((s,r)=>s+(r.count||r.reviews||0),0);
+  const taRevEl=document.getElementById('an-ta-reviews');if(taRevEl)taRevEl.textContent=taTotal>0?taTotal+' reviews total':'saved';
+  const gooRevEl=document.getElementById('an-goo-reviews');if(gooRevEl)gooRevEl.textContent=gooTotal>0?gooTotal+' reviews total':'saved';
+  const bkRevEl=document.getElementById('an-bk-reviews');if(bkRevEl)bkRevEl.textContent=bkTotal>0?bkTotal+' reviews total':'saved';
+  // Experiences revenue
+  let expRev=0,expCount=0;
+  Object.keys(GEN_DATA).forEach(tab=>{(GEN_DATA[tab]||[]).forEach(r=>{if(r.status==='cancelled')return;const cost=parseFloat(r.cost||r.totalCost||0);if(cost>0){expRev+=cost;expCount++;}});});
+  const expEl=document.getElementById('an-exp-rev');if(expEl)expEl.textContent='€'+expRev.toFixed(0);
+  const expSub=document.getElementById('an-exp-rev-sub');if(expSub)expSub.textContent=expCount+' bookings';
+  // Massage revenue
+  let msRev=0,msCount=0;
+  Object.keys(massageData||{}).forEach(date=>{Object.keys(massageData[date]||{}).forEach(slot=>{if(slot==='__customSlots')return;const b=massageData[date][slot];if(b&&b.name&&b.status!=='cancelled'){const cost=parseFloat(b.cost||0);if(cost>0){msRev+=cost;msCount++;}}});});
+  const msEl=document.getElementById('an-ms-rev');if(msEl)msEl.textContent='€'+msRev.toFixed(0);
+  const msSub=document.getElementById('an-ms-rev-sub');if(msSub)msSub.textContent=msCount+' sessions';
   renderAnChart();renderTopThemes();renderAIRevList();
 }
 function renderAnChart(){
@@ -4508,13 +4823,48 @@ function renderAnChart(){
   if(anChartInstance)anChartInstance.destroy();
   anChartInstance=new Chart(canvas.getContext('2d'),{type:'line',data:{labels:allPeriods,datasets:[{label:'TripAdvisor',data:taScores,borderColor:'#2d9c68',backgroundColor:'rgba(45,156,104,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#2d9c68'},{label:'Google',data:gooScores,borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#4285f4'},{label:'Booking.com',data:allPeriods.map(p=>{const r=bkHistory.find(x=>x.period===p);return r?(r.score||r.rating||0)/2:null;}),borderColor:'#003580',backgroundColor:'rgba(0,53,128,.08)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#003580',borderDash:[5,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:3.5,max:5.0,ticks:{callback:v=>v.toFixed(1)}},x:{grid:{color:'rgba(0,0,0,.04)'}}}}});
 }
+function anPrintAll(){
+  const canvas=document.getElementById('anChart');
+  const chartImg=canvas?canvas.toDataURL('image/png'):'';
+  const allPos={};const allNeg={};
+  [...taHistory,...gooHistory].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
+  const topPos=Object.entries(allPos).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const topNeg=Object.entries(allNeg).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const taTotal=taHistory.reduce((s,r)=>s+(r.count||0),0);
+  const gooTotal=gooHistory.reduce((s,r)=>s+(r.count||0),0);
+  const bkTotal=bkHistory.reduce((s,r)=>s+(r.count||r.reviews||0),0);
+  const taAvg2=taHistory.length?(taHistory.reduce((s,r)=>s+r.score*r.count,0)/taHistory.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
+  const gooAvg2=gooHistory.length?(gooHistory.reduce((s,r)=>s+r.score*r.count,0)/gooHistory.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
+  const bkAvg2=bkHistory.length?(bkHistory.reduce((s,r)=>s+(r.score||r.rating||0)*(r.count||1),0)/bkHistory.reduce((s,r)=>s+(r.count||1),0)).toFixed(1):'-';
+  const posRows=topPos.map(([t,cnt],i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(t)+'</td><td style="text-align:center;font-weight:700">'+cnt+'x</td></tr>').join('');
+  const negRows=topNeg.map(([t,cnt],i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(t)+'</td><td style="text-align:center;font-weight:700">'+cnt+'x</td></tr>').join('');
+  const win=window.open('','_blank','width=1000,height=800');
+  win.document.write('<!DOCTYPE html><html><head><title>Analytics Report</title>'
+    +'<style>body{font-family:Arial,sans-serif;padding:24px;color:#1a2535;font-size:12px}h1{font-size:18px;color:#2563aa;margin-bottom:4px}.sub{font-size:11px;color:#888;margin-bottom:18px}.stats{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap}.stat{background:#f8f9ff;border:1px solid #c7d7fa;border-radius:8px;padding:10px 16px;text-align:center;min-width:120px}.stat-val{font-size:20px;font-weight:700}.stat-lbl{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}.stat-sub{font-size:10px;color:#999}h2{font-size:13px;font-weight:700;margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid #e5e7eb;color:#1a2535}img.chart{max-width:100%;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:20px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}table{width:100%;border-collapse:collapse;margin-bottom:8px}th{padding:6px 10px;text-align:left;background:#f1f5ff;font-size:10px;font-weight:700;text-transform:uppercase;color:#2563aa}td{padding:6px 10px;border-bottom:1px solid #e8ecf8}@media print{body{padding:12px}@page{size:A4}}</style>'
+    +'</head><body>'
+    +'<h1>Analytics Report \u2014 White Rocks Hotel &amp; Bungalows</h1>'
+    +'<div class="sub">Season 2026</div>'
+    +'<div class="stats">'
+    +'<div class="stat"><div class="stat-val" style="color:#2d9c68">'+taAvg2+'/5</div><div class="stat-lbl">TripAdvisor</div><div class="stat-sub">'+taHistory.length+' periods \u00b7 '+taTotal+' reviews</div></div>'
+    +'<div class="stat"><div class="stat-val" style="color:#4285f4">'+gooAvg2+'/5</div><div class="stat-lbl">Google</div><div class="stat-sub">'+gooHistory.length+' periods \u00b7 '+gooTotal+' reviews</div></div>'
+    +'<div class="stat"><div class="stat-val" style="color:#003580">'+bkAvg2+'/10</div><div class="stat-lbl">Booking.com</div><div class="stat-sub">'+bkHistory.length+' periods \u00b7 '+bkTotal+' reviews</div></div>'
+    +'</div>'
+    +(chartImg?'<h2>Score Trend</h2><img class="chart" src="'+chartImg+'">':'')
+    +'<div class="two-col">'
+    +'<div><h2>\ud83d\udc4d Top Positives</h2><table><thead><tr><th>#</th><th>Theme</th><th>Mentions</th></tr></thead><tbody>'+posRows+'</tbody></table></div>'
+    +'<div><h2>\ud83d\udcc8 Top Improvements</h2><table><thead><tr><th>#</th><th>Theme</th><th>Mentions</th></tr></thead><tbody>'+negRows+'</tbody></table></div>'
+    +'</div>'
+    +'<script>window.onload=function(){window.print();}<\/script>'
+    +'</body></html>');
+  win.document.close();
+}
 function renderTopThemes(){
   const allPos={};const allNeg={};
   [...taHistory,...gooHistory].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
   const topPos=Object.entries(allPos).sort((a,b)=>b[1]-a[1]).slice(0,5);const topNeg=Object.entries(allNeg).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const maxPos=topPos[0]?.[1]||1;const maxNeg=topNeg[0]?.[1]||1;
-  document.getElementById('an-pos-list').innerHTML=topPos.length?topPos.map(([t,c])=>'<div class="an-theme-item"><div class="an-theme-bar pos" style="width:'+Math.round(c/maxPos*60)+'px"></div><span style="flex:1;font-size:11px">'+t.slice(0,60)+'</span><span class="an-theme-count">'+c+'x</span></div>').join(''):'<div class="an-empty">No data</div>';
-  document.getElementById('an-neg-list').innerHTML=topNeg.length?topNeg.map(([t,c])=>'<div class="an-theme-item"><div class="an-theme-bar neg" style="width:'+Math.round(c/maxNeg*60)+'px"></div><span style="flex:1;font-size:11px">'+t.slice(0,60)+'</span><span class="an-theme-count">'+c+'x</span></div>').join(''):'<div class="an-empty">No data</div>';
+  document.getElementById('an-pos-list').innerHTML=topPos.length?topPos.map(([t,c])=>'<div class="an-theme-item"><div class="an-theme-bar pos" style="width:'+Math.round(c/maxPos*60)+'px"></div><span style="flex:1;font-size:11px;white-space:normal;line-height:1.4">'+esc(t)+'</span><span class="an-theme-count">'+c+'x</span></div>').join(''):'<div class="an-empty">No data</div>';
+  document.getElementById('an-neg-list').innerHTML=topNeg.length?topNeg.map(([t,c])=>'<div class="an-theme-item"><div class="an-theme-bar neg" style="width:'+Math.round(c/maxNeg*60)+'px"></div><span style="flex:1;font-size:11px;white-space:normal;line-height:1.4">'+esc(t)+'</span><span class="an-theme-count">'+c+'x</span></div>').join(''):'<div class="an-empty">No data</div>';
 }
 
 /* GYM */
@@ -4527,6 +4877,120 @@ function gymSlots(){const slots=[];for(let h=7;h<21;h++){slots.push(h*60);slots.
 function minToStr(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
 function gymPrevMonth(){const idx=GYM_MONTH_NUMS.indexOf(gymMonth);if(idx>0){gymMonth=GYM_MONTH_NUMS[idx-1];}renderGym();}
 function gymNextMonth(){const idx=GYM_MONTH_NUMS.indexOf(gymMonth);if(idx<GYM_MONTH_NUMS.length-1){gymMonth=GYM_MONTH_NUMS[idx+1];}renderGym();}
+let gymView='schedule';
+let gymStatMonth='all';
+function gymStatBtnActive(btn){document.querySelectorAll('.gymst-btn').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');}
+
+function gymSetView(v){
+  gymView=v;
+  const sched=document.getElementById('gym-view-schedule');
+  const stats=document.getElementById('gym-view-stats');
+  const btnS=document.getElementById('gym-tab-sched');
+  const btnSt=document.getElementById('gym-tab-stats');
+  if(v==='schedule'){
+    sched.style.display=''; stats.style.display='none';
+    btnS.style.background='var(--sea)';btnS.style.color='#fff';btnS.style.border='none';
+    btnSt.style.background='var(--white)';btnSt.style.color='var(--sea)';btnSt.style.border='1.5px solid var(--sea)';
+  } else {
+    sched.style.display='none'; stats.style.display='';
+    btnSt.style.background='var(--sea)';btnSt.style.color='#fff';btnSt.style.border='none';
+    btnS.style.background='var(--white)';btnS.style.color='var(--sea)';btnS.style.border='1.5px solid var(--sea)';
+    renderGymStats();
+  }
+}
+function renderGymStats(){
+  const el=document.getElementById('gymst-content');if(!el)return;
+  const slots=gymSlots(); // all 30-min slots in a day
+  const totalSlots=slots.length; // 28 slots (07:00-20:30)
+  // Gather data per month and per hour
+  const byMonth={};const byHour={};const byDow={};
+  const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  Object.keys(gymBookings).forEach(key=>{
+    const b=gymBookings[key];if(!b||b.isTail)return;
+    const[dateKey,slotMin]=key.split('_');
+    const dt=new Date(dateKey);if(isNaN(dt))return;
+    if(gymStatMonth!=='all'&&dt.getMonth()!==parseInt(gymStatMonth))return;
+    const month=dateKey.slice(0,7);
+    const h=Math.floor(parseInt(slotMin)/60);
+    const dow=dt.getDay();
+    if(!byMonth[month])byMonth[month]={bookings:0,days:new Set()};
+    byMonth[month].bookings++;byMonth[month].days.add(dateKey);
+    byHour[h]=(byHour[h]||0)+1;
+    byDow[dow]=(byDow[dow]||0)+1;
+  });
+  const sortedMonths=Object.keys(byMonth).sort();
+  const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // Total stats
+  const totalBookings=Object.keys(gymBookings).filter(k=>!gymBookings[k]?.isTail).length;
+  const uniqueDays=new Set(Object.keys(gymBookings).filter(k=>!gymBookings[k]?.isTail).map(k=>k.split('_')[0])).size;
+  const avgPerDay=uniqueDays>0?(totalBookings/uniqueDays).toFixed(1):0;
+  // Occupancy per month
+  const monthCards=sortedMonths.map(m=>{
+    const d=byMonth[m];
+    const[y,mo]=m.split('-');const mn=MN[parseInt(mo)-1]+' '+y;
+    const daysInMonth=new Date(parseInt(y),parseInt(mo),0).getDate();
+    const totalMonthSlots=daysInMonth*totalSlots;
+    const occ=Math.round(d.bookings/totalMonthSlots*100);
+    const avgDay=(d.bookings/d.days.size).toFixed(1);
+    return '<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px;min-width:130px">'
+      +'<div style="font-size:10px;font-weight:700;color:var(--sea-dark);margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px">'+mn+'</div>'
+      +'<div style="font-size:24px;font-weight:700;color:var(--sea);font-family:var(--serif)">'+occ+'%</div>'
+      +'<div style="font-size:10px;color:var(--muted);margin-top:4px">'+d.bookings+' bookings &#183; avg '+avgDay+'/day</div>'
+      +'<div style="margin-top:8px;background:var(--bg);border-radius:6px;height:6px"><div style="background:var(--sea);height:6px;border-radius:6px;width:'+occ+'%"></div></div>'
+      +'</div>';
+  }).join('');
+  // Busiest hours
+  const maxH=Math.max(...Object.values(byHour),1);
+  const hoursHtml=Array.from({length:14},(_, i)=>i+7).map(h=>{
+    const count=byHour[h]||0;const pct=Math.round(count/maxH*100);
+    const label=(h<12?h+':00 AM':(h===12?'12:00 PM':(h-12)+':00 PM'));
+    return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0">'
+      +'<div style="width:70px;font-size:11px;color:var(--ink2);text-align:right">'+label+'</div>'
+      +'<div style="flex:1;background:var(--bg);border-radius:4px;height:14px"><div style="background:'+(pct>70?'#c0392b':pct>40?'#d97706':'var(--sea)')+';height:14px;border-radius:4px;width:'+pct+'%;transition:width .4s"></div></div>'
+      +'<div style="width:28px;font-size:10px;font-weight:700;color:var(--muted)">'+count+'</div>'
+      +'</div>';
+  }).join('');
+  // Busiest days of week
+  const maxDow=Math.max(...Object.values(byDow),1);
+  const dowHtml=DOW.map((d,i)=>{
+    const count=byDow[i]||0;const pct=Math.round(count/maxDow*100);
+    return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0">'
+      +'<div style="width:36px;font-size:11px;color:var(--ink2);font-weight:600">'+d+'</div>'
+      +'<div style="flex:1;background:var(--bg);border-radius:4px;height:14px"><div style="background:var(--sea);height:14px;border-radius:4px;width:'+pct+'%;transition:width .4s"></div></div>'
+      +'<div style="width:28px;font-size:10px;font-weight:700;color:var(--muted)">'+count+'</div>'
+      +'</div>';
+  }).join('');
+  // Attendance rate: % of operating days that had at least 1 booking
+  const allBookedDays=new Set(Object.keys(gymBookings).filter(k=>{if(gymBookings[k]?.isTail)return false;if(gymStatMonth==='all')return true;const d=new Date(k.split('_')[0]);return!isNaN(d)&&d.getMonth()===parseInt(gymStatMonth);}).map(k=>k.split('_')[0]));
+  const seasonStart=new Date(gymYear,4,1);const today=new Date();today.setHours(0,0,0,0);
+  const seasonEnd=new Date(gymYear,9,31);const end=today<seasonEnd?today:seasonEnd;
+  let totalOpDays=0;if(end>=seasonStart){totalOpDays=Math.round((end-seasonStart)/(1000*60*60*24))+1;}
+  const attendRate=totalOpDays>0?Math.round(allBookedDays.size/totalOpDays*100):0;
+  el.innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center">'
+    +'<div style="font-size:26px;font-weight:700;color:var(--sea);font-family:var(--serif)">'+totalBookings+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">Total Bookings</div></div>'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center">'
+    +'<div style="font-size:26px;font-weight:700;color:var(--sea);font-family:var(--serif)">'+avgPerDay+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">Avg / Active Day</div></div>'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center">'
+    +'<div style="font-size:26px;font-weight:700;color:'+(attendRate>60?'#1a6644':attendRate>30?'#d97706':'#c0392b')+';font-family:var(--serif)">'+attendRate+'%</div>'
+    +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">Attendance Rate</div>'
+    +'<div style="font-size:9px;color:var(--muted2);margin-top:2px">'+allBookedDays.size+' of '+totalOpDays+' days</div></div>'
+    +'</div>'
+    +(monthCards?'<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-bottom:16px">'
+    +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-chart-bar" style="font-size:14px;color:var(--sea)"></i> Monthly Occupancy</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px">'+monthCards+'</div>'
+    +'</div>':'')
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh)">'
+    +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-clock" style="font-size:14px;color:var(--sea)"></i> Busiest Hours</div>'
+    +hoursHtml+'</div>'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh)">'
+    +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-calendar-week" style="font-size:14px;color:var(--sea)"></i> Busiest Days</div>'
+    +dowHtml+'</div>'
+    +'</div>';
+}
+
 function renderGym(){
   if(!GYM_MONTH_NUMS.includes(gymMonth)){gymMonth=GYM_MONTH_NUMS[0];}
   const mName=GYM_MONTHS[GYM_MONTH_NUMS.indexOf(gymMonth)];
@@ -4888,6 +5352,37 @@ function msRenderFilterBars(){
   sEl.innerHTML=statuses.map(([v,l])=>'<button onclick="msSFilter=\''+v+'\';msRenderFilterBars();renderMassage()" style="'+msBtnStyle(msSFilter===v,stCols[v])+'">'+l+'</button>').join('');
 }
 
+function msSumRender(){
+  const el=document.getElementById('ms-sum');if(!el)return;
+  if(WR_ROLE==='frontoffice'){el.style.display='none';return;}
+  function msComm(cost){const c=parseFloat(cost)||0;if(c<=0)return 0;if(c<=90)return 30;if(c<=145)return 55;return Math.round(c*0.38);}
+  const months={};let totalRev=0,totalSess=0,totalComm=0,commSess=0;
+  Object.keys(massageData||{}).forEach(date=>{
+    const month=date.slice(0,7);
+    Object.keys(massageData[date]||{}).forEach(slot=>{
+      if(slot==='__customSlots')return;
+      const b=massageData[date][slot];
+      if(!b||!b.name)return;
+      const cost=parseFloat(b.cost||0);
+      if(!months[month])months[month]={rev:0,sessions:0,confirmed:0,comm:0,commSess:0};
+      months[month].sessions++;totalSess++;
+      if(cost>0){months[month].rev+=cost;totalRev+=cost;}
+      if(b.status==='confirmed')months[month].confirmed++;
+      if(b.status==='commission'){const cm=msComm(cost);months[month].comm+=cm;months[month].commSess++;totalComm+=cm;commSess++;}
+    });
+  });
+  const sortedMonths=Object.keys(months).sort();
+  if(!sortedMonths.length){el.innerHTML='';return;}
+  const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const revCards=sortedMonths.map(m=>{const[y,mo]=m.split('-');const mn=MN[parseInt(mo)-1]+' '+y;const d=months[m];return '<div style="background:#fff8f0;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;min-width:130px"><div style="font-size:10px;font-weight:700;color:#92400e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px">'+mn+'</div><div style="font-size:22px;font-weight:700;color:#b45309;font-family:var(--serif)">\u20ac'+d.rev.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted);margin-top:3px">'+d.sessions+' sessions'+(d.confirmed?' \u00b7 '+d.confirmed+' conf':'')+'</div></div>';}).join('');
+  const commCards=sortedMonths.filter(m=>months[m].comm>0).map(m=>{const[y,mo]=m.split('-');const mn=MN[parseInt(mo)-1]+' '+y;const d=months[m];return '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:12px 16px;min-width:130px"><div style="font-size:10px;font-weight:700;color:#92400e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px">'+mn+'</div><div style="font-size:22px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+d.comm.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted);margin-top:3px">'+d.commSess+' sessions</div></div>';}).join('');
+  let html='<div style="display:grid;grid-template-columns:1fr'+(commCards?' 1fr':'')+(';gap:16px;align-items:start">'
+    +'<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-chart-bar" style="font-size:14px;color:#b45309"></i> Monthly Revenue<span style="margin-left:auto;font-size:12px;font-weight:700;color:#b45309">\u20ac'+totalRev.toFixed(0)+' total \u00b7 '+totalSess+' sessions</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">'+revCards+'</div></div>');
+  if(commCards)html+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-coin" style="font-size:14px;color:#d97706"></i> Commission Summary<span style="margin-left:auto;font-size:12px;font-weight:700;color:#d97706">\u20ac'+totalComm.toFixed(0)+' total \u00b7 '+commSess+' sessions</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">'+commCards+'</div></div>';
+  html+='</div>';
+  el.innerHTML=html;
+}
+
 function renderMassage(){
   const el=document.getElementById('massageContent');if(!el)return;
   msRenderFilterBars();
@@ -4954,6 +5449,7 @@ function renderMassage(){
   });
   if(!allDays.length)html='<div style="padding:40px;text-align:center;color:var(--muted2)"><i class="ti ti-calendar-off" style="font-size:36px;display:block;margin-bottom:10px;opacity:.3"></i>No massage schedule yet</div>';
   el.innerHTML=html;
+  msSumRender();
 }
 function msUpdate(dateKey,slotTime,field,val){if(!massageData[dateKey])massageData[dateKey]={};if(!massageData[dateKey][slotTime])massageData[dateKey][slotTime]={room:'',name:'',dur:60,cost:''};massageData[dateKey][slotTime][field]=field==='dur'?parseInt(val):val;svMassage();}
 function msClear(dateKey,slotTime){if(!massageData[dateKey])return;delete massageData[dateKey][slotTime];if(!Object.keys(massageData[dateKey]).length)delete massageData[dateKey];svMassage();renderMassage();showToast('Cleared','w');}
@@ -5065,10 +5561,113 @@ setInterval(()=>{checkOverdueTasks();const alertTab=document.getElementById('tab
 setTimeout(checkOverdueTasks,2000);
 
 /* PASSWORD */
-const PWD_HASH='frontoffice';const PWD_SESSION_KEY='wr_auth';
-function checkPwd(){const inp=document.getElementById('pwdInp').value;const err=document.getElementById('pwdErr');if(inp===PWD_HASH){sessionStorage.setItem(PWD_SESSION_KEY,'1');document.getElementById('pwdScreen').style.display='none';err.style.display='none';showToast('Welcome! Connected to White Rocks \u2601','s');}else{err.style.display='block';document.getElementById('pwdInp').value='';document.getElementById('pwdInp').focus();const card=document.querySelector('.pwd-card');card.style.animation='shake .4s ease';setTimeout(()=>card.style.animation='',400);}}
+const PWD_ROLES={
+  fom2026:{role:'fom',label:'Front Office Manager'},
+  frontoffice:{role:'frontoffice',label:'Front Office'},
+  backoffice:{role:'backoffice',label:'Back Office'}
+};
+const PWD_SESSION_KEY='wr_auth';
+let WR_ROLE=sessionStorage.getItem('wr_role')||'';
+
+
+function fomShowColorPicker(){
+  if(WR_ROLE!=='fom'){showToast('FOM access only','w');return;}
+  const cur=getComputedStyle(document.documentElement).getPropertyValue('--sea').trim()||'#1b6ca8';
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center';
+  ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:22px;width:340px;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
+    +'<div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px"><i class="ti ti-palette" style="color:var(--sea)"></i> Theme Color (FOM)</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px">'
+    +[['#1b6ca8','Blue (default)'],['#1a6644','Green'],['#7c3aed','Purple'],['#b45309','Amber'],['#0e7490','Teal'],['#c0392b','Red'],['#1565c0','Navy'],['#2d6a4f','Forest'],['#6d28d9','Violet'],['#0d4a2f','Dark Green']]
+    .map(([color,name])=>'<div onclick="fomSetColor(\''+color+'\')" title="'+name+'" style="width:100%;aspect-ratio:1;border-radius:8px;background:'+color+';cursor:pointer;border:3px solid '+(color===cur?'#fff':'transparent')+';box-shadow:0 2px 8px rgba(0,0,0,.2);transition:transform .1s" onmouseover="this.style.transform=\'scale(1.1)\'" onmouseout="this.style.transform=\'\'"></div>')
+    .join('')
+    +'</div>'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><label style="font-size:12px;font-weight:600;color:var(--muted)">Custom:</label>'
+    +'<input type="color" id="fom-custom-color" value="'+cur+'" style="width:44px;height:36px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;padding:2px">'
+    +'<button onclick="fomSetColor(document.getElementById(\'fom-custom-color\').value)" style="padding:7px 14px;background:var(--sea);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">Apply</button>'
+    +'</div>'
+    +'<button onclick="fomSetColor(\'#1b6ca8\');localStorage.removeItem(\'fom_theme_color\');this.closest(\'[style*=fixed]\').remove()" style="width:100%;padding:9px;margin-bottom:6px;background:#f0f7ff;border:1.5px solid #1b6ca8;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);color:#1b6ca8">↺ Reset to Default</button>'+'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="width:100%;padding:9px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;font-size:13px;cursor:pointer;font-family:var(--sans)">Close</button>'
+    +'</div>';
+  document.body.appendChild(ov);
+}
+function fomSetColor(hex){
+  const r=document.documentElement;
+  r.style.setProperty('--sea',hex);
+  // Derive lighter/darker variants
+  r.style.setProperty('--sea-light',hex+'22');
+  r.style.setProperty('--sea-mid',hex+'88');
+  r.style.setProperty('--sea-dark',hex);
+  localStorage.setItem('fom_theme_color',hex);
+  showToast('Theme color updated!','s');
+}
+// Apply saved color on load
+(function(){const saved=localStorage.getItem('fom_theme_color');if(saved)fomSetColor(saved);})();
+function applyRoleRestrictions(){
+  // FOM: full access
+  if(WR_ROLE==='fom')return;
+  const BO_TABS=['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','gym','yoga','pilates','suggestions'];
+  if(WR_ROLE==='backoffice'){
+    BO_TABS.forEach(t=>{
+      const el=document.getElementById('nt-'+t);if(el)el.style.display='none';
+      const dd=document.getElementById('ddi-'+t);if(dd)dd.style.display='none';
+    });
+    const banner=document.createElement('div');
+    banner.style.cssText='position:fixed;bottom:12px;right:16px;background:#1a3a6e;color:#fff;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;z-index:999;opacity:.85;pointer-events:none';
+    banner.textContent='Back Office View';
+    document.body.appendChild(banner);
+    goTab('analytics');
+    return;
+  }
+  if(WR_ROLE==='frontoffice'){
+    // Hide analytics
+    ['analytics'].forEach(t=>{
+      const el=document.getElementById('nt-'+t);if(el)el.style.display='none';
+      const dd=document.getElementById('ddi-'+t);if(dd)dd.style.display='none';
+    });
+    // Hide massage revenue
+    const msSum=document.getElementById('ms-sum');if(msSum)msSum.style.display='none';
+    // Hide experience revenue summaries
+    ['excursions-sum','moto-sum','flowers-sum','boats-sum','transfers-sum','vantours-sum'].forEach(id=>{
+      const el=document.getElementById(id);if(el)el.style.display='none';
+    });
+    // Flag to hide cars revenue
+    window._hideCarsRevenue=true;
+    return;
+  }
+}
+
+function checkPwd(){
+  const inp=document.getElementById('pwdInp').value.trim();
+  const err=document.getElementById('pwdErr');
+  const roleObj=PWD_ROLES[inp];
+  if(roleObj){
+    sessionStorage.setItem(PWD_SESSION_KEY,'1');
+    sessionStorage.setItem('wr_role',roleObj.role);
+    WR_ROLE=roleObj.role;
+    document.getElementById('pwdScreen').style.display='none';
+    err.style.display='none';
+    applyRoleRestrictions();
+    if(WR_ROLE==='fom'){const btn=document.createElement('button');btn.innerHTML='<i class="ti ti-palette" style="font-size:16px"></i>';btn.title='Theme Color';btn.onclick=fomShowColorPicker;btn.style.cssText='position:fixed;bottom:50px;right:16px;width:40px;height:40px;background:var(--sea);color:#fff;border:none;border-radius:50%;cursor:pointer;z-index:998;box-shadow:0 4px 12px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center';document.body.appendChild(btn);}
+    showToast('Welcome, '+roleObj.label+'!  ☁','s');
+  } else {
+    err.style.display='block';
+    document.getElementById('pwdInp').value='';
+    document.getElementById('pwdInp').focus();
+    const card=document.querySelector('.pwd-card');
+    card.style.animation='shake .4s ease';
+    setTimeout(()=>card.style.animation='',400);
+  }
+}
 function togglePwdEye(){const inp=document.getElementById('pwdInp');const ico=document.getElementById('pwdEyeIco');if(inp.type==='password'){inp.type='text';ico.className='ti ti-eye-off';}else{inp.type='password';ico.className='ti ti-eye';}}
-(function(){if(sessionStorage.getItem(PWD_SESSION_KEY)==='1'){document.getElementById('pwdScreen').style.display='none';}else{setTimeout(()=>document.getElementById('pwdInp').focus(),200);}})();
+(function(){
+  if(sessionStorage.getItem(PWD_SESSION_KEY)==='1'){
+    WR_ROLE=sessionStorage.getItem('wr_role')||'frontoffice';
+    document.getElementById('pwdScreen').style.display='none';
+    applyRoleRestrictions();
+  } else {
+    setTimeout(()=>document.getElementById('pwdInp').focus(),200);
+  }
+})();
 
 document.getElementById('groomDate').value=new Date().toISOString().split('T')[0];
 renderStats();renderRes();
