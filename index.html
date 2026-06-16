@@ -379,7 +379,9 @@ table.gtbl{width:100%;border-collapse:collapse;font-size:13px}
 .gym-nav{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:12px 18px;margin-bottom:14px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
 .gym-nav-btn{width:32px;height:32px;background:var(--sea-light);border:1px solid var(--sea-mid);border-radius:8px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center;font-size:16px;border:none}
 .gym-nav-btn:hover{background:var(--sea);color:#fff}
+.exst-btn{padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)}.exst-btn.on{background:#1a6644;color:#fff;border-color:#1a6644}
 .gymst-btn{padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)}.gymst-btn.on{background:var(--sea);color:#fff;border-color:var(--sea)}
+.msst-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)}.msst-btn.on{background:#b45309;color:#fff;border-color:#b45309}
 .gym-month-lbl{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);flex:1;text-align:center}
 .gym-tbl-wrap{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:auto;max-height:72vh}
 table.gym-tbl{border-collapse:collapse;font-size:12px}
@@ -739,8 +741,8 @@ canvas.an-chart{width:100%!important;height:220px!important}
   <button class="mpill" onclick="setM('10',this)">Oct</button>
   <div style="display:flex;gap:6px;margin-left:12px">
     <button class="fpill on" onclick="setF('all',this)">All</button>
-    <button class="fpill" onclick="setF('noroom',this)">No Room</button>
-    <button class="fpill" onclick="setF('hasroom',this)">Assigned</button>
+    <button class="fpill" onclick="setF('staying',this)">Currently Staying</button>
+    <button class="fpill" onclick="setF('upcoming',this)">Upcoming</button>
     <button class="fpill" onclick="setF('rated',this)"><i class="ti ti-star" style="font-size:12px"></i> Rated</button>
   </div>
   <span class="cnt-lbl" id="cntLbl"></span>
@@ -1210,6 +1212,18 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div class="an-hdr">
       <div class="an-hdr-ico"><i class="ti ti-chart-dots"></i></div>
       <div><div class="an-hdr-t">Analytics &amp; AI Responses</div><div class="an-hdr-s">Period comparison &middot; Trends &middot; AI review responses</div></div>
+      <select id="an-month-filter" onchange="anSetMonthFilter(this.value)" style="margin-left:12px;padding:7px 12px;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);outline:none">
+        <option value="all" style="color:#1a2535">All (May-Oct)</option>
+        <option value="05" style="color:#1a2535">May</option>
+        <option value="06" style="color:#1a2535">June</option>
+        <option value="07" style="color:#1a2535">July</option>
+        <option value="08" style="color:#1a2535">August</option>
+        <option value="09" style="color:#1a2535">September</option>
+        <option value="10" style="color:#1a2535">October</option>
+      </select>
+      <div style="margin-left:auto"><button onclick="anPrintAll()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-printer" style="font-size:15px"></i> Print Report</button></div>
+    </div>
+      <div><div class="an-hdr-t">Analytics &amp; AI Responses</div><div class="an-hdr-s">Period comparison &middot; Trends &middot; AI review responses</div></div>
       <div style="margin-left:auto"><button onclick="anPrintAll()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-printer" style="font-size:15px"></i> Print Report</button></div>
     </div>
     <div class="an-grid" id="an-stats-grid">
@@ -1221,6 +1235,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div class="an-stat-card"><div class="an-stat-lbl">Booking.com Avg</div><div class="an-stat-val" id="an-bk-avg" style="color:#003580">-</div><div class="an-stat-sub">/ 10.0</div></div>
       <div class="an-stat-card" style="border-top:3px solid #1a6ca8"><div class="an-stat-lbl">Experiences Revenue</div><div class="an-stat-val" id="an-exp-rev" style="color:#1a6ca8">€-</div><div class="an-stat-sub" id="an-exp-rev-sub">excl. cancelled</div></div>
       <div class="an-stat-card" style="border-top:3px solid #b45309"><div class="an-stat-lbl">Massage Revenue</div><div class="an-stat-val" id="an-ms-rev" style="color:#b45309">€-</div><div class="an-stat-sub" id="an-ms-rev-sub">excl. no-cost</div></div>
+      <div class="an-stat-card" style="border-top:3px solid #be185d"><div class="an-stat-lbl">Flowers Revenue</div><div class="an-stat-val" id="an-fl-rev" style="color:#be185d">€-</div><div class="an-stat-sub" id="an-fl-rev-sub">excl. cancelled</div></div>
     </div>
     <div class="an-card">
       <h3><i class="ti ti-chart-line"></i> Score Trend per period</h3>
@@ -1279,7 +1294,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div class="ms-hdr">
       <div class="ms-hdr-ico"><i class="ti ti-heart-handshake"></i></div>
       <div><div class="ms-hdr-t">Massage Bookings</div><div class="ms-hdr-s">Sessions per day &middot; Room, Name &amp; Cost</div></div>
-      <button onclick="msToggleAddForm()" id="ms-add-toggle-btn" style="margin-left:auto;display:flex;align-items:center;gap:7px;padding:9px 16px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-plus"></i> Add Booking</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button id="ms-tab-stats" onclick="msSetView('stats')" style="padding:7px 16px;background:var(--white);color:#b45309;border:1.5px solid #b45309;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:5px"><i class="ti ti-chart-bar"></i> Stats &amp; History</button>
+        <button onclick="msToggleAddForm()" id="ms-add-toggle-btn" style="display:flex;align-items:center;gap:7px;padding:9px 16px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-plus"></i> Add Booking</button>
+      </div>
     </div>
     <!-- Manual add form -->
     <div id="ms-add-form" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)">
@@ -1327,8 +1345,23 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <button onclick="msAddDay()" style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:#b45309;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-calendar-plus" style="font-size:13px"></i> Add</button>
       </div>
     </div>
+    <div id="ms-view-schedule">
     <div id="massageContent"></div>
     <div id="ms-sum" style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:14px"></div>
+    </div><!-- /ms-view-schedule -->
+    <!-- STATS VIEW -->
+    <div id="ms-view-stats" style="display:none">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+        <button class="msst-btn on" onclick="msStatMonth='all';msStatBtnActive(this);renderMsStats()">All</button>
+        <button class="msst-btn" onclick="msStatMonth='05';msStatBtnActive(this);renderMsStats()">May</button>
+        <button class="msst-btn" onclick="msStatMonth='06';msStatBtnActive(this);renderMsStats()">June</button>
+        <button class="msst-btn" onclick="msStatMonth='07';msStatBtnActive(this);renderMsStats()">July</button>
+        <button class="msst-btn" onclick="msStatMonth='08';msStatBtnActive(this);renderMsStats()">August</button>
+        <button class="msst-btn" onclick="msStatMonth='09';msStatBtnActive(this);renderMsStats()">September</button>
+        <button class="msst-btn" onclick="msStatMonth='10';msStatBtnActive(this);renderMsStats()">October</button>
+      </div>
+      <div id="ms-stats-content"></div>
+    </div><!-- /ms-view-stats -->
   </div>
 </div>
 
@@ -1374,6 +1407,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <input type="date" id="exp-daily-date" style="padding:7px 10px;border:1.5px solid rgba(255,255,255,.4);border-radius:9px;font-size:12px;font-family:var(--sans);outline:none;background:rgba(255,255,255,.15);color:#fff;cursor:pointer" onchange="expDailyView()">
         <button onclick="expDailyView()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-calendar-day" style="font-size:14px"></i> Daily View</button>
+        <button id="exp-stats-btn" onclick="expStatsOpen()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-chart-bar" style="font-size:14px"></i> Stats &amp; History</button>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
@@ -1442,6 +1476,13 @@ canvas.an-chart{width:100%!important;height:220px!important}
           <i class="ti ti-chart-bar" style="font-size:14px;color:#1a6644"></i> Monthly Summary
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px" id="carSumGrid"></div>
+        <div id="carCommGrid" style="display:none;margin-top:14px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px">
+            <i class="ti ti-coin" style="font-size:14px;color:#d97706"></i> Commission Summary
+            <span style="font-size:10px;color:var(--muted);font-weight:400">(20% of base price)</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px" id="carCommSumGrid"></div>
+        </div>
       </div>
     </div>
 
@@ -1498,6 +1539,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         </table>
       </div>
       <div id="moto-sum" style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:14px"></div>
+      <div id="moto-comm-sum" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:10px"></div>
     </div>
 
     <!-- ── FLOWERS PANEL ── -->
@@ -1554,6 +1596,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         </table>
       </div>
       <div id="boats-sum" style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:14px"></div>
+      <div id="boats-comm-sum" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:10px"></div>
     </div>
 
     <!-- ── TRANSFERS PANEL ── -->
@@ -1581,6 +1624,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         </table>
       </div>
       <div id="transfers-sum" style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:14px"></div>
+      <div id="transfers-comm-sum" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:10px"></div>
     </div>
 
     <!-- ── VAN TOURS PANEL ── -->
@@ -1609,6 +1653,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         </table>
       </div>
       <div id="vantours-sum" style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:14px"></div>
+      <div id="vantours-comm-sum" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-top:10px"></div>
     </div>
 
   </div>
@@ -2458,11 +2503,16 @@ function renderGenSum(tab){
       if(!byCompany[coKey])byCompany[coKey]={rev:0,comm:0,count:0};
       byCompany[coKey].rev+=cost;
       byCompany[coKey].count++;
-      if(tab==='boats'){
-        const co=coKey.toLowerCase();
-        const rate=co.includes('ego')?0.20:0.10;
+      if(tab==='boats'||tab==='moto'||tab==='transfers'||tab==='vantours'){
+        const rate=tab==='transfers'?0.07:0.10;
         const c=Math.round(cost*rate);
         comm+=c;byCompany[coKey].comm+=c;
+        if(tab==='boats'){
+          const co=coKey.toLowerCase();
+          const rateB=co.includes('ego')?0.20:0.10;
+          const cB=Math.round(cost*rateB);
+          byCompany[coKey].comm=cB;comm=comm-c+cB;
+        }
       } else {
         const c=Math.round(cost*0.20);
         comm+=c;byCompany[coKey].comm+=c;
@@ -2483,6 +2533,278 @@ function renderGenSum(tab){
   });
   html+='</div>';
   el.innerHTML=any?html:'<div style="font-size:12px;color:var(--muted2);padding:6px">No data yet</div>';
+
+  if(tab==='moto'){
+    const _commEl=document.getElementById('moto-comm-sum');
+    if(_commEl){
+      const _rows=(GEN_DATA['moto']||[]).filter(r=>r.status==='commission');
+      const _MN={'05':'May','06':'June','07':'July','08':'August','09':'Sep','10':'Oct'};
+      let _cHtml='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-coin" style="font-size:14px;color:#d97706"></i> Commission Summary <span style="font-weight:400;font-size:9px;color:var(--muted2)">(10% of cost)</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
+      let _cAny=false;
+      ['05','06','07','08','09','10'].forEach(function(m){
+        const _mc=_rows.filter(r=>genGetMonth(r)===m);
+        if(!_mc.length)return;_cAny=true;
+        const _base=_mc.reduce((s,r)=>s+(parseFloat(r.cost||0)||0),0);
+        const _c=Math.round(_base*0.1);
+        _cHtml+='<div class="car-sum-card" style="background:#fffbeb;border:1px solid #fde68a">'
+          +'<div class="car-sum-month">'+_MN[m]+'</div>'
+          +'<div class="car-sum-count">'+_mc.length+' booking'+(_mc.length>1?'s':'')+'</div>'
+          +'<div class="car-sum-rev" style="color:#d97706">€'+_c.toFixed(0)+'</div>'
+          +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Cost €'+_base.toFixed(0)+' × 10%</div>'
+          +'</div>';
+      });
+      _cHtml+='</div>';
+      _commEl.innerHTML=_cAny?_cHtml:'';
+      _commEl.style.display=_cAny?'block':'none';
+    }
+  }
+  if(tab==='transfers'){
+    const _commEl=document.getElementById('transfers-comm-sum');
+    if(_commEl){
+      const _rows=(GEN_DATA['transfers']||[]).filter(r=>r.status==='commission');
+      const _MN={'05':'May','06':'June','07':'July','08':'August','09':'Sep','10':'Oct'};
+      let _cHtml='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-coin" style="font-size:14px;color:#d97706"></i> Commission Summary <span style="font-weight:400;font-size:9px;color:var(--muted2)">(7% of cost)</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
+      let _cAny=false;
+      ['05','06','07','08','09','10'].forEach(function(m){
+        const _mc=_rows.filter(r=>genGetMonth(r)===m);
+        if(!_mc.length)return;_cAny=true;
+        const _base=_mc.reduce((s,r)=>s+(parseFloat(r.cost||0)||0),0);
+        const _c=Math.round(_base*0.07);
+        _cHtml+='<div class="car-sum-card" style="background:#fffbeb;border:1px solid #fde68a">'
+          +'<div class="car-sum-month">'+_MN[m]+'</div>'
+          +'<div class="car-sum-count">'+_mc.length+' booking'+(_mc.length>1?'s':'')+'</div>'
+          +'<div class="car-sum-rev" style="color:#d97706">€'+_c.toFixed(0)+'</div>'
+          +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Cost €'+_base.toFixed(0)+' × 7%</div>'
+          +'</div>';
+      });
+      _cHtml+='</div>';
+      _commEl.innerHTML=_cAny?_cHtml:'';
+      _commEl.style.display=_cAny?'block':'none';
+    }
+  }
+  if(tab==='boats'){
+    const _boatCommEl=document.getElementById('boats-comm-sum');
+    if(_boatCommEl){
+      // Store breakdown per month for boats
+      const _MNB={'05':'May','06':'June','07':'July','08':'August','09':'Sep','10':'Oct'};
+      const _boatRows=(GEN_DATA['boats']||[]).filter(r=>r.status==='commission');
+      let _bcHtml='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-coin" style="font-size:14px;color:#d97706"></i> Commission Summary <span style="font-weight:400;font-size:9px;color:var(--muted2)">(Ego 20% · MAK/SIW 10%)</span></div>';
+      let _bcAny=false;
+      // Group by month
+      ['05','06','07','08','09','10'].forEach(function(m){
+        const _mc=_boatRows.filter(r=>genGetMonth(r)===m);
+        if(!_mc.length)return;_bcAny=true;
+        // Group by company within month
+        const _byCo={};
+        _mc.forEach(r=>{
+          const co=r.company||'Unknown';
+          const cost=parseFloat(r.cost||0)||0;
+          const isEgo=co.toLowerCase().includes('ego');
+          const rate=isEgo?0.20:0.10;
+          const comm=Math.round(cost*rate);
+          if(!_byCo[co])_byCo[co]={rev:0,comm:0,count:0,rate:isEgo?'20%':'10%'};
+          _byCo[co].rev+=cost;_byCo[co].comm+=comm;_byCo[co].count++;
+        });
+        const totalComm=Object.values(_byCo).reduce((s,d)=>s+d.comm,0);
+        _bcHtml+='<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:6px">'+_MNB[m]+' <span style="color:#d97706;font-size:12px">\u20ac'+totalComm.toFixed(0)+' total</span></div>';
+        _bcHtml+='<div style="display:flex;flex-direction:column;gap:5px">';
+        Object.entries(_byCo).forEach(([co,d])=>{
+          _bcHtml+='<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:9px">'
+            +'<div><div style="font-size:11px;font-weight:700;color:var(--ink)">'+co+'</div>'
+            +'<div style="font-size:10px;color:var(--muted)">'+d.count+' booking'+(d.count>1?'s':'')+' \u00b7 \u20ac'+d.rev.toFixed(0)+' \u00d7 '+d.rate+'</div></div>'
+            +'<div style="font-size:18px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+d.comm.toFixed(0)+'</div>'
+            +'</div>';
+        });
+        _bcHtml+='</div></div>';
+      });
+      _boatCommEl.innerHTML=_bcAny?_bcHtml:'';
+      _boatCommEl.style.display=_bcAny?'block':'none';
+    }
+  }
+  if(tab==='vantours'){
+    const _commEl=document.getElementById('vantours-comm-sum');
+    if(_commEl){
+      const _rows=(GEN_DATA['vantours']||[]).filter(r=>r.status==='commission');
+      const _MN={'05':'May','06':'June','07':'July','08':'August','09':'Sep','10':'Oct'};
+      let _cHtml='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-coin" style="font-size:14px;color:#d97706"></i> Commission Summary <span style="font-weight:400;font-size:9px;color:var(--muted2)">(10% of cost)</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
+      let _cAny=false;
+      ['05','06','07','08','09','10'].forEach(function(m){
+        const _mc=_rows.filter(r=>genGetMonth(r)===m);
+        if(!_mc.length)return;_cAny=true;
+        const _base=_mc.reduce((s,r)=>s+(parseFloat(r.cost||0)||0),0);
+        const _c=Math.round(_base*0.1);
+        _cHtml+='<div class="car-sum-card" style="background:#fffbeb;border:1px solid #fde68a">'
+          +'<div class="car-sum-month">'+_MN[m]+'</div>'
+          +'<div class="car-sum-count">'+_mc.length+' booking'+(_mc.length>1?'s':'')+'</div>'
+          +'<div class="car-sum-rev" style="color:#d97706">€'+_c.toFixed(0)+'</div>'
+          +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Cost €'+_base.toFixed(0)+' × 10%</div>'
+          +'</div>';
+      });
+      _cHtml+='</div>';
+      _commEl.innerHTML=_cAny?_cHtml:'';
+      _commEl.style.display=_cAny?'block':'none';
+    }
+  }
+}
+
+
+let expStatMonth='all';
+function expStatBtnActive(btn){document.querySelectorAll('.exst-btn').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');}
+function expStatsOpen(){
+  const panel=document.getElementById('exp-stats-overlay');
+  if(panel){panel.style.display='block';renderExpStats();}
+}
+function expStatsClose(){
+  const panel=document.getElementById('exp-stats-overlay');
+  if(panel)panel.style.display='none';
+}
+
+const EXP_COMM_RATES={
+  cars:{rate:0.20,label:'20%',useBase:true},
+  excursions:{rate:0.10,label:'10%',useBase:false},
+  moto:{rate:0.10,label:'10%',useBase:false},
+  flowers:{rate:0,label:'-',useBase:false},
+  boats:{rate:null,label:'10-20%',useBase:false}, // per company
+  transfers:{rate:0.07,label:'7%',useBase:false},
+  vantours:{rate:0.10,label:'10%',useBase:false}
+};
+const SEASON_M=['05','06','07','08','09','10'];
+const MN_LABEL={'05':'May','06':'June','07':'July','08':'August','09':'Sep','10':'Oct'};
+
+function getCommForRow(tab,r){
+  const cost=parseFloat(r.cost||0)||0;
+  const base=parseFloat(r.base||cost)||0;
+  const cfg=EXP_COMM_RATES[tab];
+  if(!cfg||cfg.rate===0)return 0;
+  if(tab==='cars'){const{base:b}=carCalc(r);return Math.round((b||0)*0.20);}
+  if(tab==='boats'){
+    const co=(r.company||'').toLowerCase();
+    return Math.round(cost*(co.includes('ego')?0.20:0.10));
+  }
+  return Math.round(cost*(cfg.rate||0));
+}
+
+function renderExpStats(){
+  const el=document.getElementById('exp-stats-content');if(!el)return;
+  // Filter by month
+  function filterMonth(rows){
+    return rows.filter(r=>{
+      const m=genGetMonth(r);
+      if(expStatMonth==='all')return SEASON_M.includes(m);
+      return m===expStatMonth;
+    });
+  }
+
+  // ── 1. Summary cards per tab ──
+  let totalRev=0,totalComm=0,totalSales=0;
+  const tabStats=Object.keys(EXP_LABELS).map(tab=>{
+    const rows=filterMonth(GEN_DATA[tab]||[]).filter(r=>r.status!=='cancelled');
+    const rev=rows.reduce((s,r)=>s+(parseFloat(r.cost||r.bosoniPrice||0)||0),0);
+    const comm=rows.reduce((s,r)=>s+getCommForRow(tab,r),0);
+    totalRev+=rev;totalComm+=comm;totalSales+=rows.length;
+    return{tab,label:EXP_LABELS[tab],count:rows.length,rev,comm,rate:EXP_COMM_RATES[tab].label};
+  }).filter(d=>d.count>0);
+
+  const tabCards=tabStats.map(d=>{
+    const pct=totalRev>0?Math.round(d.rev/totalRev*100):0;
+    return '<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;min-width:140px">'
+      +'<div style="font-size:10px;font-weight:700;color:var(--sea-dark);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">'+d.label+'</div>'
+      +'<div style="font-size:20px;font-weight:700;color:var(--sea);font-family:var(--serif)">\u20ac'+d.rev.toFixed(0)+'</div>'
+      +'<div style="font-size:10px;color:var(--muted);margin-top:2px">'+d.count+' sales \u00b7 '+pct+'% of total</div>'
+      +(d.comm>0?'<div style="font-size:11px;font-weight:700;color:#d97706;margin-top:4px">\u20ac'+d.comm.toFixed(0)+' comm ('+d.rate+')</div>':'')
+      +'<div style="margin-top:6px;background:var(--bg);border-radius:4px;height:4px"><div style="background:var(--sea);height:4px;border-radius:4px;width:'+pct+'%"></div></div>'
+      +'</div>';
+  }).join('');
+
+  // ── 2. Monthly breakdown ──
+  let monthHtml='';
+  if(expStatMonth==='all'){
+    monthHtml='<div style="margin-bottom:18px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px">Monthly Revenue &amp; Commission</div>';
+    monthHtml+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
+    monthHtml+='<thead><tr style="background:var(--bg)"><th style="padding:6px 10px;text-align:left;font-weight:700;color:var(--muted)">Month</th>';
+    Object.values(EXP_LABELS).forEach(l=>monthHtml+='<th style="padding:6px 8px;text-align:right;font-weight:700;color:var(--muted)">'+l+'</th>');
+    monthHtml+='<th style="padding:6px 10px;text-align:right;font-weight:700;color:var(--sea)">Total</th>'
+      +'<th style="padding:6px 10px;text-align:right;font-weight:700;color:#d97706">Commission</th></tr></thead><tbody>';
+    SEASON_M.forEach(m=>{
+      let rowRev=0,rowComm=0;
+      let cells='';
+      Object.keys(EXP_LABELS).forEach(tab=>{
+        const rows=(GEN_DATA[tab]||[]).filter(r=>genGetMonth(r)===m&&r.status!=='cancelled');
+        const rev=rows.reduce((s,r)=>s+(parseFloat(r.cost||r.bosoniPrice||0)||0),0);
+        const comm=rows.reduce((s,r)=>s+getCommForRow(tab,r),0);
+        rowRev+=rev;rowComm+=comm;
+        cells+='<td style="padding:5px 8px;text-align:right;color:var(--ink)">'+( rev>0?'\u20ac'+rev.toFixed(0):'-')+'</td>';
+      });
+      if(rowRev===0)return;
+      monthHtml+='<tr style="border-bottom:1px solid var(--border2)">'
+        +'<td style="padding:5px 10px;font-weight:700;color:var(--ink)">'+MN_LABEL[m]+'</td>'
+        +cells
+        +'<td style="padding:5px 10px;text-align:right;font-weight:700;color:var(--sea)">\u20ac'+rowRev.toFixed(0)+'</td>'
+        +'<td style="padding:5px 10px;text-align:right;font-weight:700;color:#d97706">\u20ac'+rowComm.toFixed(0)+'</td>'
+        +'</tr>';
+    });
+    monthHtml+='</tbody></table></div></div>';
+  }
+
+  // ── 3. Best performing company (boats) ──
+  const boatRows=filterMonth(GEN_DATA['boats']||[]).filter(r=>r.status!=='cancelled'&&r.company);
+  const byBoatCo={};
+  boatRows.forEach(r=>{
+    const co=r.company||'Unknown';
+    if(!byBoatCo[co])byBoatCo[co]={count:0,rev:0,comm:0};
+    const cost=parseFloat(r.cost||0)||0;
+    const comm=getCommForRow('boats',r);
+    byBoatCo[co].count++;byBoatCo[co].rev+=cost;byBoatCo[co].comm+=comm;
+  });
+  const boatCoRows=Object.entries(byBoatCo).sort((a,b)=>b[1].rev-a[1].rev).map(([co,d])=>
+    '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2)">'
+    +'<div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--ink)">'+co+'</div>'
+    +'<div style="font-size:10px;color:var(--muted)">'+d.count+' bookings</div></div>'
+    +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--sea)">\u20ac'+d.rev.toFixed(0)+'</div>'
+    +'<div style="font-size:11px;color:#d97706">comm \u20ac'+d.comm.toFixed(0)+'</div></div>'
+    +'</div>'
+  ).join('');
+
+  // ── 4. Top selling experiences ──
+  const sorted=[...tabStats].sort((a,b)=>b.count-a.count);
+  const maxCount=sorted[0]?.count||1;
+  const topSalesRows=sorted.map(d=>
+    '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2)">'
+    +'<div style="width:110px;font-size:11px;font-weight:600;color:var(--ink)">'+d.label+'</div>'
+    +'<div style="flex:1;background:var(--bg);border-radius:4px;height:12px"><div style="background:var(--sea);height:12px;border-radius:4px;width:'+Math.round(d.count/maxCount*100)+'%"></div></div>'
+    +'<div style="width:24px;font-size:10px;font-weight:700;color:var(--muted);text-align:right">'+d.count+'</div>'
+    +'</div>'
+  ).join('');
+
+  const topRevRows=[...tabStats].sort((a,b)=>b.rev-a.rev).map(d=>
+    '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2)">'
+    +'<div style="width:110px;font-size:11px;font-weight:600;color:var(--ink)">'+d.label+'</div>'
+    +'<div style="flex:1;background:var(--bg);border-radius:4px;height:12px"><div style="background:#d97706;height:12px;border-radius:4px;width:'+Math.round(d.rev/totalRev*100)+'%"></div></div>'
+    +'<div style="font-size:10px;font-weight:700;color:#d97706;white-space:nowrap">\u20ac'+d.rev.toFixed(0)+'</div>'
+    +'</div>'
+  ).join('');
+
+  el.innerHTML=
+    // Top stats
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--sea);font-family:var(--serif)">'+totalSales+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Total Sales</div></div>'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--sea);font-family:var(--serif)">\u20ac'+totalRev.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Total Revenue</div></div>'
+    +'<div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+totalComm.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Total Commission</div></div>'
+    +'</div>'
+    // Per tab cards
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:18px">'+tabCards+'</div>'
+    // Monthly table
+    +monthHtml
+    // 2-col bottom
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px">'
+    +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-trophy" style="color:var(--sea);font-size:13px"></i> Most Sales</div>'
+    +topSalesRows+'</div>'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px">'
+    +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-coin" style="color:#d97706;font-size:13px"></i> Most Revenue</div>'
+    +topRevRows+'</div>'
+    +'</div>'
+    +(boatCoRows?'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-sailboat" style="color:#0e7490;font-size:13px"></i> Boats by Company</div>'+boatCoRows+'</div>':'');
 }
 
 function genDel(tab,i){const saved=GEN_DATA[tab].splice(i,1)[0];svGen(tab);renderGenTab(tab);setTimeout(function(){showToast('Deleted','w',function(){GEN_DATA[tab].splice(i,0,saved);svGen(tab);renderGenTab(tab);});},50);}
@@ -3393,6 +3715,7 @@ function carEmailDraft(i){
   carEmailRenderTos();
 }
 function carShowCommission(month,rev,comm,tabName){
+  const _rateLabel=tabName==='transfers'?'7%':tabName==='moto'||tabName==='vantours'?'10%':'20%';
   const breakdown=(tabName==='boats')?(window._boatsBreakdown&&window._boatsBreakdown[month])||null:null;
   let breakdownHtml='';
   if(breakdown&&Object.keys(breakdown).length>=1){
@@ -3419,11 +3742,11 @@ function carShowCommission(month,rev,comm,tabName){
     +'<div style="font-size:24px;font-weight:700;color:#1a6644;font-family:var(--serif)">\u20ac'+rev.toFixed(0)+'</div>'
     +'</div>'
     +'<div style="background:#fff8f0;border:2px solid #fcd34d;border-radius:10px;padding:14px">'
-    +'<div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Commission (20%)</div>'
+    +'<div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Commission ('+_rateLabel+')</div>'
     +'<div style="font-size:24px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+comm.toFixed(0)+'</div>'
     +'</div>'
     +'</div>'
-    +'<div style="font-size:11px;color:var(--muted);margin-bottom:16px">Revenue \u00d7 20% = Commission</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:16px">Revenue \u00d7 '+_rateLabel+' = Commission</div>'
     +'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="width:100%;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)">Close</button>'
     +'</div>';
   document.body.appendChild(ov);
@@ -3443,7 +3766,15 @@ function carUpd(i,field,val){
   if(['carType','days','rentalDate','bookDate','insurance'].includes(field))renderCars();
 }
 
-function carSetStatus(i,s){CARS[i].status=s;svCars();renderCars();}
+function carSetStatus(i,s){
+  CARS[i].status=s;
+  if(s==='commission'){
+    const{base}=carCalc(CARS[i]);
+    const comm=Math.round((base||0)*0.20);
+    if(comm>0)showToast('Commission: €'+comm+' (20% of base €'+base+')','s');
+  }
+  svCars();renderCars();
+}
 function carCycleStatus(i){const o=['waiting','confirmed','cancelled'];CARS[i].status=o[(o.indexOf(CARS[i].status)+1)%3];svCars();renderCars();}
 
 function renderCars(){
@@ -3585,6 +3916,7 @@ function renderCars(){
               <button class="car-sbtn${c.status==='confirmed'?' sc':''}" onclick="carSetStatus(${i},'confirmed')">&#10003; Confirmed</button>
               <button class="car-sbtn${c.status==='waiting'?' sw':''}" onclick="carSetStatus(${i},'waiting')">&#9203; Waiting</button>
               <button class="car-sbtn${c.status==='cancelled'?' sx':''}" onclick="carSetStatus(${i},'cancelled')">&#10007; Cancelled</button>
+              <button class="car-sbtn${c.status==='commission'?' sk':''}" onclick="carSetStatus(${i},'commission')">?? Commission</button>
             </div>
           </div>
         </div>
@@ -3607,9 +3939,9 @@ function renderCarSum(){
     const canc=mc.filter(c=>c.status==='cancelled').length;
     const confCards=mc.filter(c=>c.status==='confirmed');
     const rev=confCards.reduce((s,c)=>{const{total}=carCalc(c);return s+(total||0);},0);
-    const comm=Math.round(rev*0.20);
+    const commBase=confCards.reduce((s,c)=>{const{base}=carCalc(c);return s+(base||0);},0);
+    const comm=Math.round(commBase*0.20);
     html+='<div class="car-sum-card" style="cursor:pointer" onclick="carShowCommission(\''+MN[m]+'\','+rev+','+comm+')" title="Click for commission breakdown">'
-      +'<div class="car-sum-month">'+MN[m]+'</div>'
       +'<div class="car-sum-count">'+mc.length+' bookings</div>'
       +(rev>0&&!window._hideCarsRevenue?'<div class="car-sum-rev">€'+rev.toFixed(0)+' confirmed</div>':'')
       +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'
@@ -3619,8 +3951,29 @@ function renderCarSum(){
       +'</div></div>';
   });
   grid.innerHTML=any?html:'<div style="font-size:12px;color:var(--muted2);padding:6px">No data yet</div>';
+  // Commission Summary (20% of base, commission status only)
+  const commSumGrid=document.getElementById('carCommSumGrid');
+  const commSection=document.getElementById('carCommGrid');
+  if(commSumGrid&&commSection){
+    let commHtml='';let hasComm=false;
+    ['05','06','07','08','09','10'].forEach(m=>{
+      const mc=CARS.filter(c=>carGetMonth(c)===m&&c.status==='commission');
+      if(!mc.length)return;hasComm=true;
+      const baseTotal=mc.reduce((s,c)=>{const{base}=carCalc(c);return s+(base||0);},0);
+      const comm=Math.round(baseTotal*0.20);
+      commHtml+='<div class="car-sum-card" style="background:#fffbeb;border:1px solid #fde68a">'
+        +'<div class="car-sum-month">'+MN[m]+'</div>'
+        +'<div class="car-sum-count">'+mc.length+' booking'+(mc.length>1?'s':'')+'</div>'
+        +'<div class="car-sum-rev" style="color:#d97706">€'+comm.toFixed(0)+'</div>'
+        +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Base €'+baseTotal.toFixed(0)+' × 20%</div>'
+        +'</div>';
+    });
+    commSumGrid.innerHTML=commHtml;
+    commSection.style.display=hasComm?'block':'none';
+  }
   if(WR_ROLE==='frontoffice'){const s=document.getElementById('car-sum-section');if(s)s.style.display='none';}
 }
+
 
 
 /* ── CAR ADD MODAL ── */
@@ -3914,7 +4267,7 @@ function epStatus(tab,i,status,col){
   return `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:4px">
     <button class="car-sbtn${sc}" onclick="GEN_DATA['${tab}'][${i}].status='confirmed';svGen('${tab}');renderGenTab('${tab}')" style="font-size:11px;padding:5px 8px">&#10003; Confirmed</button>
     <button class="car-sbtn${sw}" onclick="GEN_DATA['${tab}'][${i}].status='waiting';svGen('${tab}');renderGenTab('${tab}')" style="font-size:11px;padding:5px 8px">&#9203; Waiting</button>
-    <button class="car-sbtn${sk}" onclick="GEN_DATA['${tab}'][${i}].status='commission';svGen('${tab}');renderGenTab('${tab}')" style="font-size:11px;padding:5px 8px">&#128176; Commission</button>
+    <button class="car-sbtn${sk}" onclick="GEN_DATA['${tab}'][${i}].status='commission';svGen('${tab}');renderGenTab('${tab}');if('${tab}'==='moto'||'${tab}'==='transfers'||'${tab}'==='vantours'){const cost=parseFloat(GEN_DATA['${tab}'][${i}].cost||0);const rate='${tab}'==='transfers'?0.07:0.10;const pct='${tab}'==='transfers'?7:10;const comm=Math.round(cost*rate);if(comm>0)showToast('Commission: €'+comm+' ('+pct+'% of €'+cost+')','s');}" style="font-size:11px;padding:5px 8px">&#128176; Commission</button>
     <button class="car-sbtn${sx}" onclick="GEN_DATA['${tab}'][${i}].status='cancelled';svGen('${tab}');renderGenTab('${tab}')" style="font-size:11px;padding:5px 8px">&#10007; Cancelled</button>
   </div>`;
 }
@@ -4155,8 +4508,20 @@ function renderStats(){
 function getF(){
   const q=(document.getElementById('srch')?.value||'').toLowerCase();
   return RES.filter(r=>{
-    if(flt==='noroom'&&r.room)return false;
-    if(flt==='hasroom'&&!r.room)return false;
+    if(flt==='staying'){
+      const today=new Date();today.setHours(0,0,0,0);
+      const arr=pd(r.arr);const dep=pd(r.dep);
+      if(!arr||!dep)return false;
+      arr.setHours(0,0,0,0);dep.setHours(0,0,0,0);
+      if(arr>today||dep<=today)return false;
+    }
+    if(flt==='upcoming'){
+      const today=new Date();today.setHours(0,0,0,0);
+      const in14=new Date(today);in14.setDate(in14.getDate()+14);
+      const arr=pd(r.arr);if(!arr)return false;
+      arr.setHours(0,0,0,0);
+      if(arr<today||arr>in14)return false;
+    }
     if(flt==='rated'&&!r.rating)return false;
     if(mflt!=='all'&&am(r)!==mflt)return false;
     if(q&&!(r.name.toLowerCase().includes(q)||r.ref.includes(q)||(r.room||'').includes(q)))return false;
@@ -4810,55 +5175,102 @@ function buildPrompt(){const style=document.getElementById('ai-style').value;con
 function openInClaude(){const prompt=buildPrompt();if(!prompt)return;window.open('https://claude.ai/new?q='+encodeURIComponent(prompt),'_blank');}
 function copyPromptToClipboard(){const prompt=buildPrompt();if(!prompt)return;navigator.clipboard.writeText(prompt).then(()=>showToast('Prompt copied!','s'));}
 function copyAIResponse(){navigator.clipboard.writeText(document.getElementById('ai-resp-out').textContent).then(()=>showToast('Copied!','s'));}
+let anMonthFilter='all';
+function anSetMonthFilter(v){
+  anMonthFilter=v;
+  renderAnalytics();
+}
+function anFilterHistory(history){
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const seasonMonths=['may','june','july','august','september','october'];
+  if(anMonthFilter==='all'){
+    return history.filter(r=>{
+      const p=(r.period||'').toLowerCase();
+      return seasonMonths.some(m=>p.includes(m));
+    });
+  }
+  const monthName=MONTHS[parseInt(anMonthFilter)-1];
+  return history.filter(r=>{
+    const p=(r.period||'').toLowerCase();
+    return p.includes(monthName.toLowerCase());
+  });
+}
 function renderAnalytics(){
-  const taAvg=taHistory.length?(taHistory.reduce((s,r)=>s+r.score*r.count,0)/taHistory.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
-  const gooAvg=gooHistory.length?(gooHistory.reduce((s,r)=>s+r.score*r.count,0)/gooHistory.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
-  document.getElementById('an-ta-periods').textContent=taHistory.length||'-';
+  const _taH=anFilterHistory(taHistory);
+  const _gooH=anFilterHistory(gooHistory);
+  const _bkH=anFilterHistory(bkHistory);
+
+  const taAvg=_taH.length?(_taH.reduce((s,r)=>s+r.score*r.count,0)/_taH.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
+  const gooAvg=_gooH.length?(_gooH.reduce((s,r)=>s+r.score*r.count,0)/_gooH.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
+  document.getElementById('an-ta-periods').textContent=_taH.length||'-';
   document.getElementById('an-ta-avg').textContent=taAvg;
-  document.getElementById('an-goo-periods').textContent=gooHistory.length||'-';
+  document.getElementById('an-goo-periods').textContent=_gooH.length||'-';
   document.getElementById('an-goo-avg').textContent=gooAvg;
-  const bkAvg=bkHistory.length?(bkHistory.reduce((s,r)=>s+(r.score||r.rating||0)*(r.count||1),0)/bkHistory.reduce((s,r)=>s+(r.count||1),0)).toFixed(1):'-';
-  const bkPEl=document.getElementById('an-bk-periods');if(bkPEl)bkPEl.textContent=bkHistory.length||'-';
+  const bkAvg=_bkH.length?(_bkH.reduce((s,r)=>s+(r.score||r.rating||0)*(r.count||1),0)/_bkH.reduce((s,r)=>s+(r.count||1),0)).toFixed(1):'-';
+  const bkPEl=document.getElementById('an-bk-periods');if(bkPEl)bkPEl.textContent=_bkH.length||'-';
   const bkAEl=document.getElementById('an-bk-avg');if(bkAEl)bkAEl.textContent=bkAvg;
-  const taTotal=taHistory.reduce((s,r)=>s+(r.count||0),0);
-  const gooTotal=gooHistory.reduce((s,r)=>s+(r.count||0),0);
-  const bkTotal=bkHistory.reduce((s,r)=>s+(r.count||r.reviews||0),0);
+  const taTotal=_taH.reduce((s,r)=>s+(r.count||0),0);
+  const gooTotal=_gooH.reduce((s,r)=>s+(r.count||0),0);
+  const bkTotal=_bkH.reduce((s,r)=>s+(r.count||r.reviews||0),0);
   const taRevEl=document.getElementById('an-ta-reviews');if(taRevEl)taRevEl.textContent=taTotal>0?taTotal+' reviews total':'saved';
   const gooRevEl=document.getElementById('an-goo-reviews');if(gooRevEl)gooRevEl.textContent=gooTotal>0?gooTotal+' reviews total':'saved';
   const bkRevEl=document.getElementById('an-bk-reviews');if(bkRevEl)bkRevEl.textContent=bkTotal>0?bkTotal+' reviews total':'saved';
   // Experiences revenue
-  let expRev=0,expCount=0;
-  Object.keys(GEN_DATA).forEach(tab=>{(GEN_DATA[tab]||[]).forEach(r=>{if(r.status==='cancelled')return;const cost=parseFloat(r.cost||r.totalCost||0);if(cost>0){expRev+=cost;expCount++;}});});
+  let expRev=0,expCount=0,flowersRev=0,flowersCount=0;
+  const SEASON_MONTHS=['05','06','07','08','09','10'];
+  Object.keys(GEN_DATA).forEach(tab=>{
+    (GEN_DATA[tab]||[]).forEach(r=>{
+      if(r.status==='cancelled')return;
+      const m=genGetMonth(r);
+      if(anMonthFilter==='all'&&!SEASON_MONTHS.includes(m))return;
+      if(anMonthFilter!=='all'&&m!==anMonthFilter)return;
+      const cost=parseFloat(r.cost||r.totalCost||r.grossPrice||0);
+      if(tab==='flowers'){const bc=parseFloat(r.bosoniPrice||r.cost||0);if(bc>0){flowersRev+=bc;flowersCount++;}}
+      else if(cost>0){expRev+=cost;expCount++;}
+    });
+  });
   const expEl=document.getElementById('an-exp-rev');if(expEl)expEl.textContent='€'+expRev.toFixed(0);
   const expSub=document.getElementById('an-exp-rev-sub');if(expSub)expSub.textContent=expCount+' bookings';
+  const flEl=document.getElementById('an-fl-rev');if(flEl)flEl.textContent='€'+flowersRev.toFixed(0);
+  const flSub=document.getElementById('an-fl-rev-sub');if(flSub)flSub.textContent=flowersCount+' orders';
   // Massage revenue
   let msRev=0,msCount=0;
-  Object.keys(massageData||{}).forEach(date=>{Object.keys(massageData[date]||{}).forEach(slot=>{if(slot==='__customSlots')return;const b=massageData[date][slot];if(b&&b.name&&b.status!=='cancelled'){const cost=parseFloat(b.cost||0);if(cost>0){msRev+=cost;msCount++;}}});});
+  Object.keys(massageData||{}).forEach(date=>{
+    const mDate=date.slice(5,7);
+    if(anMonthFilter==='all'&&!SEASON_MONTHS.includes(mDate))return;
+    if(anMonthFilter!=='all'&&mDate!==anMonthFilter)return;
+    Object.keys(massageData[date]||{}).forEach(slot=>{
+      if(slot==='__customSlots')return;
+      const b=massageData[date][slot];
+      if(b&&b.name&&b.status!=='cancelled'){const cost=parseFloat(b.cost||0);if(cost>0){msRev+=cost;msCount++;}}
+    });
+  });
   const msEl=document.getElementById('an-ms-rev');if(msEl)msEl.textContent='€'+msRev.toFixed(0);
   const msSub=document.getElementById('an-ms-rev-sub');if(msSub)msSub.textContent=msCount+' sessions';
-  renderAnChart();renderTopThemes();renderAIRevList();
+  renderAnChart(_taH,_gooH,_bkH);renderTopThemes(_taH,_gooH);renderAIRevList();
 }
-function renderAnChart(){
+function renderAnChart(_taH,_gooH,_bkH){
+  if(!_taH)_taH=taHistory;if(!_gooH)_gooH=gooHistory;if(!_bkH)_bkH=bkHistory;
   const canvas=document.getElementById('anChart');if(!canvas)return;
-  const allPeriods=[...new Set([...taHistory.map(r=>r.period),...gooHistory.map(r=>r.period),...bkHistory.map(r=>r.period)])];
+  const allPeriods=[...new Set([..._taH.map(r=>r.period),..._gooH.map(r=>r.period),..._bkH.map(r=>r.period)])];
   const monthOrder=['January','February','March','April','May','June','July','August','September','October','November','December'];
   allPeriods.sort((a,b)=>{const[am2,ay]=(a+' ').split(' ');const[bm2,by]=(b+' ').split(' ');return(parseInt(ay)-parseInt(by))||monthOrder.indexOf(am2)-monthOrder.indexOf(bm2);});
   if(!allPeriods.length){canvas.parentElement.innerHTML='<div class="an-empty"><i class="ti ti-chart-line"></i>No data for chart</div>';return;}
-  const taScores=allPeriods.map(p=>{const r=taHistory.find(x=>x.period===p);return r?r.score:null;});
-  const gooScores=allPeriods.map(p=>{const r=gooHistory.find(x=>x.period===p);return r?r.score:null;});
+  const taScores=allPeriods.map(p=>{const r=_taH.find(x=>x.period===p);return r?r.score:null;});
+  const gooScores=allPeriods.map(p=>{const r=_gooH.find(x=>x.period===p);return r?r.score:null;});
   if(anChartInstance)anChartInstance.destroy();
-  anChartInstance=new Chart(canvas.getContext('2d'),{type:'line',data:{labels:allPeriods,datasets:[{label:'TripAdvisor',data:taScores,borderColor:'#2d9c68',backgroundColor:'rgba(45,156,104,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#2d9c68'},{label:'Google',data:gooScores,borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#4285f4'},{label:'Booking.com',data:allPeriods.map(p=>{const r=bkHistory.find(x=>x.period===p);return r?(r.score||r.rating||0)/2:null;}),borderColor:'#003580',backgroundColor:'rgba(0,53,128,.08)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#003580',borderDash:[5,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:3.5,max:5.0,ticks:{callback:v=>v.toFixed(1)}},x:{grid:{color:'rgba(0,0,0,.04)'}}}}});
+  anChartInstance=new Chart(canvas.getContext('2d'),{type:'line',data:{labels:allPeriods,datasets:[{label:'TripAdvisor',data:taScores,borderColor:'#2d9c68',backgroundColor:'rgba(45,156,104,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#2d9c68'},{label:'Google',data:gooScores,borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#4285f4'},{label:'Booking.com',data:allPeriods.map(p=>{const r=_bkH.find(x=>x.period===p);return r?(r.score||r.rating||0)/2:null;}),borderColor:'#003580',backgroundColor:'rgba(0,53,128,.08)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#003580',borderDash:[5,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:3.5,max:5.0,ticks:{callback:v=>v.toFixed(1)}},x:{grid:{color:'rgba(0,0,0,.04)'}}}}});
 }
 function anPrintAll(){
   const canvas=document.getElementById('anChart');
   const chartImg=canvas?canvas.toDataURL('image/png'):'';
   const allPos={};const allNeg={};
-  [...taHistory,...gooHistory].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
+  [..._taH,..._gooH].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
   const topPos=Object.entries(allPos).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const topNeg=Object.entries(allNeg).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const taTotal=taHistory.reduce((s,r)=>s+(r.count||0),0);
-  const gooTotal=gooHistory.reduce((s,r)=>s+(r.count||0),0);
-  const bkTotal=bkHistory.reduce((s,r)=>s+(r.count||r.reviews||0),0);
+  const taTotal=_taH.reduce((s,r)=>s+(r.count||0),0);
+  const gooTotal=_gooH.reduce((s,r)=>s+(r.count||0),0);
+  const bkTotal=_bkH.reduce((s,r)=>s+(r.count||r.reviews||0),0);
   const taAvg2=taHistory.length?(taHistory.reduce((s,r)=>s+r.score*r.count,0)/taHistory.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
   const gooAvg2=gooHistory.length?(gooHistory.reduce((s,r)=>s+r.score*r.count,0)/gooHistory.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
   const bkAvg2=bkHistory.length?(bkHistory.reduce((s,r)=>s+(r.score||r.rating||0)*(r.count||1),0)/bkHistory.reduce((s,r)=>s+(r.count||1),0)).toFixed(1):'-';
@@ -4884,9 +5296,10 @@ function anPrintAll(){
     +'</body></html>');
   win.document.close();
 }
-function renderTopThemes(){
+function renderTopThemes(_taH,_gooH){
+  if(!_taH)_taH=taHistory;if(!_gooH)_gooH=gooHistory;
   const allPos={};const allNeg={};
-  [...taHistory,...gooHistory].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
+  [..._taH,..._gooH].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
   const topPos=Object.entries(allPos).sort((a,b)=>b[1]-a[1]).slice(0,5);const topNeg=Object.entries(allNeg).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const maxPos=topPos[0]?.[1]||1;const maxNeg=topNeg[0]?.[1]||1;
   document.getElementById('an-pos-list').innerHTML=topPos.length?topPos.map(([t,c])=>'<div class="an-theme-item"><div class="an-theme-bar pos" style="width:'+Math.round(c/maxPos*60)+'px"></div><span style="flex:1;font-size:11px;white-space:normal;line-height:1.4">'+esc(t)+'</span><span class="an-theme-count">'+c+'x</span></div>').join(''):'<div class="an-empty">No data</div>';
@@ -4992,6 +5405,7 @@ function renderGymStats(){
   const seasonEnd=new Date(gymYear,9,31);const end=today<seasonEnd?today:seasonEnd;
   let totalOpDays=0;if(end>=seasonStart){totalOpDays=Math.round((end-seasonStart)/(1000*60*60*24))+1;}
   const attendRate=totalOpDays>0?Math.round(allBookedDays.size/totalOpDays*100):0;
+  const _hideRev=(WR_ROLE==='frontoffice');
   el.innerHTML=
     '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">'
     +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center">'
@@ -5378,6 +5792,116 @@ function msRenderFilterBars(){
   sEl.innerHTML=statuses.map(([v,l])=>'<button onclick="msSFilter=\''+v+'\';msRenderFilterBars();renderMassage()" style="'+msBtnStyle(msSFilter===v,stCols[v])+'">'+l+'</button>').join('');
 }
 
+let msStatMonth='all';
+function msStatBtnActive(btn){document.querySelectorAll('.msst-btn').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');}
+function renderMsStats(){
+  const el=document.getElementById('ms-stats-content');if(!el)return;
+  const MNL={
+    '05':'May','06':'June','07':'July','08':'August','09':'September','10':'October'
+  };
+  function msComm3(cost){const c=parseFloat(cost)||0;if(c<=0)return 0;if(c<=90)return 30;if(c<=105)return 30;if(c<=145)return 55;return Math.round(c*0.38);}
+  let totalSessions=0,totalRev=0,totalComm=0,totalSlots=0;
+  const byGuest={};const byMonth={};const byHour={};
+  Object.keys(massageData||{}).forEach(date=>{
+    const m=date.slice(5,7);
+    if(msStatMonth!=='all'&&m!==msStatMonth)return;
+    const slots=getSlots(date)||[];
+    totalSlots+=slots.length;
+    if(!byMonth[m])byMonth[m]={sessions:0,rev:0,comm:0,slots:0};
+    byMonth[m].slots+=slots.length;
+    Object.keys(massageData[date]||{}).forEach(slot=>{
+      if(slot==='__customSlots')return;
+      const b=massageData[date][slot];
+      if(!b||!b.name)return;
+      const cost=parseFloat(b.cost||0);
+      const comm=msComm3(cost);
+      totalSessions++;totalRev+=cost;totalComm+=comm;
+      byMonth[m].sessions++;byMonth[m].rev+=cost;byMonth[m].comm+=comm;
+      const guest=esc(b.name)+(b.room?' - Room '+esc(b.room):'');
+      if(!byGuest[guest])byGuest[guest]={count:0,rev:0};
+      byGuest[guest].count++;byGuest[guest].rev+=cost;
+      const h=parseInt((slot||'').split(':')[0]);
+      if(!isNaN(h)){byHour[h]=(byHour[h]||0)+1;}
+    });
+  });
+  const occRate=totalSlots>0?Math.round(totalSessions/totalSlots*100):0;
+  // Top guests chart
+  const topGuests=Object.entries(byGuest).sort((a,b)=>b[1].count-a[1].count).slice(0,10);
+  const maxG=topGuests.length?topGuests[0][1].count:1;
+  const guestRows=topGuests.map(([name,d])=>
+    '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2)">'
+    +'<div style="width:130px;font-size:11px;color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+name+'">'+name+'</div>'
+    +'<div style="flex:1;background:var(--bg);border-radius:4px;height:12px"><div style="background:#b45309;height:12px;border-radius:4px;width:'+Math.round(d.count/maxG*100)+'%"></div></div>'
+    +'<div style="font-size:11px;font-weight:700;color:var(--muted);width:22px;text-align:right">'+d.count+'x</div>'
+    +'<div style="font-size:11px;font-weight:700;color:#b45309;width:50px;text-align:right">\u20ac'+d.rev.toFixed(0)+'</div>'
+    +'</div>'
+  ).join('');
+  // Peak hours chart
+  const maxH=Math.max(...Object.values(byHour),1);
+  const hoursHtml=Array.from({length:12},(_,i)=>i+9).map(h=>{
+    const count=byHour[h]||0;const pct=Math.round(count/maxH*100);
+    const label=(h<12?h+':00 AM':(h===12?'12:00 PM':(h-12)+':00 PM'));
+    return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0">'
+      +'<div style="width:68px;font-size:11px;color:var(--ink2);text-align:right">'+label+'</div>'
+      +'<div style="flex:1;background:var(--bg);border-radius:4px;height:14px"><div style="background:'+(pct>70?'#c0392b':pct>40?'#d97706':'#b45309')+';height:14px;border-radius:4px;width:'+pct+'%"></div></div>'
+      +'<div style="width:24px;font-size:10px;font-weight:700;color:var(--muted)">'+count+'</div>'
+      +'</div>';
+  }).join('');
+  // Monthly breakdown cards
+  const monthCards=Object.keys(byMonth).sort().map(m=>{
+    const d=byMonth[m];const occ=d.slots>0?Math.round(d.sessions/d.slots*100):0;
+    return '<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px">'
+      +'<div style="font-size:10px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">'+MNL[m]+'</div>'
+      +'<div style="font-size:22px;font-weight:700;color:#b45309;font-family:var(--serif)">'+occ+'%</div>'
+      +'<div style="font-size:10px;color:var(--muted);margin-top:2px">'+d.sessions+' / '+d.slots+' slots</div>'
+      +'<div style="font-size:11px;font-weight:700;color:var(--ink);margin-top:5px">\u20ac'+d.rev.toFixed(0)+' rev</div>'
+      +'<div style="font-size:11px;color:#d97706;margin-top:2px">\u20ac'+d.comm.toFixed(0)+' commission</div>'
+      +'<div style="margin-top:7px;background:var(--bg);border-radius:6px;height:5px"><div style="background:#b45309;height:5px;border-radius:6px;width:'+occ+'%"></div></div>'
+      +'</div>';
+  }).join('');
+  const _hideRev=(WR_ROLE==='frontoffice');
+  el.innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">'
+    +'<div style="font-size:26px;font-weight:700;color:#b45309;font-family:var(--serif)">'+totalSessions+'</div>'
+    +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Sessions</div></div>'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">'
+    +'<div style="font-size:26px;font-weight:700;color:#b45309;font-family:var(--serif)">\u20ac'+totalRev.toFixed(0)+'</div>'
+    +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Revenue</div></div>'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">'
+    +'<div style="font-size:26px;font-weight:700;color:'+(occRate>60?'#1a6644':occRate>30?'#d97706':'#c0392b')+';font-family:var(--serif)">'+occRate+'%</div>'
+    +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Occupancy</div>'
+    +'<div style="font-size:9px;color:var(--muted2);margin-top:2px">'+totalSessions+' of '+totalSlots+' slots</div></div>'
+    +'</div>'
+    +(!_hideRev&&totalComm>0?'<div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between">'
+    +'<div style="display:flex;align-items:center;gap:8px"><i class="ti ti-coin" style="font-size:18px;color:#d97706"></i><div><div style="font-size:13px;font-weight:700;color:#92400e">Total Commission</div><div style="font-size:11px;color:var(--muted)">Hotel earnings from massage</div></div></div>'
+    +'<div style="font-size:28px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+totalComm.toFixed(0)+'</div>'
+    +'</div>':'')
+    +(monthCards&&msStatMonth==='all'?'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:18px">'+monthCards+'</div>':'')
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px">'
+    +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-clock" style="font-size:13px;color:#b45309"></i> Peak Hours</div>'
+    +hoursHtml+'</div>'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px">'
+    +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-users" style="font-size:13px;color:#b45309"></i> Who We Sell To</div>'
+    +(guestRows||'<div style="font-size:12px;color:var(--muted)">No data yet</div>')
+    +'</div></div>';
+}
+
+function msSetView(v){
+  const sched=document.getElementById('ms-view-schedule');
+  const stats=document.getElementById('ms-view-stats');
+  const btnSt=document.getElementById('ms-tab-stats');
+  if(v==='stats'){
+    if(sched)sched.style.display='none';if(stats)stats.style.display='';
+    if(btnSt){btnSt.style.background='#b45309';btnSt.style.color='#fff';btnSt.style.border='none';}
+    renderMsStats();
+  } else {
+    if(sched)sched.style.display='';if(stats)stats.style.display='none';
+    if(btnSt){btnSt.style.background='var(--white)';btnSt.style.color='#b45309';btnSt.style.border='1.5px solid #b45309';}
+  }
+}
+
 function msSumRender(){
   const el=document.getElementById('ms-sum');if(!el)return;
   if(WR_ROLE==='frontoffice'){el.style.display='none';return;}
@@ -5531,7 +6055,40 @@ function msEmailDraft(dateKey,slotTime){
   carEmailRenderTos();
 }
 
-function msClear(dateKey,slotTime){if(!massageData[dateKey])return;delete massageData[dateKey][slotTime];if(!Object.keys(massageData[dateKey]).length)delete massageData[dateKey];svMassage();renderMassage();showToast('Cleared','w');}
+let _msUndoData=null;
+function msClear(dateKey,slotTime){
+  if(!massageData[dateKey])return;
+  _msUndoData={dateKey,slotTime,booking:{...massageData[dateKey][slotTime]}};
+  delete massageData[dateKey][slotTime];
+  if(!Object.keys(massageData[dateKey]).some(k=>k!=='__customSlots'))delete massageData[dateKey];
+  svMassage();renderMassage();
+  showToast('Booking cleared','w',function(){
+    if(!_msUndoData)return;
+    const{dateKey:dk,slotTime:st,booking:b}=_msUndoData;
+    if(!massageData[dk])massageData[dk]={};
+    massageData[dk][st]=b;
+    svMassage();renderMassage();
+    showToast('Restored!','s');
+    _msUndoData=null;
+  });
+}
+function msClear(dateKey,slotTime){
+  if(!massageData[dateKey])return;
+  _msUndoData={dateKey,slotTime,booking:{...massageData[dateKey][slotTime]}};
+  delete massageData[dateKey][slotTime];
+  if(!Object.keys(massageData[dateKey]).filter(k=>k!=='__customSlots').length&&!massageData[dateKey].__customSlots)delete massageData[dateKey];
+  svMassage();renderMassage();
+  showToast('Cleared · <button onclick="msUndo()" style="background:none;border:none;color:#1a6644;font-weight:700;cursor:pointer;text-decoration:underline;font-size:12px">Undo</button>','w',6000);
+}
+function msUndo(){
+  if(!_msUndoData)return;
+  const{dateKey,slotTime,booking}=_msUndoData;
+  if(!massageData[dateKey])massageData[dateKey]={};
+  massageData[dateKey][slotTime]=booking;
+  svMassage();renderMassage();
+  showToast('Restored!','s');
+  _msUndoData=null;
+}
 function msToggleAddForm(){const f=document.getElementById('ms-add-form');const open=f.style.display==='none';f.style.display=open?'block':'none';if(open){const inp=document.getElementById('ms-new-date');if(!inp.value)inp.value=new Date().toISOString().split('T')[0];document.getElementById('ms-new-room').focus();}}
 function msNewDateChange(){}
 function msAddManual(){
@@ -5703,8 +6260,10 @@ function applyRoleRestrictions(){
       const el=document.getElementById('nt-'+t);if(el)el.style.display='none';
       const dd=document.getElementById('ddi-'+t);if(dd)dd.style.display='none';
     });
-    // Hide massage revenue
+    // Hide massage revenue + stats button
     const msSum=document.getElementById('ms-sum');if(msSum)msSum.style.display='none';
+    const msStatsBtn=document.getElementById('ms-tab-stats');if(msStatsBtn)msStatsBtn.style.display='none';
+    const _xb=document.getElementById('exp-stats-btn');if(_xb)_xb.style.display='none';
     // Hide experience revenue summaries
     ['excursions-sum','moto-sum','flowers-sum','boats-sum','transfers-sum','vantours-sum'].forEach(id=>{
       const el=document.getElementById(id);if(el)el.style.display='none';
@@ -6737,5 +7296,25 @@ fbdb.ref('draft_tab_emails').once('value').then(snap=>{
   }
 });
 </script>
+
+<!-- EXP STATS OVERLAY -->
+<div id="exp-stats-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;overflow-y:auto;padding:20px">
+  <div style="background:var(--white);border-radius:var(--r);max-width:1000px;margin:0 auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:16px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px"><i class="ti ti-chart-bar" style="color:#1a6644"></i> Experiences Stats &amp; Commission</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+        <button class="exst-btn on" onclick="expStatMonth='all';expStatBtnActive(this);renderExpStats()">All (May-Oct)</button>
+        <button class="exst-btn" onclick="expStatMonth='05';expStatBtnActive(this);renderExpStats()">May</button>
+        <button class="exst-btn" onclick="expStatMonth='06';expStatBtnActive(this);renderExpStats()">June</button>
+        <button class="exst-btn" onclick="expStatMonth='07';expStatBtnActive(this);renderExpStats()">July</button>
+        <button class="exst-btn" onclick="expStatMonth='08';expStatBtnActive(this);renderExpStats()">August</button>
+        <button class="exst-btn" onclick="expStatMonth='09';expStatBtnActive(this);renderExpStats()">September</button>
+        <button class="exst-btn" onclick="expStatMonth='10';expStatBtnActive(this);renderExpStats()">October</button>
+        <button onclick="expStatsClose()" style="padding:5px 14px;background:#fce8e8;color:#c0392b;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">&#10005; Close</button>
+      </div>
+    </div>
+    <div id="exp-stats-content"></div>
+  </div>
+</div>
 </body>
 </html>
