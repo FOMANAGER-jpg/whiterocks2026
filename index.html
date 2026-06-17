@@ -747,6 +747,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <button class="fpill on" onclick="setF('all',this)">All</button>
     <button class="fpill" onclick="setF('staying',this)">Currently Staying</button>
     <button class="fpill" onclick="setF('upcoming',this)">Upcoming</button>
+    <button class="fpill" onclick="setF('leaving',this)" style="color:#dc2626"><i class="ti ti-logout" style="font-size:12px"></i> Leaving Today</button>
     <button class="fpill" onclick="setF('rated',this)"><i class="ti ti-star" style="font-size:12px"></i> Rated</button>
   </div>
   <span class="cnt-lbl" id="cntLbl"></span>
@@ -4541,6 +4542,12 @@ function getF(){
       const arr=pd(r.arr);if(!arr)return false;
       arr.setHours(0,0,0,0);
       if(arr<today||arr>in14)return false;
+    }
+    if(flt==='leaving'){
+      const today=new Date();today.setHours(0,0,0,0);
+      const dep=pd(r.dep);if(!dep)return false;
+      dep.setHours(0,0,0,0);
+      if(dep.getTime()!==today.getTime())return false;
     }
     if(flt==='rated'&&!r.rating)return false;
     if(mflt!=='all'&&am(r)!==mflt)return false;
