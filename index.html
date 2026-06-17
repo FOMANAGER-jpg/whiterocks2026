@@ -7424,6 +7424,10 @@ function buffetImportJSON(type,inp){
   reader.onload=function(e){
     try{
       var newData=JSON.parse(e.target.result);
+      // Support single-day format: {date, rooms, summary, ...}
+      if(newData.date&&newData.rooms&&!newData.days){
+        newData={days:[{date:newData.date,savedAt:newData.savedAt||'',manual:newData.manual||false,summary:newData.summary||{},rooms:newData.rooms||[]}]};
+      }
       if(!newData.days||!Array.isArray(newData.days))throw new Error('Invalid format');
       var existing=buffetGetData(type);
       if(!existing||!existing.days){buffetSetData(type,newData);renderBuffetStats(type);showToast(newData.days.length+' days loaded!','s');inp.value='';return;}
