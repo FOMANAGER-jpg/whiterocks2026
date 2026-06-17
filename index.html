@@ -6263,7 +6263,8 @@ setTimeout(checkOverdueTasks,2000);
 const PWD_ROLES={
   fom2026:{role:'fom',label:'Front Office Manager'},
   frontoffice:{role:'frontoffice',label:'Front Office'},
-  backoffice:{role:'backoffice',label:'Back Office'}
+  backoffice:{role:'backoffice',label:'Back Office'},
+  reservations:{role:'reservations',label:'Reservations'}
 };
 const PWD_SESSION_KEY='wr_auth';
 let WR_ROLE=sessionStorage.getItem('wr_role')||'';
@@ -6315,6 +6316,32 @@ function applyRoleRestrictions(){
     banner.textContent='Back Office View';
     document.body.appendChild(banner);
     goTab('analytics');
+    return;
+  }
+  if(WR_ROLE==='reservations'){
+    // Reservations role: only res, gym, yoga, pilates, massage(no stats), experiences(no stats)
+    const SHOW_TABS=['res','gym','yoga','pilates','massage','experiences'];
+    // Hide all tabs except the allowed ones
+    ['alerts','day3','report','comp','ac','grooms','import','ta','goo','analytics','suggestions','breakfast','dinner','wine'].forEach(t=>{
+      const el=document.getElementById('nt-'+t);if(el)el.style.display='none';
+      const dd=document.getElementById('ddi-'+t);if(dd)dd.style.display='none';
+    });
+    // Hide massage stats
+    const msStatsBtn=document.getElementById('ms-tab-stats');if(msStatsBtn)msStatsBtn.style.display='none';
+    const msSum=document.getElementById('ms-sum');if(msSum)msSum.style.display='none';
+    // Hide experiences stats
+    const xb=document.getElementById('exp-stats-btn');if(xb)xb.style.display='none';
+    // Hide exp revenue summaries
+    ['excursions-sum','moto-sum','flowers-sum','boats-sum','transfers-sum','vantours-sum'].forEach(id=>{
+      const el=document.getElementById(id);if(el)el.style.display='none';
+    });
+    window._hideCarsRevenue=true;
+    // Go to reservations tab
+    goTab('res');
+    const banner=document.createElement('div');
+    banner.style.cssText='position:fixed;bottom:12px;right:16px;background:#1a3a6e;color:#fff;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;z-index:999;opacity:.85;pointer-events:none';
+    banner.textContent='Reservations View';
+    document.body.appendChild(banner);
     return;
   }
   if(WR_ROLE==='frontoffice'){
@@ -6890,6 +6917,8 @@ function reapplyRoleHiding(){
   if(!WR_ROLE||WR_ROLE==='fom')return;
   var hide=WR_ROLE==='backoffice'
     ?['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','gym','yoga','pilates','suggestions','breakfast','dinner']
+    :WR_ROLE==='reservations'
+    ?['alerts','day3','report','comp','ac','grooms','import','ta','goo','analytics','suggestions','breakfast','dinner','wine']
     :['analytics','breakfast','dinner'];
   hide.forEach(function(t){
     var el=document.getElementById('nt-'+t);if(el)el.style.display='none';
