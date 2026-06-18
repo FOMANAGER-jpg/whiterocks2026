@@ -4569,8 +4569,8 @@ function goTab(t){
   if(t==='ac'){renderAC();const ad=document.getElementById('ac-date');if(ad&&!ad.value)ad.value=new Date().toISOString().split('T')[0];}
   if(t==='experiences'){renderCars();const ed=document.getElementById('exp-daily-date');if(ed&&!ed.value)ed.value=new Date().toISOString().split('T')[0];}
   if(t==='suggestions')renderSuggestions();
-  if(t==='breakfast'){if(!BUFFET_DB_BK&&typeof fbdb!=='undefined'){fbdb.ref('wr_buffet_breakfast').once('value').then(function(snap){var d=snap.val();if(d&&d.days){BUFFET_DB_BK=d;try{localStorage.setItem('wr_buffet_breakfast',JSON.stringify(d));}catch(e){}}renderBuffetStats('breakfast');});}else{renderBuffetStats('breakfast');}}
-  if(t==='dinner'){if(!BUFFET_DB_DN&&typeof fbdb!=='undefined'){fbdb.ref('wr_buffet_dinner').once('value').then(function(snap){var d=snap.val();if(d&&d.days){BUFFET_DB_DN=d;try{localStorage.setItem('wr_buffet_dinner',JSON.stringify(d));}catch(e){}}renderBuffetStats('dinner');});}else{renderBuffetStats('dinner');}}
+  if(t==='breakfast'){if(!BUFFET_DB_BK){buffetLoadIDB('breakfast',function(d){if(d){BUFFET_DB_BK=d;}renderBuffetStats('breakfast');});}else{renderBuffetStats('breakfast');}}
+  if(t==='dinner'){if(!BUFFET_DB_DN){buffetLoadIDB('dinner',function(d){if(d){BUFFET_DB_DN=d;}renderBuffetStats('dinner');});}else{renderBuffetStats('dinner');}}
 }
 function renderStats(){
   const n=RES.length,a=RES.filter(r=>r.room&&r.room!=='').length,rt=RES.filter(r=>r.rating>0).length;
@@ -7481,20 +7481,36 @@ function buffetInit(){
 }
 buffetInit();
 
-function buffetGetData(type){
-  if(type==='breakfast'){
-    if(!BUFFET_DB_BK){try{var s=localStorage.getItem('wr_buffet_breakfast');if(s)BUFFET_DB_BK=JSON.parse(s);}catch(e){}}
-    return BUFFET_DB_BK;
-  }else{
-    if(!BUFFET_DB_DN){try{var s=localStorage.getItem('wr_buffet_dinner');if(s)BUFFET_DB_DN=JSON.parse(s);}catch(e){}}
-    return BUFFET_DB_DN;
-  }
+function buffetGetData(type){return type==='breakfast'?BUFFET_DB_BK:BUFFET_DB_DN;}
+function buffetSaveIDB(type,data){
+  // Use IndexedDB - no size limit, persists across reloads
+  try{
+    var req=indexedDB.open('wr_buffet',1);
+    req.onupgradeneeded=function(e){e.target.result.createObjectStore('buffet');};
+    req.onsuccess=function(e){
+      var db=e.target.result;
+      var tx=db.transaction('buffet','readwrite');
+      tx.objectStore('buffet').put(data,type);
+    };
+  }catch(e){console.warn('IDB save failed:',e);}
+}
+function buffetLoadIDB(type,cb){
+  try{
+    var req=indexedDB.open('wr_buffet',1);
+    req.onupgradeneeded=function(e){e.target.result.createObjectStore('buffet');};
+    req.onsuccess=function(e){
+      var db=e.target.result;
+      var tx=db.transaction('buffet','readonly');
+      var gr=tx.objectStore('buffet').get(type);
+      gr.onsuccess=function(){cb(gr.result||null);};
+      gr.onerror=function(){cb(null);};
+    };
+    req.onerror=function(){cb(null);};
+  }catch(e){cb(null);}
 }
 function buffetSetData(type,data){
   if(type==='breakfast'){BUFFET_DB_BK=data;}else{BUFFET_DB_DN=data;}
-  var key='wr_buffet_'+type;
-  try{localStorage.setItem(key,JSON.stringify(data));}catch(e){}
-  if(typeof fbdb!=='undefined'){fbdb.ref(key).set(data);}
+  buffetSaveIDB(type,data);
 }
 
 function buffetImportJSON(type,inp){
