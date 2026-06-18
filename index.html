@@ -1239,8 +1239,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       </select>
       <div style="margin-left:auto"><button onclick="anPrintAll()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-printer" style="font-size:15px"></i> Print Report</button></div>
     </div>
-      <div style="margin-left:auto"><button onclick="anPrintAll()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-printer" style="font-size:15px"></i> Print Report</button></div>
-    </div>
+    
     <div class="an-grid" id="an-stats-grid">
       <div class="an-stat-card"><div class="an-stat-lbl">TA Periods</div><div class="an-stat-val" id="an-ta-periods" style="color:#2d9c68">-</div><div class="an-stat-sub" id="an-ta-reviews">saved</div></div>
       <div class="an-stat-card"><div class="an-stat-lbl">TA Overall Avg</div><div class="an-stat-val" id="an-ta-avg" style="color:#2d9c68">-</div><div class="an-stat-sub">/ 5.0</div></div>
@@ -3497,6 +3496,9 @@ function expPrintTable(tab){
   } else if(tab==='transfers'){
     headers='<th>#</th><th>Ref</th><th>Name</th><th>Room</th><th>Booking</th><th>Date</th><th>Time</th><th>Route</th><th>Cost</th><th>Status</th>';
     rowsHtml=rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.ref||'')+'</td><td>'+esc(r.name||'')+'</td><td>'+esc(r.room||'')+'</td><td>'+esc(r.bookDate||'')+'</td><td>'+esc(r.date||'')+'</td><td>'+esc(r.time||'')+'</td><td>'+esc(r.route||'')+'</td><td>'+(r.cost?'\u20ac'+r.cost:'')+'</td><td>'+(statusMap[r.status]||r.status||'')+'</td></tr>').join('');
+  } else if(tab==='vantours'){
+    headers='<th>#</th><th>Ref</th><th>Name</th><th>Room</th><th>Booking</th><th>Date</th><th>Time</th><th>Tour</th><th>Pax</th><th>Type</th><th>Cost</th><th>Booked By</th><th>Status</th>';
+    rowsHtml=rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.ref||'')+'</td><td>'+esc(r.name||'')+'</td><td>'+esc(r.room||'')+'</td><td>'+esc(r.bookDate||'')+'</td><td>'+esc(r.date||'')+'</td><td>'+esc(r.time||'')+'</td><td>'+esc(r.tour||'')+'</td><td>'+(r.pax||'')+'</td><td>'+(r.tourType||'standard')+'</td><td>'+(r.cost?'\u20ac'+r.cost:'')+'</td><td>'+esc(r.bookedBy||'')+'</td><td>'+(statusMap[r.status]||r.status||'')+'</td></tr>').join('');
   }
   const total=rows.filter(r=>r.status!=='cancelled').reduce((s,r)=>s+(parseFloat(r.grossPrice||r.cost||0)||0),0);
   const win=window.open('','_blank','width=900,height=700');
@@ -3506,7 +3508,64 @@ function expPrintTable(tab){
 
 
 
-let CARS=JSON.parse(localStorage.getItem('ace_cars')||'[]');
+const MAY_CARS_2026=[
+  {id:'may001',ref:'S770001361',name:'FIGUEIREDO VERONICA',to:'BOOKING.COM',room:'',bookDate:'2026-04-20',rentalDate:'2026-05-09',rentalTime:'13:55',carType:'A-M',days:7,insurance:true,priceOverride:210,status:'confirmed',bookedBy:'MARIAN'},
+  {id:'may002',ref:'28364872',name:'WEBER THOMAS',to:'ALLTOURS',room:'225',bookDate:'2026-05-05',rentalDate:'2026-05-06',rentalTime:'10:00',carType:'C-M',days:4,insurance:true,priceOverride:180,status:'confirmed',bookedBy:'STEPHANIE'},
+  {id:'may003',ref:'57747610',name:'BARRY THEMBA ADAM',to:'QUOTELIER',room:'344',bookDate:'2026-05-04',rentalDate:'2026-05-07',rentalTime:'11:00',carType:'A-A',days:2,insurance:false,priceOverride:80,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may004',ref:'6050933960',name:'KHAN IDRAN',to:'BOOKING.COM',room:'10',bookDate:'2026-05-07',rentalDate:'2026-05-07',rentalTime:'10:00',carType:'A-A',days:4,insurance:true,priceOverride:160,status:'confirmed',bookedBy:'NIKOS'},
+  {id:'may005',ref:'T9514N',name:'KELLY JULIE',to:'JET 2',room:'214',bookDate:'2026-05-07',rentalDate:'2026-05-08',rentalTime:'09:00',carType:'A-M',days:1,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'NIKOS'},
+  {id:'may006',ref:'31985278',name:'SCOTT MICHAEL ROBERT',to:'TUI',room:'42',bookDate:'2026-05-07',rentalDate:'2026-05-08',rentalTime:'10:15',carType:'A-M',days:4,insurance:true,priceOverride:120,status:'confirmed',bookedBy:'NIKOS'},
+  {id:'may007',ref:'31358836',name:'WHITAKER GRAHAM',to:'TUI',room:'217',bookDate:'2026-05-08',rentalDate:'2026-05-09',rentalTime:'09:00',carType:'B-A',days:5,insurance:true,priceOverride:200,status:'confirmed',bookedBy:'NIKOS'},
+  {id:'may008',ref:'6382634521',name:'MORRALL JULIAN SIMON WOLF',to:'BOOKING.COM',room:'6',bookDate:'2026-05-10',rentalDate:'2026-05-10',rentalTime:'13:00',carType:'B-A',days:5,insurance:true,priceOverride:150,status:'confirmed',bookedBy:'STEPHANIE'},
+  {id:'may009',ref:'29354835',name:'LEWIS ANDREW MARK',to:'TUI',room:'105',bookDate:'2026-05-10',rentalDate:'2026-05-10',rentalTime:'10:30',carType:'B-A',days:2,insurance:true,priceOverride:100,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may010',ref:'6068789255',name:'LEOUFFRE MADLY LUCIE LILA',to:'BOOKING.COM',room:'205',bookDate:'2026-05-11',rentalDate:'2026-05-11',rentalTime:'10:30',carType:'B-M',days:3,insurance:true,priceOverride:105,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may011',ref:'3WBD91',name:'HUNTER BRIAN',to:'JET2',room:'223',bookDate:'2026-05-13',rentalDate:'2026-05-15',rentalTime:'11:30',carType:'A-A',days:3,insurance:false,priceOverride:120,status:'confirmed',bookedBy:'ALEXANDRA'},
+  {id:'may012',ref:'DXNNJK',name:'FEMKE',to:'TUI',room:'314',bookDate:'2026-05-13',rentalDate:'2026-05-14',rentalTime:'10:00',carType:'A-M',days:5,insurance:true,priceOverride:150,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may013',ref:'58471904',name:'TURNER STEPHEN',to:'WEB',room:'23',bookDate:'2026-05-13',rentalDate:'2026-05-14',rentalTime:'09:00',carType:'A-A',days:2,insurance:true,priceOverride:80,status:'confirmed',bookedBy:'NIKOS'},
+  {id:'may014',ref:'DY8GWV',name:'VAN OOSTROM DIRK JAN',to:'TUI',room:'211',bookDate:'2026-05-14',rentalDate:'2026-05-17',rentalTime:'10:00',carType:'B-M',days:2,insurance:true,priceOverride:80,status:'confirmed',bookedBy:'STEPHANIE'},
+  {id:'may015',ref:'6068769921',name:'TURNER ISABELLA GRACE',to:'BOOKING.COM',room:'404',bookDate:'2026-05-14',rentalDate:'2026-05-15',rentalTime:'09:00',carType:'B-M',days:1,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may016',ref:'31071618',name:'TAYLOR DAVID',to:'TUI',room:'21',bookDate:'2026-05-14',rentalDate:'2026-05-15',rentalTime:'09:00',carType:'B-A',days:3,insurance:true,priceOverride:135,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may017',ref:'XBF5DR',name:'FORD MATTHEW DAVID',to:'JET2',room:'1',bookDate:'2026-05-17',rentalDate:'2026-05-19',rentalTime:'10:00',carType:'A-A',days:3,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'STEPHANIE'},
+  {id:'may018',ref:'DXZYM8',name:'TER KULVE GERARD ALBERT',to:'TUI',room:'337',bookDate:'2026-05-17',rentalDate:'2026-05-18',rentalTime:'09:00',carType:'A-M',days:4,insurance:true,priceOverride:120,status:'confirmed',bookedBy:'NIKOS'},
+  {id:'may019',ref:'31090682',name:'SHIRLEY JOANNA MARY',to:'TUI',room:'406',bookDate:'2026-05-18',rentalDate:'2026-05-19',rentalTime:'09:00',carType:'A-M',days:3,insurance:true,priceOverride:70,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may020',ref:'DT7WVQ',name:'BUTCHER SHEENA',to:'JET2',room:'125',bookDate:'2026-05-18',rentalDate:'2026-05-19',rentalTime:'09:30',carType:'J-M',days:3,insurance:false,priceOverride:150,status:'confirmed',bookedBy:'SANDRA'},
+  {id:'may021',ref:'4835665',name:'GREEN KAREN PATRICIA',to:'BRITISH AIRWAYS',room:'305',bookDate:'2026-05-21',rentalDate:'2026-05-21',rentalTime:'09:00',carType:'A-M',days:3,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may022',ref:'PL7171052618P',name:'DE HAAIJ CAROLINA',to:'THALASSA HOTEL',room:'414',bookDate:'2026-05-19',rentalDate:'2026-05-19',rentalTime:'10:30',carType:'J-M',days:6,insurance:true,priceOverride:420,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may023',ref:'31957791',name:'MATTHEWS PAUL',to:'TUI',room:'409',bookDate:'2026-05-19',rentalDate:'2026-05-19',rentalTime:'09:00',carType:'B-M',days:2,insurance:true,priceOverride:80,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may024',ref:'XKBF5DR',name:'RABIN ANTHONY',to:'BOOKING.COM',room:'40',bookDate:'2026-05-21',rentalDate:'2026-05-22',rentalTime:'09:00',carType:'J-A',days:6,insurance:true,priceOverride:420,status:'confirmed',bookedBy:'NIKOS'},
+  {id:'may025',ref:'XBF5DR3',name:'MATHEWS MATTHEW DAVID',to:'TUI',room:'53',bookDate:'2026-05-22',rentalDate:'2026-05-22',rentalTime:'09:00',carType:'B-A',days:3,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may026',ref:'S6467663',name:'MCBRIER SHONA ELIZABETH',to:'KATSOURIS',room:'53',bookDate:'2026-05-22',rentalDate:'2026-05-23',rentalTime:'09:00',carType:'B-M',days:3,insurance:true,priceOverride:55,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may027',ref:'29781594',name:'REECE ANGELA JOY',to:'TUI',room:'323',bookDate:'2026-05-22',rentalDate:'2026-05-26',rentalTime:'09:30',carType:'C1-M',days:4,insurance:true,priceOverride:200,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may028',ref:'32127660',name:'CARTER ALAN',to:'TUI',room:'314',bookDate:'2026-05-22',rentalDate:'2026-05-23',rentalTime:'10:30',carType:'B-M',days:3,insurance:true,priceOverride:120,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may029',ref:'30020726',name:'SMITH SURYACITTA MALCOLM',to:'TUI',room:'331',bookDate:'2026-05-23',rentalDate:'2026-05-24',rentalTime:'09:30',carType:'A-A',days:1,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may030',ref:'S9521',name:'KERN JOSEF',to:'KCG',room:'333',bookDate:'2026-05-23',rentalDate:'2026-05-23',rentalTime:'11:00',carType:'A-M',days:4,insurance:true,priceOverride:120,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may031',ref:'X23851',name:'WILSON IAN MICHAEL',to:'JET 2',room:'60',bookDate:'2026-05-23',rentalDate:'2026-05-24',rentalTime:'09:00',carType:'J-M',days:3,insurance:true,priceOverride:80,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may032',ref:'31374858',name:'STOCKINGS STOCKINGS',to:'TUI',room:'310',bookDate:'2026-05-23',rentalDate:'2026-05-25',rentalTime:'09:00',carType:'A-A',days:2,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may033',ref:'CD6981',name:'WATKINS KEITH',to:'JET 2',room:'44',bookDate:'2026-05-23',rentalDate:'2026-05-25',rentalTime:'09:30',carType:'A-A',days:2,insurance:true,priceOverride:80,status:'confirmed',bookedBy:'NIKOS'},
+  {id:'may034',ref:'5280544',name:'DOWELL JOHN',to:'BRITISH AIRWAYS',room:'412',bookDate:'2026-05-24',rentalDate:'2026-05-24',rentalTime:'09:00',carType:'A-M',days:2,insurance:true,priceOverride:40,status:'confirmed',bookedBy:'STEPHANIE'},
+  {id:'may035',ref:'56235082',name:'KOEGL IRENE',to:'BRITISH AIRWAYS',room:'119',bookDate:'2026-05-24',rentalDate:'2026-05-26',rentalTime:'10:00',carType:'B1-M',days:4,insurance:true,priceOverride:160,status:'confirmed',bookedBy:'SANDRA'},
+  {id:'may036',ref:'30577164',name:'PALLISTER KEELEY',to:'TUI',room:'326',bookDate:'2026-05-24',rentalDate:'2026-05-25',rentalTime:'10:15',carType:'A-A',days:1,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'MARINOS'},
+  {id:'may037',ref:'664470635',name:'WARNER YVONNE LORRAINE',to:'KATSOURIS',room:'121',bookDate:'2026-05-25',rentalDate:'2026-05-25',rentalTime:'11:00',carType:'J-M',days:3,insurance:false,priceOverride:90,status:'confirmed',bookedBy:'STEFANIA'},
+  {id:'may038',ref:'DYX308',name:'VAN DER LAAN ERIC JAN',to:'TUI',room:'210',bookDate:'2026-05-26',rentalDate:'2026-05-27',rentalTime:'09:00',carType:'B-A',days:3,insurance:true,priceOverride:55,status:'confirmed',bookedBy:'STEFANIA'},
+  {id:'may039',ref:'8XDJ51',name:'HODGKINS CHRISTOPHER PAUL',to:'JET2',room:'50',bookDate:'2026-05-25',rentalDate:'2026-05-26',rentalTime:'09:00',carType:'B-A',days:2,insurance:true,priceOverride:55,status:'confirmed',bookedBy:'VASSILSI'},
+  {id:'may040',ref:'R5FHLY',name:'HEMMING DAVID',to:'JET2',room:'330',bookDate:'2026-05-26',rentalDate:'2026-05-26',rentalTime:'09:50',carType:'A-M',days:1,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'STEFANIA'},
+  {id:'may041',ref:'5514426',name:'FLETCHER ROSE',to:'BRITISH AIRWAYS',room:'55',bookDate:'2026-05-26',rentalDate:'2026-05-27',rentalTime:'09:00',carType:'A-M',days:1,insurance:false,priceOverride:40,status:'confirmed',bookedBy:'STEFANIA'},
+  {id:'may042',ref:'59251177',name:'BEKKHUS JOHANNES HUSTAD',to:'QUOTELIER',room:'28',bookDate:'2026-05-26',rentalDate:'2026-05-27',rentalTime:'09:00',carType:'A-M',days:2,insurance:true,priceOverride:45,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may043',ref:'30775110',name:'CHALDECOTT MARTIN ANTONY',to:'TUI',room:'58',bookDate:'2026-05-27',rentalDate:'2026-05-27',rentalTime:'09:30',carType:'C-M',days:1,insurance:true,priceOverride:55,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may044',ref:'31670976',name:'CANNING JORDAN DEE',to:'TUI',room:'103',bookDate:'2026-05-29',rentalDate:'2026-05-29',rentalTime:'09:00',carType:'J-M',days:4,insurance:true,priceOverride:180,status:'confirmed',bookedBy:'IZABELA'},
+  {id:'may045',ref:'32281940',name:'MITCHELL KAYLEIGH EVE',to:'TUI',room:'215',bookDate:'2026-05-30',rentalDate:'2026-05-30',rentalTime:'11:00',carType:'A-M',days:3,insurance:true,priceOverride:40,status:'confirmed',bookedBy:'ELSA'},
+];
+let CARS=(function(){
+  const stored=JSON.parse(localStorage.getItem('ace_cars')||'[]');
+  const existingIds=new Set(stored.map(c=>c.id));
+  const toAdd=MAY_CARS_2026.filter(c=>!existingIds.has(c.id));
+  if(toAdd.length>0){
+    const merged=[...stored,...toAdd];
+    try{localStorage.setItem('ace_cars',JSON.stringify(merged));}catch(e){}
+    return merged;
+  }
+  return stored;
+})();
 let carMFlt='all',carOpenEP=null;
 
 function svCars(){
@@ -5330,8 +5389,10 @@ function renderAnChart(_taH,_gooH,_bkH){
   anChartInstance=new Chart(canvas.getContext('2d'),{type:'line',data:{labels:allPeriods,datasets:[{label:'TripAdvisor',data:taScores,borderColor:'#2d9c68',backgroundColor:'rgba(45,156,104,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#2d9c68'},{label:'Google',data:gooScores,borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#4285f4'},{label:'Booking.com',data:allPeriods.map(p=>{const r=_bkH.find(x=>x.period===p);return r?(r.score||r.rating||0)/2:null;}),borderColor:'#003580',backgroundColor:'rgba(0,53,128,.08)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#003580',borderDash:[5,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:3.5,max:5.0,ticks:{callback:v=>v.toFixed(1)}},x:{grid:{color:'rgba(0,0,0,.04)'}}}}});
 }
 function anPrintAll(){
+  if(!taHistory.length&&!gooHistory.length&&!bkHistory.length){showToast('No analytics data to print','w');return;}
   const canvas=document.getElementById('anChart');
   const chartImg=canvas?canvas.toDataURL('image/png'):'';
+  const _taH=taHistory;const _gooH=gooHistory;const _bkH=bkHistory;
   const allPos={};const allNeg={};
   [..._taH,..._gooH].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
   const topPos=Object.entries(allPos).sort((a,b)=>b[1]-a[1]).slice(0,10);
@@ -7333,7 +7394,7 @@ fbdb.ref('gym_bookings').once('value').then(snap=>{const d=snap.val();if(d&&type
 fbdb.ref('gym_bookings').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(gymBookings)){gymBookings=d;const gymTab=document.getElementById('tab-gym');if(gymTab&&!gymTab.classList.contains('hidden'))renderGym();}});
 fbdb.ref('cls_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){clsData=d;try{localStorage.setItem('cls_data',JSON.stringify(d));}catch(e){}}});
 fbdb.ref('cls_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(clsData)){clsData=d;const yogaTab=document.getElementById('tab-yoga');const pilatesTab=document.getElementById('tab-pilates');if(yogaTab&&!yogaTab.classList.contains('hidden'))renderCls('yoga');if(pilatesTab&&!pilatesTab.classList.contains('hidden'))renderCls('pilates');}});
-fbdb.ref('ace_cars').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){CARS=d;try{localStorage.setItem('ace_cars',JSON.stringify(d));}catch(e){}const expTab=document.getElementById('tab-experiences');if(expTab&&!expTab.classList.contains('hidden'))renderCars();}});
+fbdb.ref('ace_cars').once('value').then(snap=>{const d=snap.val();const base=Array.isArray(d)&&d.length>0?d:[];const existingIds=new Set(base.map(c=>c.id));const toAdd=MAY_CARS_2026.filter(c=>!existingIds.has(c.id));if(toAdd.length>0){CARS=[...base,...toAdd];svCars();}else if(base.length>0){CARS=base;try{localStorage.setItem('ace_cars',JSON.stringify(CARS));}catch(e){}}const expTab=document.getElementById('tab-experiences');if(expTab&&!expTab.classList.contains('hidden'))renderCars();});
 fbdb.ref('ace_cars').on('value',snap=>{const d=snap.val();if(d&&Array.isArray(d)&&JSON.stringify(d)!==JSON.stringify(CARS)){CARS=d;const expTab=document.getElementById('tab-experiences');if(expTab&&!expTab.classList.contains('hidden'))renderCars();}});
 ['excursions','moto','flowers','boats','transfers','vantours'].forEach(tab=>{
   try{const ls=JSON.parse(localStorage.getItem('gen_'+tab));if(ls&&Array.isArray(ls))GEN_DATA[tab]=ls;}catch(e){}
@@ -7457,6 +7518,39 @@ function bfGoToDate(type){
   var viewEl=document.getElementById(type==='breakfast'?'bf-view':'dn-view');
   if(viewEl)viewEl.value='rooms';
   renderBuffetStats(type);
+}
+
+function buffetPrint(type){
+  var isBF=type==='breakfast';
+  var kpisEl=document.getElementById(isBF?'bf-kpis':'dn-kpis');
+  var contentEl=document.getElementById(isBF?'bf-content':'dn-content');
+  if(!contentEl||!contentEl.innerHTML||contentEl.innerHTML.includes('No data')){showToast('No data to print','w');return;}
+  var col=isBF?'#d97706':'#7c3aed';
+  var title=isBF?'Breakfast Buffet':'Dinner Buffet';
+  var view=document.getElementById(isBF?'bf-view':'dn-view')?.value||'rooms';
+  var viewLabel={rooms:'Room List',daily:'Daily View',weekly:'Weekly Stats',monthly:'Monthly Stats'}[view]||'';
+  var win=window.open('','_blank','width=1000,height=800');
+  win.document.write('<!DOCTYPE html><html><head><title>'+title+'</title>'
+    +'<style>body{font-family:Arial,sans-serif;padding:20px;color:#1a2535;font-size:12px}'
+    +'h1{font-size:18px;color:'+col+';margin-bottom:2px}.sub{font-size:11px;color:#888;margin-bottom:16px}'
+    +'table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}'
+    +'th{padding:7px 10px;text-align:left;background:'+col+';color:#fff;font-size:10px;text-transform:uppercase;letter-spacing:.6px}'
+    +'td{padding:6px 10px;border-bottom:1px solid #eee}'
+    +'tr:nth-child(even) td{background:#fafafa}'
+    +'.kpis{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}'
+    +'.kbox{border:1px solid #ddd;border-radius:8px;padding:10px 14px;text-align:center;min-width:100px}'
+    +'.kval{font-size:20px;font-weight:700;color:'+col+'}'
+    +'.klbl{font-size:9px;text-transform:uppercase;color:#888;letter-spacing:.5px}'
+    +'button,label,[onclick]{display:none!important}'
+    +'@media print{body{padding:10px}@page{size:A4 landscape}}</style>'
+    +'</head><body>'
+    +'<h1>'+title+' &mdash; '+viewLabel+'</h1>'
+    +'<div class="sub">White Rocks Hotel &amp; Bungalows &middot; Kefalonia 2026</div>'
+    +(kpisEl?'<div class="kpis">'+kpisEl.innerHTML.replace(/style="background:var\(--white\)[^"]*"/g,'')+'</div>':'')
+    +contentEl.innerHTML
+    +'<script>window.onload=function(){window.print();}<\/script>'
+    +'</body></html>');
+  win.document.close();
 }
 
 function renderBuffetStats(type){
@@ -7683,6 +7777,7 @@ function bfMonthly(days,isBF,col,colLight){
           <option value="all" style="color:#1a2535">All Months</option><option value="05" style="color:#1a2535">May</option><option value="06" style="color:#1a2535">June</option><option value="07" style="color:#1a2535">July</option><option value="08" style="color:#1a2535">August</option><option value="09" style="color:#1a2535">September</option><option value="10" style="color:#1a2535">October</option>
         </select>
         <input type="date" id="bf-date-pick" title="Jump to date" style="padding:7px 12px;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;border-radius:9px;font-size:12px;font-family:var(--sans);outline:none" onchange="bfGoToDate('breakfast')">
+        <button onclick="buffetPrint('breakfast')" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-printer" style="font-size:14px"></i> Print</button>
       </div>
     </div>
     <div id="bf-kpis" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px"></div>
@@ -7706,6 +7801,7 @@ function bfMonthly(days,isBF,col,colLight){
           <option value="all" style="color:#1a2535">All Months</option><option value="05" style="color:#1a2535">May</option><option value="06" style="color:#1a2535">June</option><option value="07" style="color:#1a2535">July</option><option value="08" style="color:#1a2535">August</option><option value="09" style="color:#1a2535">September</option><option value="10" style="color:#1a2535">October</option>
         </select>
         <input type="date" id="dn-date-pick" title="Jump to date" style="padding:7px 12px;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;border-radius:9px;font-size:12px;font-family:var(--sans);outline:none" onchange="bfGoToDate('dinner')">
+        <button onclick="buffetPrint('dinner')" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-printer" style="font-size:14px"></i> Print</button>
       </div>
     </div>
     <div id="dn-kpis" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px"></div>
