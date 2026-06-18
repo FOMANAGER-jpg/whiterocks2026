@@ -183,7 +183,7 @@ table.rt{width:100%;border-collapse:collapse;font-size:13px;table-layout:auto}
 .tog{width:28px;height:28px;background:var(--sea-light);border:1px solid var(--sea-mid);border-radius:7px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;border:none}
 .tog.open{background:var(--sea);color:#fff}
 .ep-row td{padding:0;border-bottom:2px solid var(--sea-mid);background:#f0f7ff}
-.ep{padding:13px 18px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:10px;align-items:end;border-bottom:1px solid var(--sea-mid)}
+.ep{padding:13px 18px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr auto;gap:10px;align-items:end;border-bottom:1px solid var(--sea-mid)}
 .ep2{padding:7px 18px 13px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:10px;align-items:end}
 .epg{display:flex;flex-direction:column;gap:4px}
 .epg label{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--sea-dark);font-weight:700}
@@ -1823,8 +1823,9 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div style="margin-bottom:9px"><label style="display:block;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Arrival</label><input class="tr-inp" style="width:100%" id="m-arr" type="date"></div>
     <div style="margin-bottom:9px"><label style="display:block;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Departure</label><input class="tr-inp" style="width:100%" id="m-dep" type="date"></div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
     <div style="margin-bottom:9px"><label style="display:block;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Adults</label><input class="tr-inp" style="width:100%" id="m-ad" type="number" min="1" max="8" value="2"></div>
+    <div style="margin-bottom:9px"><label style="display:block;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Children</label><input class="tr-inp" style="width:100%" id="m-ch" type="number" min="0" max="6" value="0"></div>
     <div style="margin-bottom:9px"><label style="display:block;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Type</label><select class="tr-inp" style="width:100%" id="m-type"><option>DBL</option><option>DBLS</option><option>BGSP</option><option>BGSF</option><option>BGSV</option><option>JSSV</option><option>JSSF</option><option>JSSP</option></select></div>
   </div>
   <div style="margin-bottom:9px"><label style="display:block;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Notes</label><textarea class="tr-inp" style="width:100%;min-height:56px;resize:vertical" id="m-notes"></textarea></div>
@@ -1863,14 +1864,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <button class="car-mpill" data-cat="beachbar" onclick="sugSetCat('beachbar',this)">🌊 Beach Bar</button>
       </div>
       <div style="display:flex;align-items:center;gap:6px">
+      <div style="display:flex;align-items:center;gap:6px">
         <button onclick="goTab('wine')" style="display:flex;align-items:center;gap:5px;padding:6px 13px;background:linear-gradient(135deg,#6b21a8,#9333ea);color:#fff;border:none;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">🍷 Wine</button>
-        <span style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px">Ταξ:</span>
-        <select id="sug-sort" onchange="renderSuggestions()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--sans);background:var(--white);color:var(--ink);outline:none">
-          <option value="rating">⭐ Βαθμολογία</option>
-          <option value="name">Α–Ω Όνομα</option>
-          <option value="area">📍 Περιοχή</option>
-          <option value="open">🕐 Ωράριο</option>
-        </select>
+        <select id="sug-sort" onchange="renderSuggestions()" style="display:none"><option value="rating">rating</option></select>
+      </div>
       </div>
       <span id="sug-count" style="font-size:12px;color:var(--muted);margin-left:auto"></span>
     </div>
@@ -2384,8 +2381,8 @@ function renderGenTab(tab){
   const col=EXP_COLORS[tab];
   if(!filtered.length){tbody.innerHTML='<tr><td colspan="20"><div class="car-empty"><i class="ti '+EXP_ICONS[tab]+'"></i><div style="font-size:14px;font-weight:600;margin-bottom:4px">No bookings yet</div></div></td></tr>';renderGenSum(tab);return;}
   const inp=(i2,field,val,ph,extra)=>'<input class="car-ci" style="'+(extra||'')+'" value="'+esc(val||'')+'" placeholder="'+(ph||'')+'" onchange="GEN_DATA[\''+tab+'\']['+i2+'][\''+field+'\']=this.value;svGen(\''+tab+'\')">';
-  const inpDate=(i2,field,val)=>'<input class="car-ci" type="date" value="'+(val||'')+'" style="font-size:11px;padding:5px 6px" onchange="GEN_DATA[\''+tab+'\']['+i2+'][\''+field+'\']=this.value;svGen(\''+tab+'\')">';
-  const inpTime=(i2,field,val)=>'<input class="car-ci" type="time" value="'+(val||'')+'" style="font-size:11px;padding:5px 6px" onchange="GEN_DATA[\''+tab+'\']['+i2+'][\''+field+'\']=this.value;svGen(\''+tab+'\')">';
+  const inpDate=(i2,field,val)=>'<input class="car-ci" type="date" value="'+(val||'')+'" style="font-size:11px;padding:5px 6px" onclick="event.stopPropagation()" onchange="GEN_DATA[\''+tab+'\']['+i2+'][\''+field+'\']=this.value;svGen(\''+tab+'\')">';
+  const inpTime=(i2,field,val)=>'<input class="car-ci" type="time" value="'+(val||'')+'" style="font-size:11px;padding:5px 6px" onclick="event.stopPropagation()" onchange="GEN_DATA[\''+tab+'\']['+i2+'][\''+field+'\']=this.value;svGen(\''+tab+'\')">';
   const inpNum=(i2,field,val,w)=>'<input class="car-ci" type="number" min="0" value="'+(val||'')+'" style="text-align:center;font-weight:700;'+(w?'width:'+w+';':'')+'" onchange="GEN_DATA[\''+tab+'\']['+i2+'][\''+field+'\']=parseFloat(this.value)||0;svGen(\''+tab+'\')">';
   const del=(i2)=>'<button onclick="genDel(\''+tab+'\','+i2+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button>';
   const sb=(r,i2)=>'<button class="'+( GEN_STATUS_CLS[r.status]||'car-badge waiting')+'" onclick="genCycleStatus(\''+tab+'\','+i2+')">'+(GEN_STATUS_ICO[r.status]||GEN_STATUS_ICO.waiting)+' '+(GEN_STATUS_LBL[r.status]||'Waiting')+'</button>';
@@ -2401,7 +2398,7 @@ function renderGenTab(tab){
       const isOpen_excursions=genIsOpen('excursions',i);
       const excSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #93c5fd;border-radius:8px;font-size:12px;outline:none;font-family:var(--sans)" onchange="GEN_DATA[\'excursions\']['+i+'].excursion=this.value;svGen(\'excursions\')"><option value="">-- Select --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'"'+(r.excursion===e.name?' selected':'')+'>'+e.name+'</option>').join('')+'</select>';
       const ep_ex=EXC_CATALOG.find(e=>e.name===r.excursion);
-      html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td>'+inpNum(i,'childPax',r.childPax||0,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();excEmailDraft('+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
+      html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td onclick="event.stopPropagation()">'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td>'+inpNum(i,'childPax',r.childPax||0,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();excEmailDraft('+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_excursions){const pi=ep_ex?'<div style="font-size:10px;color:#1a6ca8;font-weight:600;margin-top:4px">Adult: €'+(ep_ex.priceAdult||'?')+' · Child: €'+(ep_ex.priceChild||'?')+' · Pickup WR: '+(ep_ex.pickupWR||'--')+'</div>':'';html+='<tr class="car-ep" style="background:#ebf5ff"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('excursions',i,r,'#1a6ca8')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Excursion','#1a6ca8',excSel+pi)+epField('Tour Date','#1a6ca8',epDate('excursions',i,'date',r.date))+epField('Pickup Time WR','#1a6ca8',epTime('excursions',i,'time',r.time))+epField('Adults','#1a6ca8',epNum('excursions',i,'pax',r.pax,'2','1',null))+epField('Children','#1a6ca8',epNum('excursions',i,'childPax',r.childPax||0,'0','0',null))+epField('Cost €','#1a6ca8',epNum('excursions',i,'cost',r.cost,'0','0',null))+epField('Notes','#1a6ca8',epInp('excursions',i,'notes',r.notes,'Special requests...'))+epStatus('excursions',i,r.status,4)+'</div></td></tr>';}
     }
     else if(tab==='moto'){
@@ -2415,7 +2412,7 @@ function renderGenTab(tab){
       const vehSel='<td><select class="car-ci" style="min-width:200px" onchange="GEN_DATA[\'moto\']['+i+'].vehicle=this.value;GEN_DATA[\'moto\']['+i+'].costOverride=null;motoRowAutoPrice('+i+')">'+MOTO_CATALOG.map(m=>'<option value="'+m.name+'"'+(r.vehicle===m.name?' selected':'')+'>'+m.name+'</option>').join('')+'</select>'+(mt?'<div style="font-size:9px;color:var(--muted);margin-top:2px">'+mt.cc+' · Lic: '+mt.licence+(hs?' · ☀ High':' · Low')+'</div>':'')+'</td>';
       const daysCell='<td>'+inpNum(i,'days',r.days||3,'50px',`motoRowAutoPrice(${i})`)+'</td>';
       const costCell='<td style="padding:4px 7px;text-align:right"><input type="number" min="0" value="'+(displayCost||'')+'" placeholder="'+(autoCost||'?')+'" style="width:75px;padding:4px 7px;border:1.5px solid '+(hasOv?'#b45309':'#d8b4fe')+';border-radius:7px;font-size:13px;font-weight:700;color:'+(hasOv?'#b45309':'#5c3d8f')+';font-family:var(--serif);background:'+(hasOv?'#fef7e6':'#fff')+';text-align:right;outline:none" oninput="GEN_DATA[\'moto\']['+i+'].costOverride=this.value===\'\'?null:parseFloat(this.value);svGen(\'moto\')"><div style="font-size:9px;color:'+(hasOv?'#b45309':'var(--muted2)')+';text-align:right;margin-top:1px">'+(hasOv?'⚠ custom':autoCost?'auto €'+autoCost:'')+'</div></td>';
-      html+='<tr class="'+rc+(isOpen?' car-ep-open':'')+'" onclick="genToggleRow(\'moto\','+i+')">'+baseFields+'<td>'+inpDate(i,'rentalDate',r.rentalDate)+'</td><td>'+inpTime(i,'time',r.time)+'</td>'+daysCell+vehSel+costCell+'<td>'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td>'+actM+'</tr>';
+      html+='<tr class="'+rc+(isOpen?' car-ep-open':'')+'" onclick="genToggleRow(\'moto\','+i+')">'+baseFields+'<td>'+inpDate(i,'rentalDate',r.rentalDate)+'</td><td onclick="event.stopPropagation()">'+inpTime(i,'time',r.time)+'</td>'+daysCell+vehSel+costCell+'<td>'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td>'+actM+'</tr>';
       if(isOpen){html+='<tr class="car-ep" style="background:#f5f0fc"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('moto',i,r,'#5c3d8f')+'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"><div style="grid-column:1/3">'+epField('Vehicle','#5c3d8f','<select style="width:100%;padding:5px 8px;border:1.5px solid #d8b4fe;border-radius:8px;font-size:12px;outline:none" onchange="GEN_DATA[\'moto\']['+i+'].vehicle=this.value;GEN_DATA[\'moto\']['+i+'].costOverride=null;motoRowAutoPrice('+i+')">'+MOTO_CATALOG.map(m=>'<option value="'+m.name+'"'+(r.vehicle===m.name?' selected':'')+'>'+m.name+'</option>').join('')+'</select>')+'</div>'+epField('Rental Date','#5c3d8f',epDate('moto',i,'rentalDate',r.rentalDate))+epField('Days','#5c3d8f','<input type="number" min="1" value="'+(r.days||3)+'" style="padding:6px 8px;border:1.5px solid #d8b4fe;border-radius:8px;font-size:13px;width:80px;outline:none" onchange="GEN_DATA[\'moto\']['+i+'].days=parseInt(this.value)||3;motoRowAutoPrice('+i+')">')+epField('Day of Booking','#5c3d8f',epDate('moto',i,'bookDate',r.bookDate))+epField('Notes','#5c3d8f',epInp('moto',i,'notes',r.notes,'Helmet size, drop-off...'))+epField('Cost €','#5c3d8f','<input type="number" min="0" value="'+(displayCost||'')+'" style="padding:6px 8px;border:1.5px solid #d8b4fe;border-radius:8px;font-size:13px;width:100px;outline:none" oninput="GEN_DATA[\'moto\']['+i+'].costOverride=this.value===\'\'?null:parseFloat(this.value);svGen(\'moto\')">')+'</div></td></tr>';}
     }
     else if(tab==='flowers'){
@@ -4562,7 +4559,7 @@ function saveEP(idx){
   const r=RES[idx];const g=id=>document.getElementById(id+idx);
   r.name=g('en-').value.trim().toUpperCase()||r.name;r.room=g('er-').value.trim();
   r.arr=fromInp(g('ea-').value)||r.arr;r.dep=fromInp(g('ed-').value)||r.dep;
-  r.ad=parseInt(g('ead-').value)||r.ad;r.type=g('et-').value;r.ref=g('erf-').value.trim()||r.ref;
+  r.ad=parseInt(g('ead-').value)||r.ad;r.ch=parseInt(g('ech-').value)||0;r.type=g('et-').value;r.ref=g('erf-').value.trim()||r.ref;
   r.day1=g('e1-').value.trim();r.day3=g('e3-').value.trim();r.notes=g('eno-').value.trim();
   r.rating=Math.min(10,Math.max(0,parseInt(g('ert-').value)||0));
   sv();openEP=null;renderRes();renderStats();showToast('Saved','s');
@@ -4599,7 +4596,7 @@ function renderRes(){
         '<td class="cname">'+esc(r.name)+'<small>'+r.type+'</small></td>'+
         '<td class="croom">'+(hr?r.room:'<span class="tba">TBA</span>')+'</td>'+
         '<td class="cd">'+fd(r.arr)+'</td><td class="cd">'+fd(r.dep)+'</td>'+
-        '<td class="cpax" style="text-align:center"><i class="ti ti-user" style="font-size:12px"></i> '+r.ad+'</td>'+
+        '<td class="cpax" style="text-align:center"><i class="ti ti-user" style="font-size:12px"></i> '+r.ad+(r.ch?'<span style="font-size:10px;color:var(--muted);margin-left:3px">+'+r.ch+'ch</span>':'')+'</td>'+
         '<td class="cdd">'+d1c+'</td><td class="cdd">'+d3c+'</td>'+
         '<td><div class="sr">'+stars+'<span class="rn">'+(r.rating||'')+'</span></div></td>'+
         '<td class="cnotes">'+esc(r.notes||'')+'</td>'+
@@ -4612,6 +4609,7 @@ function renderRes(){
           '<div class="epg"><label>Arrival</label><input type="date" id="ea-'+idx+'" value="'+toInp(r.arr)+'"></div>'+
           '<div class="epg"><label>Departure</label><input type="date" id="ed-'+idx+'" value="'+toInp(r.dep)+'"></div>'+
           '<div class="epg"><label>Adults</label><input type="number" id="ead-'+idx+'" value="'+r.ad+'" min="1" max="8"></div>'+
+          '<div class="epg"><label>Children</label><input type="number" id="ech-'+idx+'" value="'+(r.ch||0)+'" min="0" max="6"></div>'+
           '<div class="ep-acts"><button class="ep-save" onclick="saveEP('+idx+')"><i class="ti ti-check"></i> Save</button>'+
           '<button class="ep-del" onclick="deleteEP('+idx+')"><i class="ti ti-trash"></i></button>'+
           '<button class="ep-close" onclick="openEP=null;renderRes()"><i class="ti ti-x"></i></button></div></div>'+
@@ -4771,11 +4769,11 @@ async function parseGrooms(){
   }catch(err){st.classList.add('hidden');showToast('Error: '+err.message,'w');}
   btn.disabled=false;
 }
-function openAdd(){editIdx=null;document.getElementById('mtitle').textContent='New Reservation';document.getElementById('mdel').classList.add('hidden');['m-ref','m-room','m-name','m-notes'].forEach(id=>document.getElementById(id).value='');document.getElementById('m-arr').value='';document.getElementById('m-dep').value='';document.getElementById('m-ad').value=2;document.getElementById('m-type').value='DBL';document.getElementById('ov').classList.add('open');}
+function openAdd(){editIdx=null;document.getElementById('mtitle').textContent='New Reservation';document.getElementById('mdel').classList.add('hidden');['m-ref','m-room','m-name','m-notes'].forEach(id=>document.getElementById(id).value='');document.getElementById('m-arr').value='';document.getElementById('m-dep').value='';document.getElementById('m-ad').value=2;document.getElementById('m-ch').value=0;document.getElementById('m-type').value='DBL';document.getElementById('ov').classList.add('open');}
 function closeM(){document.getElementById('ov').classList.remove('open');}
 document.getElementById('ov').addEventListener('click',function(e){if(e.target===this)closeM();});
 function saveR(){
-  const r={ref:document.getElementById('m-ref').value.trim(),room:document.getElementById('m-room').value.trim(),name:document.getElementById('m-name').value.trim().toUpperCase(),arr:fromInp(document.getElementById('m-arr').value),dep:fromInp(document.getElementById('m-dep').value),ad:parseInt(document.getElementById('m-ad').value)||2,type:document.getElementById('m-type').value,day1:'',day3:'',notes:document.getElementById('m-notes').value.trim(),rating:0};
+  const r={ref:document.getElementById('m-ref').value.trim(),room:document.getElementById('m-room').value.trim(),name:document.getElementById('m-name').value.trim().toUpperCase(),arr:fromInp(document.getElementById('m-arr').value),dep:fromInp(document.getElementById('m-dep').value),ad:parseInt(document.getElementById('m-ad').value)||2,ch:parseInt(document.getElementById('m-ch').value)||0,type:document.getElementById('m-type').value,day1:'',day3:'',notes:document.getElementById('m-notes').value.trim(),rating:0};
   if(!r.name||!r.arr){alert('Name and arrival required.');return;}
   if(editIdx!==null)RES[editIdx]=r;else RES.unshift(r);
   sv();renderRes();closeM();showToast('Saved','s');
@@ -7719,6 +7717,7 @@ function bfMonthly(days,isBF,col,colLight){
     <div style="background:linear-gradient(135deg,#4a0072,#9333ea);border-radius:var(--r);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)">
       <div style="width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-bottle" style="font-size:22px;color:#fff"></i></div>
       <div><div style="font-family:var(--serif);font-size:19px;font-weight:600;color:#fff">Gentilini Wine Tasting</div><div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:3px">Robola &middot; Muscat &middot; Minies, Kefalonia</div></div>
+      <button onclick="goTab('suggestions')" style="margin-left:auto;display:flex;align-items:center;gap:7px;padding:8px 16px;background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-arrow-left" style="font-size:15px"></i> Back to Suggestions</button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
       <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);grid-column:1/-1">
