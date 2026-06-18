@@ -4569,8 +4569,8 @@ function goTab(t){
   if(t==='ac'){renderAC();const ad=document.getElementById('ac-date');if(ad&&!ad.value)ad.value=new Date().toISOString().split('T')[0];}
   if(t==='experiences'){renderCars();const ed=document.getElementById('exp-daily-date');if(ed&&!ed.value)ed.value=new Date().toISOString().split('T')[0];}
   if(t==='suggestions')renderSuggestions();
-  if(t==='breakfast')renderBuffetStats('breakfast');
-  if(t==='dinner')renderBuffetStats('dinner');
+  if(t==='breakfast'){if(!BUFFET_DB_BK&&typeof fbdb!=='undefined'){fbdb.ref('wr_buffet_breakfast').once('value').then(function(snap){var d=snap.val();if(d&&d.days){BUFFET_DB_BK=d;try{localStorage.setItem('wr_buffet_breakfast',JSON.stringify(d));}catch(e){}}renderBuffetStats('breakfast');});}else{renderBuffetStats('breakfast');}}
+  if(t==='dinner'){if(!BUFFET_DB_DN&&typeof fbdb!=='undefined'){fbdb.ref('wr_buffet_dinner').once('value').then(function(snap){var d=snap.val();if(d&&d.days){BUFFET_DB_DN=d;try{localStorage.setItem('wr_buffet_dinner',JSON.stringify(d));}catch(e){}}renderBuffetStats('dinner');});}else{renderBuffetStats('dinner');}}
 }
 function renderStats(){
   const n=RES.length,a=RES.filter(r=>r.room&&r.room!=='').length,rt=RES.filter(r=>r.rating>0).length;
@@ -7481,8 +7481,21 @@ function buffetInit(){
 }
 buffetInit();
 
-function buffetGetData(type){return type==='breakfast'?BUFFET_DB_BK:BUFFET_DB_DN;}
-function buffetSetData(type,data){if(type==='breakfast')BUFFET_DB_BK=data;else BUFFET_DB_DN=data;}
+function buffetGetData(type){
+  if(type==='breakfast'){
+    if(!BUFFET_DB_BK){try{var s=localStorage.getItem('wr_buffet_breakfast');if(s)BUFFET_DB_BK=JSON.parse(s);}catch(e){}}
+    return BUFFET_DB_BK;
+  }else{
+    if(!BUFFET_DB_DN){try{var s=localStorage.getItem('wr_buffet_dinner');if(s)BUFFET_DB_DN=JSON.parse(s);}catch(e){}}
+    return BUFFET_DB_DN;
+  }
+}
+function buffetSetData(type,data){
+  if(type==='breakfast'){BUFFET_DB_BK=data;}else{BUFFET_DB_DN=data;}
+  var key='wr_buffet_'+type;
+  try{localStorage.setItem(key,JSON.stringify(data));}catch(e){}
+  if(typeof fbdb!=='undefined'){fbdb.ref(key).set(data);}
+}
 
 function buffetImportJSON(type,inp){
   var file=inp.files[0];if(!file)return;
@@ -7504,6 +7517,7 @@ function buffetImportJSON(type,inp){
         else{var idx=existing.days.findIndex(function(x){return x.date===d.date;});if(idx>=0)existing.days[idx]=d;}
       });
       existing.days.sort(function(a,b){return a.date.localeCompare(b.date);});
+      buffetSetData(type,existing);
       showToast(added+' new days added!','s');
       renderBuffetStats(type);
     }catch(err){showToast('Error: '+err.message,'w');}
