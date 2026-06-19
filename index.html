@@ -7530,22 +7530,35 @@ function buffetImportJSON(type,inp){
         newData={days:[{date:newData.date,savedAt:newData.savedAt||'',manual:newData.manual||false,summary:newData.summary||{},rooms:newData.rooms||[]}]};
       }
       if(!newData.days||!Array.isArray(newData.days))throw new Error('Invalid format');
-      var existing=buffetGetData(type);
-      if(!existing||!existing.days){buffetSetData(type,newData);renderBuffetStats(type);showToast(newData.days.length+' days loaded!','s');inp.value='';return;}
-      var existingDates=new Set(existing.days.map(function(d){return d.date;}));
-      var added=0;
-      newData.days.forEach(function(d){
-        if(!existingDates.has(d.date)){existing.days.push(d);added++;}
-        else{var idx=existing.days.findIndex(function(x){return x.date===d.date;});if(idx>=0)existing.days[idx]=d;}
-      });
-      existing.days.sort(function(a,b){return a.date.localeCompare(b.date);});
-      buffetSetData(type,existing);
-      showToast(added+' new days added!','s');
-      renderBuffetStats(type);
+      buffetMergeAndSave(type,newData);
     }catch(err){showToast('Error: '+err.message,'w');}
     inp.value='';
   };
   reader.readAsText(file);
+}
+function buffetMergeAndSave(type,newData){
+  // Always reload fresh from IDB first to avoid clobbering data with a stale in-memory null
+  buffetLoadIDB(type,function(idbData){
+    var existing=idbData&&idbData.days?idbData:(type==='breakfast'?BUFFET_DB_BK:BUFFET_DB_DN);
+    if(!existing||!existing.days||!existing.days.length){
+      if(type==='breakfast'){BUFFET_DB_BK=newData;}else{BUFFET_DB_DN=newData;}
+      buffetSetData(type,newData);
+      renderBuffetStats(type);
+      showToast(newData.days.length+' days loaded!','s');
+      return;
+    }
+    var existingDates=new Set(existing.days.map(function(d){return d.date;}));
+    var added=0;
+    newData.days.forEach(function(d){
+      if(!existingDates.has(d.date)){existing.days.push(d);added++;}
+      else{var idx=existing.days.findIndex(function(x){return x.date===d.date;});if(idx>=0)existing.days[idx]=d;}
+    });
+    existing.days.sort(function(a,b){return a.date.localeCompare(b.date);});
+    if(type==='breakfast'){BUFFET_DB_BK=existing;}else{BUFFET_DB_DN=existing;}
+    buffetSetData(type,existing);
+    showToast((added>0?added+' new day(s) added!':'Day updated!'),'s');
+    renderBuffetStats(type);
+  });
 }
 
 function bfGoToDate(type){
