@@ -7479,41 +7479,46 @@ function buffetInit(){
 buffetInit();
 
 function buffetGetData(type){return type==='breakfast'?BUFFET_DB_BK:BUFFET_DB_DN;}
-function buffetSaveIDB(type,data){
-  // Use IndexedDB - no size limit, persists across reloads
+var _wrBuffetDB=null;
+function _wrGetDB(cb){
+  if(_wrBuffetDB){cb(_wrBuffetDB);return;}
   try{
     var req=indexedDB.open('wr_buffet',1);
     req.onupgradeneeded=function(e){e.target.result.createObjectStore('buffet');};
-    req.onsuccess=function(e){
-      var db=e.target.result;
+    req.onsuccess=function(e){_wrBuffetDB=e.target.result;cb(_wrBuffetDB);};
+    req.onerror=function(){cb(null);};
+  }catch(e){cb(null);}
+}
+function buffetSaveIDB(type,data,cb){
+  _wrGetDB(function(db){
+    if(!db){if(cb)cb(false);return;}
+    try{
       var tx=db.transaction('buffet','readwrite');
       tx.objectStore('buffet').put(data,type);
-    };
-  }catch(e){console.warn('IDB save failed:',e);}
+      tx.oncomplete=function(){if(cb)cb(true);};
+      tx.onerror=function(){console.warn('IDB save tx error');if(cb)cb(false);};
+    }catch(e){console.warn('IDB save failed:',e);if(cb)cb(false);}
+  });
 }
 function buffetLoadIDB(type,cb){
-  try{
-    var req=indexedDB.open('wr_buffet',1);
-    req.onupgradeneeded=function(e){e.target.result.createObjectStore('buffet');};
-    req.onsuccess=function(e){
-      var db=e.target.result;
+  _wrGetDB(function(db){
+    if(!db){cb(null);return;}
+    try{
       var tx=db.transaction('buffet','readonly');
       var gr=tx.objectStore('buffet').get(type);
       gr.onsuccess=function(){cb(gr.result||null);};
       gr.onerror=function(){cb(null);};
-    };
-    req.onerror=function(){cb(null);};
-  }catch(e){cb(null);}
+    }catch(e){cb(null);}
+  });
 }
 function buffetSlim(data){
   // Strip rooms array — keep only summary per day
   return {days:(data.days||[]).map(function(d){return{date:d.date,savedAt:d.savedAt||'',manual:d.manual||false,summary:d.summary||{}};})};
 }
-function buffetSetData(type,data){
+function buffetSetData(type,data,cb){
   if(type==='breakfast'){BUFFET_DB_BK=data;}else{BUFFET_DB_DN=data;}
   var slim=buffetSlim(data);
-  // Save slim version to IDB and Firebase
-  buffetSaveIDB(type,slim);
+  buffetSaveIDB(type,slim,function(ok){if(cb)cb(ok);});
   if(typeof fbdb!=='undefined'){
     fbdb.ref('wr_buffet_'+type).set(slim).catch(function(e){console.warn('Firebase buffet:',e);});
   }
@@ -7542,9 +7547,10 @@ function buffetMergeAndSave(type,newData){
     var existing=idbData&&idbData.days?idbData:(type==='breakfast'?BUFFET_DB_BK:BUFFET_DB_DN);
     if(!existing||!existing.days||!existing.days.length){
       if(type==='breakfast'){BUFFET_DB_BK=newData;}else{BUFFET_DB_DN=newData;}
-      buffetSetData(type,newData);
-      renderBuffetStats(type);
-      showToast(newData.days.length+' days loaded!','s');
+      buffetSetData(type,newData,function(ok){
+        renderBuffetStats(type);
+        showToast(ok?(newData.days.length+' days loaded!'):'Save failed — try again',ok?'s':'w');
+      });
       return;
     }
     var existingDates=new Set(existing.days.map(function(d){return d.date;}));
@@ -7555,9 +7561,10 @@ function buffetMergeAndSave(type,newData){
     });
     existing.days.sort(function(a,b){return a.date.localeCompare(b.date);});
     if(type==='breakfast'){BUFFET_DB_BK=existing;}else{BUFFET_DB_DN=existing;}
-    buffetSetData(type,existing);
-    showToast((added>0?added+' new day(s) added!':'Day updated!'),'s');
-    renderBuffetStats(type);
+    buffetSetData(type,existing,function(ok){
+      showToast(ok?(added>0?added+' new day(s) added!':'Day updated!'):'Save failed — try again',ok?'s':'w');
+      renderBuffetStats(type);
+    });
   });
 }
 
