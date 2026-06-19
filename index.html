@@ -3490,9 +3490,6 @@ function expPrintTable(tab){
   } else if(tab==='boats'){
     headers='<th>#</th><th>Ref</th><th>Name</th><th>Room</th><th>Booking</th><th>Date</th><th>Time</th><th>Trip</th><th>Pax</th><th>Cost</th><th>Company</th><th>Status</th>';
     rowsHtml=rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.ref||'')+'</td><td>'+esc(r.name||'')+'</td><td>'+esc(r.room||'')+'</td><td>'+esc(r.bookDate||'')+'</td><td>'+esc(r.date||'')+'</td><td>'+esc(r.time||'')+'</td><td>'+esc(r.trip||'')+'</td><td>'+(r.pax||'')+'</td><td>'+(r.cost?'\u20ac'+r.cost:'')+'</td><td>'+esc(r.company||'')+'</td><td>'+(statusMap[r.status]||r.status||'')+'</td></tr>').join('');
-  } else if(tab==='boats'){
-    headers='<th>#</th><th>Ref</th><th>Name</th><th>Room</th><th>Booking</th><th>Date</th><th>Time</th><th>Trip</th><th>Pax</th><th>Cost</th><th>Status</th>';
-    rowsHtml=rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.ref||'')+'</td><td>'+esc(r.name||'')+'</td><td>'+esc(r.room||'')+'</td><td>'+esc(r.bookDate||'')+'</td><td>'+esc(r.date||'')+'</td><td>'+esc(r.time||'')+'</td><td>'+esc(r.trip||'')+'</td><td>'+(r.pax||'')+'</td><td>'+(r.cost?'\u20ac'+r.cost:'')+'</td><td>'+(statusMap[r.status]||r.status||'')+'</td></tr>').join('');
   } else if(tab==='transfers'){
     headers='<th>#</th><th>Ref</th><th>Name</th><th>Room</th><th>Booking</th><th>Date</th><th>Time</th><th>Route</th><th>Cost</th><th>Status</th>';
     rowsHtml=rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.ref||'')+'</td><td>'+esc(r.name||'')+'</td><td>'+esc(r.room||'')+'</td><td>'+esc(r.bookDate||'')+'</td><td>'+esc(r.date||'')+'</td><td>'+esc(r.time||'')+'</td><td>'+esc(r.route||'')+'</td><td>'+(r.cost?'\u20ac'+r.cost:'')+'</td><td>'+(statusMap[r.status]||r.status||'')+'</td></tr>').join('');
@@ -4569,8 +4566,8 @@ function goTab(t){
   if(t==='ac'){renderAC();const ad=document.getElementById('ac-date');if(ad&&!ad.value)ad.value=new Date().toISOString().split('T')[0];}
   if(t==='experiences'){renderCars();const ed=document.getElementById('exp-daily-date');if(ed&&!ed.value)ed.value=new Date().toISOString().split('T')[0];}
   if(t==='suggestions')renderSuggestions();
-  if(t==='breakfast'){if(!BUFFET_DB_BK){buffetLoadIDB('breakfast',function(d){if(d){BUFFET_DB_BK=d;}renderBuffetStats('breakfast');});}else{renderBuffetStats('breakfast');}}
-  if(t==='dinner'){if(!BUFFET_DB_DN){buffetLoadIDB('dinner',function(d){if(d){BUFFET_DB_DN=d;}renderBuffetStats('dinner');});}else{renderBuffetStats('dinner');}}
+  if(t==='breakfast'){if(!BUFFET_DB_BK){buffetLoadIDB('breakfast',function(d){if(d&&d.days&&d.days.length>0){BUFFET_DB_BK=d;renderBuffetStats('breakfast');}else if(typeof fbdb!=='undefined'){fbdb.ref('wr_buffet_breakfast').once('value').then(function(snap){var fb=snap.val();if(fb&&fb.days&&fb.days.length>0){BUFFET_DB_BK=fb;buffetSaveIDB('breakfast',fb);}renderBuffetStats('breakfast');});}else{renderBuffetStats('breakfast');}});}else{renderBuffetStats('breakfast');}}
+  if(t==='dinner'){if(!BUFFET_DB_DN){buffetLoadIDB('dinner',function(d){if(d&&d.days&&d.days.length>0){BUFFET_DB_DN=d;renderBuffetStats('dinner');}else if(typeof fbdb!=='undefined'){fbdb.ref('wr_buffet_dinner').once('value').then(function(snap){var fb=snap.val();if(fb&&fb.days&&fb.days.length>0){BUFFET_DB_DN=fb;buffetSaveIDB('dinner',fb);}renderBuffetStats('dinner');});}else{renderBuffetStats('dinner');}});}else{renderBuffetStats('dinner');}}
 }
 function renderStats(){
   const n=RES.length,a=RES.filter(r=>r.room&&r.room!=='').length,rt=RES.filter(r=>r.rating>0).length;
@@ -7508,9 +7505,18 @@ function buffetLoadIDB(type,cb){
     req.onerror=function(){cb(null);};
   }catch(e){cb(null);}
 }
+function buffetSlim(data){
+  // Strip rooms array — keep only summary per day
+  return {days:(data.days||[]).map(function(d){return{date:d.date,savedAt:d.savedAt||'',manual:d.manual||false,summary:d.summary||{}};})};
+}
 function buffetSetData(type,data){
   if(type==='breakfast'){BUFFET_DB_BK=data;}else{BUFFET_DB_DN=data;}
-  buffetSaveIDB(type,data);
+  var slim=buffetSlim(data);
+  // Save slim version to IDB and Firebase
+  buffetSaveIDB(type,slim);
+  if(typeof fbdb!=='undefined'){
+    fbdb.ref('wr_buffet_'+type).set(slim).catch(function(e){console.warn('Firebase buffet:',e);});
+  }
 }
 
 function buffetImportJSON(type,inp){
