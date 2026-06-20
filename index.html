@@ -1354,6 +1354,13 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div style="width:1px;height:22px;background:var(--border2);margin:0 4px"></div>
       <div id="ms-status-tabs" style="display:flex;gap:4px;flex-wrap:wrap"></div>
       <div style="width:1px;height:22px;background:var(--border2);margin:0 4px"></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:11px;color:var(--muted);font-weight:600">Jump to:</span>
+        <select id="ms-jump-date" onchange="msJumpToDate(this.value)" style="padding:5px 10px;border:1.5px solid #b45309;border-radius:8px;font-size:12px;font-family:var(--sans);outline:none;color:#92400e;font-weight:600;background:#fff8f0;max-width:220px"></select>
+      </div>
+      <div style="width:1px;height:22px;background:var(--border2);margin:0 4px"></div>
+      <button onclick="msExpandAll(true)" style="padding:6px 12px;background:var(--bg);color:var(--muted);border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-chevrons-down" style="font-size:12px"></i> Expand all</button>
+      <button onclick="msExpandAll(false)" style="padding:6px 12px;background:var(--bg);color:var(--muted);border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-chevrons-up" style="font-size:12px"></i> Collapse all</button>
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
         <span style="font-size:11px;color:var(--muted);font-weight:600">Add Day:</span>
         <input type="date" id="ms-add-day-date" style="padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--sans);outline:none">
@@ -2727,6 +2734,27 @@ function renderExpStats(){
     totalRev+=rev;totalComm+=comm;totalSales+=rows.length;
     return{tab,label:EXP_LABELS[tab],count:rows.length,rev,comm,rate:EXP_COMM_RATES[tab].label};
   }).filter(d=>d.count>0);
+
+  // ── 1b. Massage revenue & commission (tiered: ≤105→€30, ≤145→€55, else 38%) ──
+  function msCommCalc(cost){const c=parseFloat(cost)||0;if(c<=0)return 0;if(c<=105)return 30;if(c<=145)return 55;return Math.round(c*0.38);}
+  let msRev=0,msComm=0,msSessions=0;
+  Object.keys(massageData||{}).forEach(date=>{
+    const m=date.slice(5,7);
+    if(expStatMonth==='all'){if(!SEASON_M.includes(m))return;}else if(m!==expStatMonth)return;
+    Object.keys(massageData[date]||{}).forEach(slot=>{
+      if(slot==='__customSlots')return;
+      const b=massageData[date][slot];
+      if(!b||!b.name||b.status==='cancelled')return;
+      const cost=parseFloat(b.cost||0);
+      msSessions++;
+      if(cost>0)msRev+=cost;
+      if(b.status==='commission')msComm+=msCommCalc(cost);
+    });
+  });
+  if(msSessions>0){
+    totalRev+=msRev;totalComm+=msComm;totalSales+=msSessions;
+    tabStats.push({tab:'massage',label:'Massage',count:msSessions,rev:msRev,comm:msComm,rate:'Tiered'});
+  }
 
   const tabCards=tabStats.map(d=>{
     const pct=totalRev>0?Math.round(d.rev/totalRev*100):0;
@@ -6150,6 +6178,27 @@ function msSumRender(){
   el.innerHTML=html;
 }
 
+function msToggleDay(dateKey){
+  window._msCollapsed=window._msCollapsed||{};
+  window._msCollapsed[dateKey]=!window._msCollapsed[dateKey];
+  renderMassage();
+}
+function msExpandAll(expand){
+  window._msCollapsed=window._msCollapsed||{};
+  Object.keys(massageData||{}).forEach(dk=>{window._msCollapsed[dk]=!expand;});
+  Object.keys(MASSAGE_SCHEDULE||{}).forEach(dk=>{window._msCollapsed[dk]=!expand;});
+  renderMassage();
+}
+function msJumpToDate(dateKey){
+  if(!dateKey)return;
+  window._msCollapsed=window._msCollapsed||{};
+  window._msCollapsed[dateKey]=false;
+  renderMassage();
+  setTimeout(()=>{
+    const card=document.querySelector('[data-msdate="'+dateKey+'"]');
+    if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+  },50);
+}
 function renderMassage(){
   const el=document.getElementById('massageContent');if(!el)return;
   msRenderFilterBars();
@@ -6189,6 +6238,18 @@ function renderMassage(){
   let allDays=[...Object.keys(MASSAGE_SCHEDULE),...extraDays].sort();
   // Apply month filter
   if(msMFilter!=='all') allDays=allDays.filter(dk=>dk.slice(5,7)===msMFilter);
+  window._msCollapsed=window._msCollapsed||{};
+  const todayKey=new Date().toISOString().split('T')[0];
+  // Populate jump-to-date dropdown
+  const jumpSel=document.getElementById('ms-jump-date');
+  if(jumpSel){
+    const curVal=jumpSel.value;
+    jumpSel.innerHTML='<option value="">-- Select date --</option>'+allDays.map(dk=>{
+      const dd=new Date(dk);const lbl=DAY_GR[dd.getDay()].slice(0,3)+' '+dd.getDate()+' '+MON_GR[dd.getMonth()]+(dk===todayKey?' (Today)':'');
+      return '<option value="'+dk+'">'+lbl+'</option>';
+    }).join('');
+    if(curVal)jumpSel.value=curVal;
+  }
   let html='';
   allDays.forEach(dateKey=>{
     const windows=MASSAGE_SCHEDULE[dateKey]||[];
@@ -6209,11 +6270,14 @@ function renderMassage(){
     if(msSFilter!=='all'&&filteredSlots.length===0)return;
     const bookedCount=Object.values(bookings).filter(b=>b.name||b.room).length;
     const totalRevenue=Object.values(bookings).reduce((s,b)=>s+(parseFloat(b.cost)||0),0);
+    // Default: collapse all days except today and any day with no explicit state yet that's in the future-near range stay collapsed too; only today opens by default
+    if(!(dateKey in window._msCollapsed))window._msCollapsed[dateKey]=(dateKey!==todayKey);
+    const isCollapsed=window._msCollapsed[dateKey];
     let slotsHtml=colHdr;
     filteredSlots.forEach(slotTime=>{slotsHtml+=slotRow(dateKey,slotTime,bookings);});
     if(!allSlots.length){slotsHtml+='<div style="padding:16px;text-align:center;color:var(--muted2);font-size:12px">No bookings</div>';}
     const windowsLbl=isManualOnly?'<span style="font-size:11px;color:rgba(255,255,255,.7)">Manual booking</span>':'<span style="font-size:11px;color:rgba(255,255,255,.7)">'+windows.map(w=>w.start+'\u2013'+w.end).join(' | ')+'</span>';
-    html+='<div class="ms-day-card" data-msdate="'+dateKey+'"><div class="ms-day-hdr"><div class="ms-day-title"><i class="ti ti-calendar"></i>'+dateLbl+(isManualOnly?' <span style="background:rgba(255,255,255,.25);border-radius:6px;padding:2px 8px;font-size:11px;font-family:var(--sans)">Manual</span>':'')+'</div><div style="display:flex;align-items:center;gap:8px">'+windowsLbl+'<span class="ms-day-count">'+bookedCount+(scheduledSlots.length?'/'+allSlots.length:'')+'</span></div></div>'+slotsHtml+'<div class="ms-stats"><span class="ms-stat">Slots: <strong>'+allSlots.length+'</strong></span><span class="ms-stat">Booked: <strong>'+bookedCount+'</strong></span>'+(totalRevenue>0?'<span class="ms-stat" style="margin-left:auto">Revenue: <strong>\u20ac'+totalRevenue.toFixed(0)+'</strong></span>':'')+'</div></div>';
+    html+='<div class="ms-day-card" data-msdate="'+dateKey+'"><div class="ms-day-hdr" style="cursor:pointer" onclick="msToggleDay(\''+dateKey+'\')"><i class="ti ti-chevron-'+(isCollapsed?'right':'down')+'" style="font-size:13px;margin-right:6px;color:rgba(255,255,255,.8)"></i><div class="ms-day-title"><i class="ti ti-calendar"></i>'+dateLbl+(dateKey===todayKey?' <span style="background:rgba(255,255,255,.3);border-radius:6px;padding:2px 8px;font-size:11px;font-family:var(--sans);font-weight:700">Today</span>':'')+(isManualOnly?' <span style="background:rgba(255,255,255,.25);border-radius:6px;padding:2px 8px;font-size:11px;font-family:var(--sans)">Manual</span>':'')+'</div><div style="display:flex;align-items:center;gap:8px">'+windowsLbl+(totalRevenue>0?'<span style="font-size:11px;color:rgba(255,255,255,.9);font-weight:700">\u20ac'+totalRevenue.toFixed(0)+'</span>':'')+'<span class="ms-day-count">'+bookedCount+(scheduledSlots.length?'/'+allSlots.length:'')+'</span></div></div>'+(isCollapsed?'':slotsHtml+'<div class="ms-stats"><span class="ms-stat">Slots: <strong>'+allSlots.length+'</strong></span><span class="ms-stat">Booked: <strong>'+bookedCount+'</strong></span>'+(totalRevenue>0?'<span class="ms-stat" style="margin-left:auto">Revenue: <strong>\u20ac'+totalRevenue.toFixed(0)+'</strong></span>':'')+'</div>')+'</div>';
   });
   if(!allDays.length)html='<div style="padding:40px;text-align:center;color:var(--muted2)"><i class="ti ti-calendar-off" style="font-size:36px;display:block;margin-bottom:10px;opacity:.3"></i>No massage schedule yet</div>';
   el.innerHTML=html;
