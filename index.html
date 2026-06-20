@@ -905,7 +905,9 @@ canvas.an-chart{width:100%!important;height:220px!important}
     </div>
     <div class="groom-bar">
       <span class="gbar-lbl">Date:</span>
+      <button class="gbtn" onclick="groomsShiftDay(-1)" title="Previous day" style="padding:7px 10px"><i class="ti ti-chevron-left"></i></button>
       <input type="date" class="gbar-date" id="groomDate" onchange="renderGrooms()">
+      <button class="gbtn" onclick="groomsShiftDay(1)" title="Next day" style="padding:7px 10px"><i class="ti ti-chevron-right"></i></button>
       <button class="gbtn paste-claude" id="pasteCBtn" onclick="pasteFromClaude()" style="display:none;background:linear-gradient(135deg,#3d1a6e,#5c3d8f);color:#fff;position:relative">
         <i class="ti ti-clipboard-check"></i> <span>Paste from Claude</span>
         <span id="pasteCBadge" style="position:absolute;top:-5px;right:-5px;background:#f5a623;color:#fff;font-size:8px;font-weight:700;padding:2px 6px;border-radius:8px"></span>
@@ -937,6 +939,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <span class="gtbl-head-title">Grooms Daily List</span>
         <span class="gtbl-head-date" id="groomDateLbl"></span>
         <span class="gtbl-count" id="groomCount">0 rooms</span>
+        <span class="gtbl-count" id="groomDaysCount" style="opacity:.7;font-size:11px"></span>
       </div>
       <div id="groomTableBody">
         <table class="gtbl" id="gtbl" style="display:none">
@@ -1124,7 +1127,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:8px"><i class="ti ti-plus" style="color:var(--sea)"></i> Add Gym Booking</div>
       <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
         <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Room</label><input id="gym-add-room" class="tr-inp" style="width:90px" placeholder="309" maxlength="5"></div>
-        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Date</label><input type="date" id="gym-add-date" class="tr-inp"></div>
+        <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Date</label><div style="display:flex;gap:4px;align-items:center"><button onclick="gymAddDateShift(-1)" type="button" style="padding:8px 9px;background:var(--bg);border:1px solid var(--border);border-radius:7px;cursor:pointer;color:var(--ink)"><i class="ti ti-chevron-left" style="font-size:13px"></i></button><input type="date" id="gym-add-date" class="tr-inp"><button onclick="gymAddDateShift(1)" type="button" style="padding:8px 9px;background:var(--bg);border:1px solid var(--border);border-radius:7px;cursor:pointer;color:var(--ink)"><i class="ti ti-chevron-right" style="font-size:13px"></i></button></div></div>
         <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Time</label><select id="gym-add-time" class="tr-inp" style="width:100px"></select></div>
         <div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Duration</label><select id="gym-add-dur" class="tr-inp" style="width:100px"><option value="30">30 min</option><option value="60">1 hour</option></select></div>
         <button onclick="addGymBookingSimple()" style="padding:9px 18px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px;height:38px"><i class="ti ti-check"></i> Save</button>
@@ -1164,7 +1167,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <h3><i class="ti ti-barbell"></i> <span id="gymModalTitle">Gym Booking</span></h3>
     <div class="gm-field"><label>Room Number</label><input id="gm-room" placeholder="e.g. 309" maxlength="5"></div>
     <div class="gm-row">
-      <div class="gm-field"><label>Date</label><input type="date" id="gm-date"></div>
+      <div class="gm-field"><label>Date</label><input type="date" id="gym-modal-date"></div>
       <div class="gm-field"><label>Start Time</label><select id="gm-time"></select></div>
     </div>
     <div class="gm-field"><label>Duration</label><div class="duration-toggle"><button class="dur-btn on" id="dur30" onclick="setDur(30)">30 min</button><button class="dur-btn" id="dur60" onclick="setDur(60)">1 hour</button></div></div>
@@ -2329,8 +2332,6 @@ function svGen(tab){
     },600);
   }
 }
-function genGetMonth(row){const d=new Date(row.bookDate||row.date||row.delivDate||row.rentalDate||'');return isNaN(d)?'':String(d.getMonth()+1).padStart(2,'0');}
-
 /* ── Month filter pills ── */
 const MONTH_NAMES_G={all:'All','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct'};
 function genInitFilter(tab){
@@ -2395,7 +2396,7 @@ function renderGenTab(tab){
     const baseFields='<td style="padding:7px 9px;color:var(--muted2);font-size:11px;text-align:center">'+n+'</td><td>'+inp(i,'ref',r.ref,'Ref#')+'</td><td>'+inp(i,'name',r.name,'FULL NAME','font-weight:600')+'</td><td>'+inp(i,'room',r.room,'309','text-align:center;font-weight:700;color:'+col)+'</td><td>'+inpDate(i,'bookDate',r.bookDate)+'</td>';
     if(tab==='excursions'){
       const isOpen_excursions=genIsOpen('excursions',i);
-      const excSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #93c5fd;border-radius:8px;font-size:12px;outline:none;font-family:var(--sans)" onchange="GEN_DATA[\'excursions\']['+i+'].excursion=this.value;svGen(\'excursions\')"><option value="">-- Select --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'"'+(r.excursion===e.name?' selected':'')+'>'+e.name+'</option>').join('')+'</select>';
+      const excSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #93c5fd;border-radius:8px;font-size:12px;outline:none;font-family:var(--sans)" onchange="excOnSelect(\'excursions\','+i+',this.value)"><option value="">-- Select --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'"'+(r.excursion===e.name?' selected':'')+'>'+e.name+'</option>').join('')+'</select>';
       const ep_ex=EXC_CATALOG.find(e=>e.name===r.excursion);
       html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td onclick="event.stopPropagation()">'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td>'+inpNum(i,'childPax',r.childPax||0,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();excEmailDraft('+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_excursions){const pi=ep_ex?'<div style="font-size:10px;color:#1a6ca8;font-weight:600;margin-top:4px">Adult: €'+(ep_ex.priceAdult||'?')+' · Child: €'+(ep_ex.priceChild||'?')+' · Pickup WR: '+(ep_ex.pickupWR||'--')+'</div>':'';html+='<tr class="car-ep" style="background:#ebf5ff"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('excursions',i,r,'#1a6ca8')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Excursion','#1a6ca8',excSel+pi)+epField('Tour Date','#1a6ca8',epDate('excursions',i,'date',r.date))+epField('Pickup Time WR','#1a6ca8',epTime('excursions',i,'time',r.time))+epField('Adults','#1a6ca8',epNum('excursions',i,'pax',r.pax,'2','1',null))+epField('Children','#1a6ca8',epNum('excursions',i,'childPax',r.childPax||0,'0','0',null))+epField('Cost €','#1a6ca8',epNum('excursions',i,'cost',r.cost,'0','0',null))+epField('Notes','#1a6ca8',epInp('excursions',i,'notes',r.notes,'Special requests...'))+epStatus('excursions',i,r.status,4)+'</div></td></tr>';}
@@ -2521,6 +2522,11 @@ function renderGenSum(tab){
           const cB=Math.round(cost*rateB);
           byCompany[coKey].comm=cB;comm=comm-c+cB;
         }
+      } else if(tab==='excursions'){
+        const co=coKey.toLowerCase();
+        const rateE=(co.includes('katsouris')||co.includes('kcg'))?0.10:0.20;
+        const cE=Math.round(cost*rateE);
+        comm+=cE;byCompany[coKey].comm+=cE;
       } else {
         const c=Math.round(cost*0.20);
         comm+=c;byCompany[coKey].comm+=c;
@@ -2529,6 +2535,8 @@ function renderGenSum(tab){
     const mRev=rev;const mMo=MN[m];const mComm=comm;
     if(!window._boatsBreakdown)window._boatsBreakdown={};
     if(tab==='boats')window._boatsBreakdown[mMo]=byCompany;
+    if(!window._excBreakdown)window._excBreakdown={};
+    if(tab==='excursions')window._excBreakdown[mMo]=byCompany;
     html+='<div class="car-sum-card" style="cursor:pointer" onclick="carShowCommission(\''+mMo+'\','+mRev+','+mComm+',\''+tab+'\')" title="Click for commission">'
       +'<div class="car-sum-month">'+MN[m]+'</div>'
       +'<div class="car-sum-count">'+mc.length+' bookings</div>'
@@ -2669,7 +2677,7 @@ function expStatsClose(){
 
 const EXP_COMM_RATES={
   cars:{rate:0.20,label:'20%',useBase:true},
-  excursions:{rate:0.10,label:'10%',useBase:false},
+  excursions:{rate:null,label:'10-20%',useBase:false}, // per company
   moto:{rate:0.10,label:'10%',useBase:false},
   boats:{rate:null,label:'10-20%',useBase:false}, // per company
   transfers:{rate:0.07,label:'7%',useBase:false},
@@ -2687,6 +2695,10 @@ function getCommForRow(tab,r){
   if(tab==='boats'){
     const co=(r.company||'').toLowerCase();
     return Math.round(cost*(co.includes('ego')?0.20:0.10));
+  }
+  if(tab==='excursions'){
+    const co=(r.company||'').toLowerCase();
+    return Math.round(cost*((co.includes('katsouris')||co.includes('kcg'))?0.10:0.20));
   }
   return Math.round(cost*(cfg.rate||0));
 }
@@ -2780,6 +2792,25 @@ function renderExpStats(){
     +'</div>'
   ).join('');
 
+  // ── 3b. Best performing company (excursions) ──
+  const excRows=filterMonth(GEN_DATA['excursions']||[]).filter(r=>r.status!=='cancelled'&&r.company);
+  const byExcCo={};
+  excRows.forEach(r=>{
+    const co=r.company||'Unknown';
+    if(!byExcCo[co])byExcCo[co]={count:0,rev:0,comm:0};
+    const cost=parseFloat(r.cost||0)||0;
+    const comm=getCommForRow('excursions',r);
+    byExcCo[co].count++;byExcCo[co].rev+=cost;byExcCo[co].comm+=comm;
+  });
+  const excCoRows=Object.entries(byExcCo).sort((a,b)=>b[1].rev-a[1].rev).map(([co,d])=>
+    '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2)">'
+    +'<div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--ink)">'+co+'</div>'
+    +'<div style="font-size:10px;color:var(--muted)">'+d.count+' bookings</div></div>'
+    +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--sea)">\u20ac'+d.rev.toFixed(0)+'</div>'
+    +'<div style="font-size:11px;color:#d97706">comm \u20ac'+d.comm.toFixed(0)+'</div></div>'
+    +'</div>'
+  ).join('');
+
   // ── 4. Top selling experiences ──
   const sorted=[...tabStats].sort((a,b)=>b.count-a.count);
   const maxCount=sorted[0]?.count||1;
@@ -2819,7 +2850,10 @@ function renderExpStats(){
     +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-coin" style="color:#d97706;font-size:13px"></i> Most Revenue</div>'
     +topRevRows+'</div>'
     +'</div>'
-    +(boatCoRows?'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-sailboat" style="color:#0e7490;font-size:13px"></i> Boats by Company</div>'+boatCoRows+'</div>':'');
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
+    +(boatCoRows?'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-sailboat" style="color:#0e7490;font-size:13px"></i> Boats by Company</div>'+boatCoRows+'</div>':'')
+    +(excCoRows?'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-map-pin" style="color:#1a6ca8;font-size:13px"></i> Excursions by Company</div>'+excCoRows+'</div>':'')
+    +'</div>';
 }
 
 function genDel(tab,i){const saved=GEN_DATA[tab].splice(i,1)[0];svGen(tab);renderGenTab(tab);setTimeout(function(){showToast('Deleted','w',function(){GEN_DATA[tab].splice(i,0,saved);svGen(tab);renderGenTab(tab);});},50);}
@@ -2960,7 +2994,9 @@ function gmBoatsAutoFillCost(){
     }
   } else if(co==='SIW'){
     const t=SIW_CATALOG.find(x=>x.name===tripVal);
-    const month=new Date().getMonth()+1;
+    const dateEl=document.getElementById('gm-date');
+    const tripDate=dateEl&&dateEl.value?new Date(dateEl.value):new Date();
+    const month=tripDate.getMonth()+1;
     const hs=(month>=7&&month<=9);
     if(t&&!t.onRequest)price=hs?t.priceHS:t.priceLS;
   }
@@ -3130,7 +3166,8 @@ function genAdd(tab){
     } else if(f.type==='vantour_type'){
       html+='<div>'+lbl2+'<select style="'+selStyle+'" id="gm-tourType" onchange="gmVanUpdatePrice()"><option value="standard">Standard</option><option value="exclusive">Exclusive</option></select></div>';
     } else {
-      html+='<div>'+lbl2+'<input class="tr-inp" style="width:100%" id="gm-'+f.id+'" type="'+(f.type||'text')+'" placeholder="'+(f.ph||'')+'"'+(f.type==='number'?' min="0"':'')+'></div>';
+      const extraOnchange=(tab==='boats'&&f.id==='date')?' onchange="gmBoatsAutoFillCost()"':'';
+      html+='<div>'+lbl2+'<input class="tr-inp" style="width:100%" id="gm-'+f.id+'" type="'+(f.type||'text')+'" placeholder="'+(f.ph||'')+'"'+(f.type==='number'?' min="0"':'')+extraOnchange+'></div>';
     }
   });
   if(fields.length%2!==0)html+='<div></div>';
@@ -3303,7 +3340,7 @@ function renderPLMBody(tab){
         if(exc.company){
           html+='<tr><td colspan="6" style="padding:8px 11px;background:#f8f9fa">'
             +'<div style="font-size:12px;font-weight:700;color:#374151">'+esc(exc.company)+'</div>'
-            +(exc.company==='Katsouris Travel'?'<div style="font-size:11px;color:#555;margin-top:2px">With transfer: Pick-up WR Hotel 09:15 · Without transfer: Own way to Argostoli port by 09:30</div>':'')
+            +(exc.company==='Katsouris Travel'?'<div style="font-size:11px;color:#555;margin-top:2px">With transfer: Pick-up WR Hotel 09:15 · Without transfer: 10:00 from I Love This Kefalonia sign (be there by 9:40)</div>':'')
             +'</td></tr>';
         }
         lastCompany=exc.company||'';
@@ -3381,7 +3418,7 @@ function renderPLMBody(tab){
     html+='<div style="font-size:13px;font-weight:700;color:#7c5e2e;margin:0 0 6px;padding:8px 12px;background:#fef3c7;border-radius:8px;border-left:4px solid #7c5e2e">\ud83d\udea3 Seven Islands Ways (RIB) \u00b7 Max 10 pax \u00b7 10:00-17:00</div>';
     html+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:linear-gradient(180deg,#fefce8,#fef3c7)"><th style="padding:7px 10px;text-align:left;font-size:10px;color:#7c5e2e;font-weight:700;text-transform:uppercase;border-right:1px solid #e2c97e">Tour</th><th style="padding:7px 10px;text-align:center;font-size:10px;color:#7c5e2e;font-weight:700;text-transform:uppercase;border-right:1px solid #e2c97e">Dep.</th><th style="padding:7px 10px;text-align:center;font-size:10px;color:#7c5e2e;font-weight:700;text-transform:uppercase;border-right:1px solid #e2c97e">Low \u20ac</th><th style="padding:7px 10px;text-align:center;font-size:10px;color:#7c5e2e;font-weight:700;text-transform:uppercase">High \u20ac</th></tr></thead><tbody>';
     SIW_CATALOG.forEach(t=>{html+='<tr style="border-bottom:1px solid var(--border2)"><td style="padding:6px 10px;font-size:11px;font-weight:600;border-right:1px solid var(--border2)">'+esc(t.name)+'</td><td style="padding:6px 8px;text-align:center;font-size:11px;color:var(--muted);border-right:1px solid var(--border2)">'+esc(t.dep)+'</td><td style="padding:6px 8px;text-align:center;font-weight:700;color:#7c5e2e;border-right:1px solid var(--border2)">'+(t.onRequest?'On req':'\u20ac'+t.priceLS)+'</td><td style="padding:6px 8px;text-align:center;font-weight:700;color:#92400e">'+(t.onRequest?'On req':'\u20ac'+t.priceHS)+'</td></tr>';});
-    html+='</tbody></table><div style="font-size:11px;color:var(--muted);margin-top:8px">Low: May-Jun, Oct. High: Jul-Sep. Includes: Seabob, SUP, snacks, drinks, fuel.</div></div>';
+    html+='</tbody></table><div style="font-size:11px;color:var(--muted);margin-top:8px">Low season: 1 May \u2013 30 Jun. High season: 1 Jul \u2013 30 Sep. VAT included. Seabob/SUP/Sea Scooter, snacks, drinks &amp; fuel included.</div></div>';
 
   // ── VAN TOURS ──
   } else if(tab==='vantours'){
@@ -3568,11 +3605,6 @@ let carMFlt='all',carOpenEP=null;
 function svCars(){
   try{localStorage.setItem('ace_cars',JSON.stringify(CARS));}catch(e){}
   if(typeof fbdb!=='undefined')fbdb.ref('ace_cars').set(CARS);
-}
-
-function carAdd(){
-  CARS.unshift({id:Date.now()+'',ref:'',name:'',to:'',room:'',bookDate:new Date().toISOString().split('T')[0],rentalDate:'',rentalTime:'',carType:'A-M',days:1,insurance:false,status:'waiting'});
-  svCars();carOpenEP=0;renderCars();showToast('New car booking added','s');
 }
 
 const TAB_EMAIL_DEFAULTS={
@@ -3787,12 +3819,15 @@ function carEmailDraft(i){
   carEmailRenderTos();
 }
 function carShowCommission(month,rev,comm,tabName){
-  const _rateLabel=tabName==='transfers'?'7%':tabName==='moto'||tabName==='vantours'?'10%':'20%';
-  const breakdown=(tabName==='boats')?(window._boatsBreakdown&&window._boatsBreakdown[month])||null:null;
+  const _rateLabel=tabName==='transfers'?'7%':tabName==='moto'||tabName==='vantours'?'10%':tabName==='excursions'?'10-20%':'20%';
+  const breakdown=tabName==='boats'?(window._boatsBreakdown&&window._boatsBreakdown[month])||null
+    :tabName==='excursions'?(window._excBreakdown&&window._excBreakdown[month])||null
+    :null;
   let breakdownHtml='';
   if(breakdown&&Object.keys(breakdown).length>=1){
     const rows=Object.entries(breakdown).map(([co,d])=>{
-      const rate=co.toLowerCase().includes('ego')?20:10;
+      const coL=co.toLowerCase();
+      const rate=tabName==='excursions'?((coL.includes('katsouris')||coL.includes('kcg'))?10:20):(coL.includes('ego')?20:10);
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px">'
         +'<div style="text-align:left"><div style="font-size:12px;font-weight:700;color:var(--ink)">'+co+'</div>'
         +'<div style="font-size:10px;color:var(--muted);margin-top:2px">€'+d.rev.toFixed(0)+' revenue · '+rate+'%</div></div>'
@@ -4155,19 +4190,32 @@ const MONTH_ORDER=['January','February','March','April','May','June','July','Aug
 
 /* ── EXC_CATALOG ── */
 const EXC_CATALOG = [
-  {id:'sea_sun',name:'Sea & Sun Cruise',priceAdult:75,priceChild:55,pickupWR:'09:00',days:[1,4],dayNames:['Monday','Thursday'],departure:'Boat departs Arg/li 09:30',notes:'White Rocks pick-up 09:00'},
-  {id:'kef_disc',name:'Kefalonia Discovery',priceAdult:50,priceChild:25,pickupWR:'09:45',days:[2,4,6],dayNames:['Tuesday','Thursday','Saturday'],departure:'Boat departs Sami 09:15',notes:'White Rocks pick-up 09:45'},
-  {id:'ithaka',name:'Ithaka Cruise',priceAdult:60,priceChild:30,pickupWR:'07:50',days:[5],dayNames:['Friday'],departure:'Boat departs Sami 09:30',notes:'White Rocks pick-up 07:50'},
-  {id:'venetian',name:'Venetian Voyage',priceAdult:60,priceChild:30,pickupWR:'08:20',days:[0],dayNames:['Sunday'],departure:'Boat departs Arg/li 18:00',notes:'White Rocks pick-up 08:20 (Aug 16th)'},
-  {id:'arg_eve',name:'Argostoli Evening Cruise',priceAdult:38,priceChild:19,pickupWR:'',days:[1],dayNames:['Monday'],departure:'Departs Arg/li 22:00',notes:'Evening cruise - own way'},
-  {id:'priv_disc',name:'Private Discover Kefalonia',priceAdult:0,priceChild:0,pickupWR:'',days:[1,3,5],dayNames:['Monday','Wednesday','Friday'],departure:'On request',notes:'Up to 7 pax'},
-  {id:'priv_assos',name:'Private Assos & Fiskardo',priceAdult:0,priceChild:0,pickupWR:'',days:[1,3,5],dayNames:['Monday','Wednesday','Friday'],departure:'On request',notes:'Up to 7 pax'},
-  {id:'wr_cruise_tr',name:'White Rocks Cruise (with transfer)',priceAdult:86,priceChild:43,pickupWR:'09:15',days:[2,5],dayNames:['Tuesday','Friday'],departure:'09:15 from WR Hotel',notes:'€86/adult · €43/child · Incl. transfer from hotel',company:'Katsouris Travel'},
-  {id:'wr_cruise_no',name:'White Rocks Cruise (without transfer)',priceAdult:65,priceChild:32,pickupWR:'09:30',days:[0,1,2,3,4,5,6],dayNames:['Daily'],departure:'Argostoli port 09:30',notes:'€65/adult · €32.50/child · Own way to Argostoli port',company:'Katsouris Travel'},
+  {id:'sea_sun',name:'Sea & Sun Cruise',priceAdult:75,priceChild:55,pickupWR:'09:00',days:[1,4],dayNames:['Monday','Thursday'],departure:'Boat departs Arg/li 09:30',notes:'White Rocks pick-up 09:00',company:'ACE'},
+  {id:'kef_disc',name:'Kefalonia Discovery',priceAdult:50,priceChild:25,pickupWR:'09:45',days:[2,4,6],dayNames:['Tuesday','Thursday','Saturday'],departure:'Boat departs Sami 09:15',notes:'White Rocks pick-up 09:45',company:'ACE'},
+  {id:'ithaka',name:'Ithaka Cruise',priceAdult:60,priceChild:30,pickupWR:'07:50',days:[5],dayNames:['Friday'],departure:'Boat departs Sami 09:30',notes:'White Rocks pick-up 07:50',company:'ACE'},
+  {id:'venetian',name:'Venetian Voyage',priceAdult:60,priceChild:30,pickupWR:'08:20',days:[0],dayNames:['Sunday'],departure:'Boat departs Arg/li 18:00',notes:'White Rocks pick-up 08:20 (Aug 16th)',company:'ACE'},
+  {id:'arg_eve',name:'Argostoli Evening Cruise',priceAdult:38,priceChild:19,pickupWR:'',days:[1],dayNames:['Monday'],departure:'Departs Arg/li 22:00',notes:'Evening cruise - own way',company:'ACE'},
+  {id:'priv_disc',name:'Private Discover Kefalonia',priceAdult:0,priceChild:0,pickupWR:'',days:[1,3,5],dayNames:['Monday','Wednesday','Friday'],departure:'On request',notes:'Up to 7 pax',company:'ACE'},
+  {id:'priv_assos',name:'Private Assos & Fiskardo',priceAdult:0,priceChild:0,pickupWR:'',days:[1,3,5],dayNames:['Monday','Wednesday','Friday'],departure:'On request',notes:'Up to 7 pax',company:'ACE'},
+  {id:'wr_cruise_tr',name:'White Rocks Cruise (with transfer)',priceAdult:85,priceChild:50,pickupWR:'09:15',days:[2,5],dayNames:['Tuesday','Friday'],departure:'09:15 from WR Hotel',notes:'\u20ac85/adult \u00b7 \u20ac50/child \u00b7 Incl. transfer from hotel',company:'Katsouris Travel'},
+  {id:'wr_cruise_no',name:'White Rocks Cruise (without transfer)',priceAdult:65,priceChild:35,pickupWR:'09:40',days:[0,1,2,3,4,5,6],dayNames:['Daily'],departure:'10:00 from: I Love This Kefalonia sign (suggested to be there at 9:40)',notes:'\u20ac65/adult \u00b7 \u20ac35/child \u00b7 Own way to meeting point',company:'Katsouris Travel'},
 ];
 function excGetByName(n){return EXC_CATALOG.find(e=>e.name===n)||null;}
 function excAutoPrice(n,pax,childPax){const e=excGetByName(n);if(!e||!e.priceAdult)return null;const a=(pax||1)-(childPax||0);return a*e.priceAdult+(childPax||0)*e.priceChild;}
 function excIsAvailable(n,dateStr){const e=excGetByName(n);if(!e||!dateStr)return{ok:true};const d=new Date(dateStr);if(isNaN(d))return{ok:true};const dow=d.getDay();if(e.days.includes(dow))return{ok:true,pickup:e.pickupWR,exc:e};return{ok:false,exc:e,dow};}
+function excOnSelect(tab,i,excName){
+  const r=GEN_DATA[tab][i];if(!r)return;
+  r.excursion=excName;
+  const e=excGetByName(excName);
+  if(e){
+    if(!r.time)r.time=e.pickupWR||'';
+    if(!r.company&&e.company)r.company=e.company;
+    const pax=r.pax||1,childPax=r.childPax||0;
+    const autoPrice=excAutoPrice(excName,pax,childPax);
+    if(!r.cost&&autoPrice)r.cost=autoPrice;
+  }
+  svGen(tab);renderGenTab(tab);
+}
 
 /* ── FLOWERS_CATALOG ── */
 const FLOWERS_CATALOG = [
@@ -4299,14 +4347,25 @@ const EGO_CATALOG=[
   {id:'eg3g',name:'Sunset 3h — Group €100/pp (up to 18 pax)',price:100,priceType:'per_person',privateCost:900,notes:'Snacks, wine, SUP, fuel. Dep: Sami.'},
 ];
 const SIW_CATALOG=[
-  {id:'si1a',name:'TOUR 1: Turquoise Fantasy (Argostoli)',dep:'Argostoli',hours:'7h',priceLS:1400,priceHS:1500},
-  {id:'si2a',name:'TOUR 2: Ionian Red Carpet (Argostoli)',dep:'Argostoli',hours:'7h',priceLS:650,priceHS:650},
-  {id:'si3a',name:'TOUR 3: West Coast Pearls (Argostoli)',dep:'Argostoli',hours:'7h',priceLS:900,priceHS:900},
-  {id:'si4a',name:'TOUR 4: South Beach Pisanello (Argostoli)',dep:'Argostoli',hours:'7h',priceLS:800,priceHS:800},
-  {id:'si5a',name:'TOUR 5: Shipwreck Apocalypse (Argostoli)',dep:'Argostoli',hours:'7h',priceLS:1400,priceHS:1500},
-  {id:'si6a',name:'TOUR 6: Old Venetian Route (Argostoli)',dep:'Argostoli',hours:'7h',priceLS:1600,priceHS:1600},
-  {id:'si7a',name:'TOUR 7: Footsteps of Odysseus (Argostoli)',dep:'Argostoli',hours:'7h',priceLS:1800,priceHS:1800},
-  {id:'si_sun',name:'Sunset Tour (Argostoli)',dep:'Argostoli',hours:'4.5h',priceLS:400,priceHS:400},
+  // Departure from Argostoli — Ionian Blue 1 & 3 (smaller rib, max 10 pax)
+  {id:'si1a',name:'TOUR 1: Turquoise Fantasy (Argostoli \u00b7 Ionian Blue 1&3)',dep:'Argostoli',hours:'7h',priceLS:1400,priceHS:1500},
+  {id:'si2a',name:'TOUR 2: Ionian Red Carpet (Argostoli \u00b7 Ionian Blue 1&3)',dep:'Argostoli',hours:'7h',priceLS:650,priceHS:650},
+  {id:'si3a',name:'TOUR 3: West Coast Pearls (Argostoli \u00b7 Ionian Blue 1&3)',dep:'Argostoli',hours:'7h',priceLS:900,priceHS:900},
+  {id:'si4a',name:'TOUR 4: South Beach Pisanello (Argostoli \u00b7 Ionian Blue 1&3)',dep:'Argostoli',hours:'7h',priceLS:800,priceHS:800},
+  {id:'si5a',name:'TOUR 5: Shipwreck Apocalypse (Argostoli \u00b7 Ionian Blue 1&3)',dep:'Argostoli',hours:'7h',priceLS:1400,priceHS:1500},
+  {id:'si6a',name:'TOUR 6: Old Venetian Route (Argostoli \u00b7 Ionian Blue 1&3)',dep:'Argostoli',hours:'7h',priceLS:1600,priceHS:1600},
+  {id:'si7a',name:'TOUR 7: Footsteps of Odysseus (Argostoli \u00b7 Ionian Blue 1&3)',dep:'Argostoli',hours:'7h',priceLS:1800,priceHS:1800},
+  // Departure from Argostoli — Ionian Blue 4 (larger/premium rib, all-season flat pricing)
+  {id:'si1b',name:'TOUR 1: Turquoise Fantasy (Argostoli \u00b7 Ionian Blue 4)',dep:'Argostoli',hours:'7h',priceLS:1800,priceHS:1800},
+  {id:'si2b',name:'TOUR 2: Ionian Red Carpet (Argostoli \u00b7 Ionian Blue 4)',dep:'Argostoli',hours:'7h',priceLS:1300,priceHS:1300},
+  {id:'si3b',name:'TOUR 3: West Coast Pearls (Argostoli \u00b7 Ionian Blue 4)',dep:'Argostoli',hours:'7h',priceLS:1300,priceHS:1300},
+  {id:'si4b',name:'TOUR 4: South Beach Pisanello (Argostoli \u00b7 Ionian Blue 4)',dep:'Argostoli',hours:'7h',priceLS:1300,priceHS:1300},
+  {id:'si5b',name:'TOUR 5: Shipwreck Apocalypse (Argostoli \u00b7 Ionian Blue 4)',dep:'Argostoli',hours:'7h',priceLS:1800,priceHS:1800},
+  {id:'si6b',name:'TOUR 6: Old Venetian Route (Argostoli \u00b7 Ionian Blue 4)',dep:'Argostoli',hours:'7h',priceLS:1900,priceHS:1900},
+  {id:'si7b',name:'TOUR 7: Footsteps of Odysseus (Argostoli \u00b7 Ionian Blue 4)',dep:'Argostoli',hours:'7h',priceLS:2100,priceHS:2100},
+  // Sunset Tour — Ionian Blue 1 & 3
+  {id:'si_sun',name:'Sunset Tour (Argostoli \u00b7 17:00-21:30)',dep:'Argostoli',hours:'4.5h',priceLS:400,priceHS:400},
+  // Departure from Sami Port — Ionian Blue 2 (max 8 pax recommended)
   {id:'si8',name:'TOUR 8: Hidden Ionian Diamond (Sami)',dep:'Sami',hours:'7h',priceLS:1600,priceHS:1600},
   {id:'si9',name:'TOUR 9: Ithaka Circle (Sami)',dep:'Sami',hours:'7h',priceLS:1400,priceHS:1400},
   {id:'si10',name:'TOUR 10: Blue Horizons (Sami)',dep:'Sami',hours:'7h',priceLS:1100,priceHS:1100},
@@ -4520,10 +4579,26 @@ const SEED=[
   {ref:'5868824066',name:'GOLDSMITH',room:'',type:'BGSV',arr:'29/5/26',dep:'5/6/26',ad:2,day1:'',day3:'',rating:0,notes:''},
 ];
 let RES=JSON.parse(localStorage.getItem('wra')||'null')||SEED;
-let GR=JSON.parse(localStorage.getItem('wrag')||'null')||[];
+let GROOMS_BY_DATE=JSON.parse(localStorage.getItem('wrag_bydate')||'null')||{};
+let GR=[];
+function groomsCurrentDateKey(){
+  const dv=document.getElementById('groomDate')?.value;
+  return dv||new Date().toISOString().split('T')[0];
+}
+function groomsLoadDate(){
+  const key=groomsCurrentDateKey();
+  GR=GROOMS_BY_DATE[key]?GROOMS_BY_DATE[key].slice():[];
+}
+function groomsSaveCurrentDate(){
+  const key=groomsCurrentDateKey();
+  if(GR.length)GROOMS_BY_DATE[key]=GR;
+  else delete GROOMS_BY_DATE[key];
+  try{localStorage.setItem('wrag_bydate',JSON.stringify(GROOMS_BY_DATE));}catch(e){}
+  if(typeof fbdb!=='undefined'){fbdb.ref('grooms_by_date').set(GROOMS_BY_DATE).catch(function(e){console.warn('Firebase grooms:',e);});}
+}
 let flt='all',mflt='all',editIdx=null,raFlt='noroom',openEP=null,parsedRows=[];
 function sv(){try{localStorage.setItem('wra',JSON.stringify(RES));}catch(e){}}
-function svG(){try{localStorage.setItem('wrag',JSON.stringify(GR));}catch(e){}}
+function svG(){groomsSaveCurrentDate();}
 const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function pd(s){if(!s)return null;if(s.includes('-'))return new Date(s);const p=s.split('/');if(p.length===3){const y=p[2].length===2?'20'+p[2]:p[2];return new Date(y+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'));}return null;}
@@ -4742,12 +4817,22 @@ function renderReport(){
       '<div class="rr"><span>Avg rating</span><span class="rv">'+avg+'</span></div>'+
     '</div>';
 }
+function groomsShiftDay(delta){
+  const inp=document.getElementById('groomDate');
+  const cur=inp.value?new Date(inp.value):new Date();
+  cur.setDate(cur.getDate()+delta);
+  inp.value=cur.toISOString().split('T')[0];
+  renderGrooms();
+}
 function renderGrooms(){
+  groomsLoadDate();
   const dv=document.getElementById('groomDate').value;
   const d=dv?new Date(dv):null;
   const lbl=d?(' \u2014 '+DAY[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()]+' 2026'):'';
   document.getElementById('groomDateLbl').textContent=lbl;
   document.getElementById('groomCount').textContent=GR.length+' room'+(GR.length!==1?'s':'');
+  const savedDays=Object.keys(GROOMS_BY_DATE).length;
+  document.getElementById('groomDaysCount').textContent=savedDays?('\u00b7 '+savedDays+' day'+(savedDays!==1?'s':'')+' saved'):'';
   if(d){document.getElementById('printHeader').textContent='Grooms Daily List \u2014 '+DAY[d.getDay()]+', '+d.getDate()+' '+MON[d.getMonth()]+' 2026';}
   const tbl=document.getElementById('gtbl');const empty=document.getElementById('groomEmpty');
   if(!GR.length){tbl.style.display='none';empty.classList.remove('hidden');return;}
@@ -5587,6 +5672,12 @@ function renderGym(){
   body+='</tbody>';
   document.getElementById('gymTbl').innerHTML=hdr+body;
 }
+function gymAddDateShift(delta){
+  const inp=document.getElementById('gym-add-date');
+  const cur=inp.value?new Date(inp.value):new Date();
+  cur.setDate(cur.getDate()+delta);
+  inp.value=cur.toISOString().split('T')[0];
+}
 function addGymBookingSimple(){
   const room=document.getElementById('gym-add-room').value.trim();const dateKey=document.getElementById('gym-add-date').value;const slot=parseInt(document.getElementById('gym-add-time').value);const dur=parseInt(document.getElementById('gym-add-dur').value);
   if(!room){showToast('Enter room number','w');return;}if(!dateKey){showToast('Select a date','w');return;}
@@ -6186,22 +6277,6 @@ function msClear(dateKey,slotTime){
   if(!massageData[dateKey])return;
   _msUndoData={dateKey,slotTime,booking:{...massageData[dateKey][slotTime]}};
   delete massageData[dateKey][slotTime];
-  if(!Object.keys(massageData[dateKey]).some(k=>k!=='__customSlots'))delete massageData[dateKey];
-  svMassage();renderMassage();
-  showToast('Booking cleared','w',function(){
-    if(!_msUndoData)return;
-    const{dateKey:dk,slotTime:st,booking:b}=_msUndoData;
-    if(!massageData[dk])massageData[dk]={};
-    massageData[dk][st]=b;
-    svMassage();renderMassage();
-    showToast('Restored!','s');
-    _msUndoData=null;
-  });
-}
-function msClear(dateKey,slotTime){
-  if(!massageData[dateKey])return;
-  _msUndoData={dateKey,slotTime,booking:{...massageData[dateKey][slotTime]}};
-  delete massageData[dateKey][slotTime];
   if(!Object.keys(massageData[dateKey]).filter(k=>k!=='__customSlots').length&&!massageData[dateKey].__customSlots)delete massageData[dateKey];
   svMassage();renderMassage();
   showToast('Cleared · <button onclick="msUndo()" style="background:none;border:none;color:#1a6644;font-weight:700;cursor:pointer;text-decoration:underline;font-size:12px">Undo</button>','w',6000);
@@ -6241,6 +6316,36 @@ function msAddManual(){
 /* ALERTS */
 let alertsData=JSON.parse(localStorage.getItem('alerts_data')||'{}');let alCurrentDate=new Date().toISOString().split('T')[0];
 function svAlerts(){try{localStorage.setItem('alerts_data',JSON.stringify(alertsData));}catch(e){}if(typeof fbdb!=='undefined')fbdb.ref('alerts_data').set(alertsData);}
+function alSeedRecurringAC(){
+  const RECURRING=[
+    {time:'07:00',desc:'OPEN NWPOS A/C BUFFET + GYM',pri:'mid'},
+    {time:'11:00',desc:'CLOSE NWPOS A/C',pri:'mid'},
+    {time:'18:00',desc:'OPEN NWPOS A/C',pri:'mid'},
+    {time:'21:00',desc:'CLOSE ALL A/C',pri:'mid'}
+  ];
+  const TAG='__recurring_ac__';
+  // Remove outdated wording from a previous version of this seed (CLOSE GYM A/C -> CLOSE ALL A/C)
+  Object.keys(alertsData).forEach(dateKey=>{
+    alertsData[dateKey]=(alertsData[dateKey]||[]).filter(t=>!(t._tag===TAG&&t.time==='21:00'&&t.desc==='CLOSE GYM A/C'));
+  });
+  const start=new Date();start.setDate(start.getDate()+1);start.setHours(0,0,0,0);
+  const end=new Date(start.getFullYear(),9,31); // October is month index 9
+  let added=0;
+  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
+    const dateKey=d.toISOString().split('T')[0];
+    if(!alertsData[dateKey])alertsData[dateKey]=[];
+    RECURRING.forEach(r=>{
+      const exists=alertsData[dateKey].some(t=>t.time===r.time&&t.desc===r.desc&&t._tag===TAG);
+      if(!exists){
+        alertsData[dateKey].push({id:Date.now().toString()+Math.random().toString(36).slice(2,7),time:r.time,desc:r.desc,pri:r.pri,done:false,doneBy:'',doneAt:'',createdAt:new Date().toISOString(),_tag:TAG});
+        added++;
+      }
+    });
+    alertsData[dateKey].sort((a,b)=>a.time.localeCompare(b.time));
+  }
+  if(added>0){svAlerts();}
+  return added;
+}
 function alSetToday(){alCurrentDate=new Date().toISOString().split('T')[0];renderAlerts();}
 function alNavDay(dir){const d=new Date(alCurrentDate);d.setDate(d.getDate()+dir);alCurrentDate=d.toISOString().split('T')[0];renderAlerts();}
 function addAlert(){
@@ -7372,16 +7477,34 @@ const fbdb=firebase.database();
 function setSyncStatus(state,msg){const dot=document.getElementById('syncDot');const txt=document.getElementById('syncMsg');const colors={ok:'#4ade80',syncing:'#f5a623',error:'#e05a4e'};dot.style.background=colors[state]||'#4ade80';if(state==='syncing')dot.style.animation='pulse 0.7s infinite';else dot.style.animation='pulse 2s infinite';txt.textContent=msg;}
 const _origSv=window.sv;const _origSvG=window.svG;let _saveTO=null;
 window.sv=function(){setSyncStatus('syncing','Saving to cloud...');clearTimeout(_saveTO);_saveTO=setTimeout(()=>{fbdb.ref('reservations').set(RES).then(()=>setSyncStatus('ok','Synced \u2601 '+new Date().toLocaleTimeString())).catch(e=>{setSyncStatus('error','Error: '+e.message);_origSv&&_origSv();});},800);};
-window.svG=function(){setSyncStatus('syncing','Saving grooms to cloud...');clearTimeout(_saveTO);_saveTO=setTimeout(()=>{fbdb.ref('grooms').set(GR).then(()=>setSyncStatus('ok','Synced \u2601 '+new Date().toLocaleTimeString())).catch(e=>{setSyncStatus('error','Error: '+e.message);});},800);};
+window.svG=function(){groomsSaveCurrentDate();setSyncStatus('syncing','Saving grooms to cloud...');clearTimeout(_saveTO);_saveTO=setTimeout(()=>{setSyncStatus('ok','Synced \u2601 '+new Date().toLocaleTimeString());},800);};
 setSyncStatus('syncing','Loading from cloud...');
 fbdb.ref('reservations').once('value').then(snap=>{const data=snap.val();if(data&&Array.isArray(data)&&data.length>0){RES=data;renderStats();renderRes();setSyncStatus('ok','Connected to Firebase \u2014 data loaded \u2601');}else{setSyncStatus('ok','Connected \u2014 using seed data');}}).catch(()=>setSyncStatus('error','Could not connect to Firebase'));
-fbdb.ref('grooms').once('value').then(snap=>{const data=snap.val();if(data&&Array.isArray(data)){GR=data;renderGrooms();}});
+fbdb.ref('grooms_by_date').once('value').then(snap=>{
+  const data=snap.val();
+  if(data&&typeof data==='object'&&Object.keys(data).length>0){
+    GROOMS_BY_DATE=data;
+    try{localStorage.setItem('wrag_bydate',JSON.stringify(data));}catch(e){}
+    groomsLoadDate();renderGrooms();
+  }else{
+    // Migration: check old flat 'grooms' node and move it under today's date once
+    fbdb.ref('grooms').once('value').then(oldSnap=>{
+      const oldData=oldSnap.val();
+      if(oldData&&Array.isArray(oldData)&&oldData.length>0){
+        const todayKey=new Date().toISOString().split('T')[0];
+        GROOMS_BY_DATE[todayKey]=oldData;
+        groomsSaveCurrentDate();
+        groomsLoadDate();renderGrooms();
+      }
+    });
+  }
+});
 fbdb.ref('reservations').on('value',snap=>{const data=snap.val();if(data&&Array.isArray(data)&&JSON.stringify(data)!==JSON.stringify(RES)){RES=data;renderStats();renderRes();setSyncStatus('ok','Updated from cloud \u2601 '+new Date().toLocaleTimeString());}});
-fbdb.ref('grooms').on('value',snap=>{const data=snap.val();if(data&&Array.isArray(data)&&JSON.stringify(data)!==JSON.stringify(GR)){GR=data;renderGrooms();}});
+fbdb.ref('grooms_by_date').on('value',snap=>{const data=snap.val();if(data&&typeof data==='object'&&JSON.stringify(data)!==JSON.stringify(GROOMS_BY_DATE)){GROOMS_BY_DATE=data;try{localStorage.setItem('wrag_bydate',JSON.stringify(data));}catch(e){}groomsLoadDate();renderGrooms();setSyncStatus('ok','Updated from cloud \u2601 '+new Date().toLocaleTimeString());}});
 fbdb.ref('ta_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){taHistory=d;localStorage.setItem('ta_reviews',JSON.stringify(d));renderRevHistory('ta');}});
 fbdb.ref('goo_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){gooHistory=d;localStorage.setItem('goo_reviews',JSON.stringify(d));renderRevHistory('goo');}});
 fbdb.ref('bk_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){bkHistory=d;localStorage.setItem('bk_reviews',JSON.stringify(d));renderBKHistory();}});
-fbdb.ref('alerts_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){alertsData=d;try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}checkOverdueTasks();}});
+fbdb.ref('alerts_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){alertsData=d;try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}checkOverdueTasks();}const seeded=alSeedRecurringAC();if(seeded>0){checkOverdueTasks();const alTab=document.getElementById('tab-alerts');if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();}});
 fbdb.ref('comp_data').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d))COMP_DATA=d;});
 fbdb.ref('ac_issues').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){AC_DATA=d;}});
 fbdb.ref('alerts_data').on('value',snap=>{const d=snap.val();if(d&&typeof d==='object'&&JSON.stringify(d)!==JSON.stringify(alertsData)){alertsData=d;checkOverdueTasks();const alTab=document.getElementById('tab-alerts');if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();}});
@@ -7817,7 +7940,39 @@ function bfWeekly(days,isBF,col,colLight){
   var rows=ORD.filter(function(n){return byD[n];}).map(function(name){var s=byD[name];var avg=Math.round(s.occ/s.count);var occCol=avg>=90?'#16a34a':avg>=75?col:'#dc2626';var ent=Object.entries(tDOW[name]||{}).sort(function(a,b){return b[1]-a[1];});var top=ent[0];var low=ent[ent.length-1];
     return '<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;box-shadow:var(--sh)"><div style="min-width:90px"><div style="font-size:14px;font-weight:700;color:var(--ink)">'+name+'</div><div style="font-size:10px;color:var(--muted)">'+s.count+'x</div></div><div style="text-align:center"><div style="font-size:22px;font-weight:800;color:'+occCol+';font-family:var(--serif)">'+avg+'%</div><div style="font-size:10px;color:var(--muted)">Avg Occ</div></div><div style="text-align:center"><div style="font-size:20px;font-weight:800;color:'+col+';font-family:var(--serif)">'+Math.round(s.guests/s.count)+'</div><div style="font-size:10px;color:var(--muted)">Avg Guests</div></div>'+(top?'<div style="text-align:center"><div style="font-size:15px;font-weight:700">\uD83D\uDD25 '+top[0]+'</div><div style="font-size:10px;color:var(--muted)">Peak hr</div></div>':'')+(low&&low[0]!==(top&&top[0])?'<div style="text-align:center"><div style="font-size:15px;font-weight:700;color:#dc2626">\uD83D\uDD35 '+low[0]+'</div><div style="font-size:10px;color:var(--muted)">Lowest hr</div></div>':'')+(!isBF?'<div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#dc2626">BB '+Math.round(s.bb/s.count)+'</div><div style="font-size:10px;color:var(--muted)">avg</div></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#7c3aed">DA '+Math.round(s.da/s.count)+'</div><div style="font-size:10px;color:var(--muted)">avg</div></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#16a34a">\u20ac'+s.rev+'</div><div style="font-size:10px;color:var(--muted)">total</div></div>':'')+'<div style="flex:1;min-width:100px"><div style="background:var(--border2);border-radius:4px;height:8px;overflow:hidden"><div style="width:'+avg+'%;background:'+occCol+';height:100%;border-radius:4px"></div></div></div></div>';
   }).join('');
-  return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)"><div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-calendar-week" style="color:'+col+'"></i> Average by Day of Week</div>'+rows+'</div>'+bfHourChart(days,col,colLight);
+  return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)"><div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-calendar-week" style="color:'+col+'"></i> Average by Day of Week</div>'+rows+'</div>'+bfByCalendarWeek(days,isBF,col,colLight)+bfHourChart(days,col,colLight);
+}
+function bfWeekLabel(dateStr){
+  var d=new Date(dateStr);
+  var day=(d.getDay()+6)%7; // Mon=0..Sun=6
+  var monday=new Date(d);monday.setDate(d.getDate()-day);
+  var sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
+  var MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var key=monday.toISOString().split('T')[0];
+  var label=monday.getDate()+' '+MN[monday.getMonth()]+' \u2013 '+sunday.getDate()+' '+MN[sunday.getMonth()];
+  return {key:key,label:label,monday:monday};
+}
+function bfByCalendarWeek(days,isBF,col,colLight){
+  if(!days.length)return '';
+  var byW={};
+  days.forEach(function(d){
+    var w=bfWeekLabel(d.date);
+    if(!byW[w.key])byW[w.key]={label:w.label,monday:w.monday,count:0,occ:0,guests:0,bb:0,da:0,lm:0,rev:0,hourCounts:{}};
+    var s=d.summary||{};
+    byW[w.key].count++;
+    byW[w.key].occ+=s.occupancyPct||0;
+    byW[w.key].guests+=s.guestsServed||0;
+    if(!isBF){byW[w.key].bb+=s.bbRooms||0;byW[w.key].da+=s.daTotal||0;byW[w.key].lm+=s.lungomareRooms||0;byW[w.key].rev+=s.totalRevenue||0;}
+    var dh=s.hourCounts||{};
+    Object.keys(dh).forEach(function(h){byW[w.key].hourCounts[h]=(byW[w.key].hourCounts[h]||0)+dh[h];});
+  });
+  var weekKeys=Object.keys(byW).sort();
+  var rows=weekKeys.map(function(key,idx){
+    var w=byW[key];var avg=Math.round(w.occ/w.count);var occCol=avg>=90?'#16a34a':avg>=75?col:'#dc2626';
+    var ent=Object.entries(w.hourCounts).sort(function(a,b){return b[1]-a[1];});var top=ent[0];var low=ent[ent.length-1];
+    return '<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;box-shadow:var(--sh)"><div style="min-width:130px"><div style="font-size:13px;font-weight:700;color:var(--ink)">Week '+(idx+1)+'</div><div style="font-size:10px;color:var(--muted)">'+w.label+' \u00b7 '+w.count+'d</div></div><div style="text-align:center"><div style="font-size:22px;font-weight:800;color:'+occCol+';font-family:var(--serif)">'+avg+'%</div><div style="font-size:10px;color:var(--muted)">Avg Occ</div></div><div style="text-align:center"><div style="font-size:20px;font-weight:800;color:'+col+';font-family:var(--serif)">'+Math.round(w.guests/w.count)+'</div><div style="font-size:10px;color:var(--muted)">Avg Guests</div></div>'+(top?'<div style="text-align:center"><div style="font-size:15px;font-weight:700">\uD83D\uDD25 '+top[0]+'</div><div style="font-size:10px;color:var(--muted)">Peak hr</div></div>':'')+(low&&low[0]!==(top&&top[0])?'<div style="text-align:center"><div style="font-size:15px;font-weight:700;color:#dc2626">\uD83D\uDD35 '+low[0]+'</div><div style="font-size:10px;color:var(--muted)">Lowest hr</div></div>':'')+(!isBF?'<div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#dc2626">BB '+w.bb+'</div><div style="font-size:10px;color:var(--muted)">total</div></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#7c3aed">DA '+w.da+'</div><div style="font-size:10px;color:var(--muted)">total</div></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#0284c7">LM '+w.lm+'</div><div style="font-size:10px;color:var(--muted)">total</div></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#16a34a">\u20ac'+w.rev+'</div><div style="font-size:10px;color:var(--muted)">total</div></div>':'')+'<div style="flex:1;min-width:100px"><div style="background:var(--border2);border-radius:4px;height:8px;overflow:hidden"><div style="width:'+avg+'%;background:'+occCol+';height:100%;border-radius:4px"></div></div></div></div>';
+  }).join('');
+  return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)"><div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-calendar-stats" style="color:'+col+'"></i> By Calendar Week</div>'+rows+'</div>';
 }
 
 function bfMonthly(days,isBF,col,colLight){
