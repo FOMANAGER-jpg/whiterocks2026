@@ -685,9 +685,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <div class="dd-item pur" id="ddi-grooms" onclick="ddGo('grooms','Grooms Daily List')"><i class="ti ti-luggage"></i> Grooms Daily List</div>
         <div class="dd-divider"></div>
         <div class="dd-sec-lbl">Reviews</div>
-        <div class="dd-item amb" id="ddi-import" onclick="ddGo('import','Booking.com')"><i class="ti ti-brand-booking"></i> Booking.com Reviews</div>
         <div class="dd-item" id="ddi-ta" onclick="ddGo('ta','TripAdvisor')" style="color:#2d9c68"><i class="ti ti-brand-tripadvisor" style="color:#2d9c68"></i> TripAdvisor</div>
         <div class="dd-item" id="ddi-goo" onclick="ddGo('goo','Google Reviews')" style="color:#4285f4"><i class="ti ti-brand-google" style="color:#4285f4"></i> Google Reviews</div>
+        <div class="dd-item" id="ddi-exp" onclick="ddGo('exp','Expedia')" style="color:#0066cc"><i class="ti ti-plane" style="color:#0066cc"></i> Expedia</div>
+        <div class="dd-item amb" id="ddi-import" onclick="ddGo('import','Booking.com')"><i class="ti ti-brand-booking"></i> Booking.com Reviews</div>
         <div class="dd-item" id="ddi-analytics" onclick="ddGo('analytics','Analytics &amp; AI')"><i class="ti ti-chart-dots" style="color:#2563aa"></i> Analytics &amp; AI Responses</div>
         <div class="dd-item" id="ddi-breakfast" onclick="ddGo('breakfast','Breakfast Buffet')"><i class="ti ti-coffee" style="color:#d97706"></i> Breakfast Buffet</div>
         <div class="dd-item" id="ddi-dinner" onclick="ddGo('dinner','Dinner Buffet')"><i class="ti ti-tools-kitchen-2" style="color:#7c3aed"></i> Dinner Buffet</div>
@@ -720,9 +721,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
   <div class="tab" id="nt-comp" onclick="goTab('comp')" style="color:#be185d"><i class="ti ti-mood-sad"></i> Complaints</div>
   <div class="tab" id="nt-ac" onclick="goTab('ac')" style="color:#0e7490"><i class="ti ti-air-conditioning"></i> A/C Issues</div>
   <div class="tab pur-tab" id="nt-grooms" onclick="goTab('grooms')"><i class="ti ti-luggage"></i> Grooms Daily List</div>
-  <div class="tab amb-tab" id="nt-import" onclick="goTab('import')"><i class="ti ti-brand-booking"></i> Booking.com</div>
   <div class="tab" id="nt-ta" onclick="goTab('ta')" style="color:#2d9c68"><i class="ti ti-brand-tripadvisor"></i> TripAdvisor</div>
   <div class="tab" id="nt-goo" onclick="goTab('goo')" style="color:#4285f4"><i class="ti ti-brand-google"></i> Google Reviews</div>
+  <div class="tab" id="nt-exp" onclick="goTab('exp')" style="color:#0066cc"><i class="ti ti-plane"></i> Expedia</div>
+  <div class="tab amb-tab" id="nt-import" onclick="goTab('import')"><i class="ti ti-brand-booking"></i> Booking.com</div>
   <div class="tab" id="nt-analytics" onclick="goTab('analytics')" style="color:#2563aa"><i class="ti ti-chart-dots"></i> Analytics</div>
   <div class="tab" id="nt-breakfast" onclick="goTab('breakfast')" style="color:#d97706"><i class="ti ti-coffee"></i> Breakfast</div>
   <div class="tab" id="nt-dinner" onclick="goTab('dinner')" style="color:#7c3aed"><i class="ti ti-tools-kitchen-2"></i> Dinner Buffet</div>
@@ -1119,6 +1121,64 @@ canvas.an-chart{width:100%!important;height:220px!important}
   </div>
 </div>
 
+<!-- EXPEDIA -->
+<div id="tab-exp" class="hidden">
+  <div class="rev-wrap">
+    <div class="rev-hdr" style="background:linear-gradient(135deg,#003366,#0066cc);position:relative;overflow:hidden;min-height:110px;padding:20px 22px;">
+      <div class="rev-hdr-ico" style="position:relative;z-index:1"><i class="ti ti-plane"></i></div>
+      <div style="position:relative;z-index:1"><div class="rev-hdr-t">Expedia Reviews</div><div class="rev-hdr-s">Paste reviews &rarr; AI extracts score, highlights &amp; improvements</div></div>
+    </div>
+    <div class="sbar hidden" id="exp-stats-bar" style="border-radius:12px;margin-bottom:14px;border:1px solid var(--border);box-shadow:var(--sh)"></div>
+    <div id="exp-trend-bar-wrap" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:14px;box-shadow:var(--sh)">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:6px"><i class="ti ti-trending-up" style="color:#fcb900;font-size:14px"></i> Score Trend</div>
+      <div id="exp-trend-bar"></div>
+    </div>
+    <div class="rev-input-card">
+      <h3><i class="ti ti-clipboard-text" style="color:var(--sea)"></i> Paste Expedia Reviews</h3>
+      <div class="rev-period">
+        <label>Period:</label>
+        <select id="exp-period-m">
+          <option>January</option><option>February</option><option>March</option><option>April</option>
+          <option selected>May</option><option>June</option><option>July</option><option>August</option>
+          <option>September</option><option>October</option><option>November</option><option>December</option>
+        </select>
+        <input type="number" id="exp-period-y" value="2026" min="2020" max="2030" style="width:80px">
+      </div>
+      <label class="rev-parse-btn" style="cursor:pointer;width:fit-content;background:#0066cc">
+        <i class="ti ti-file-upload"></i> Upload JSON from Claude
+        <input type="file" style="display:none" accept=".json" onchange="importReviewJSON('exp',this)">
+      </label>
+      <textarea class="rev-ta" id="exp-text" style="min-height:80px;margin-top:6px" placeholder="Or paste raw review text here..."></textarea>
+      <div class="rev-parsing hidden" id="exp-parsing"><i class="ti ti-loader spin"></i> AI is analyzing...</div>
+      <button class="rev-parse-btn" id="exp-parse-btn" onclick="parseReviews('exp')" style="margin-top:6px"><i class="ti ti-sparkles"></i> Analyze with AI</button>
+    </div>
+    <div class="rev-results hidden" id="exp-results">
+      <h3><i class="ti ti-chart-bar" style="color:#0066cc"></i> Analysis Results — <span id="exp-res-period"></span></h3>
+      <div class="rev-score-big">
+        <div>
+          <div class="rev-score-num" id="exp-score" style="color:#0066cc">0.0</div>
+          <div class="rev-stars" id="exp-stars"></div>
+          <div class="rev-count" id="exp-count"></div>
+        </div>
+        <div style="flex:1"><div class="rev-summary" id="exp-summary"></div></div>
+      </div>
+      <div class="rev-cols">
+        <div class="rev-col"><h4 class="pos"><i class="ti ti-thumb-up"></i> What guests love</h4><ul id="exp-pos"></ul></div>
+        <div class="rev-col"><h4 class="neg"><i class="ti ti-arrow-up-circle"></i> Points to improve</h4><ul id="exp-neg"></ul></div>
+      </div>
+      <button class="rev-save-btn" onclick="saveReview('exp')"><i class="ti ti-device-floppy"></i> Save to history</button>
+    </div>
+    <div style="text-align:right;margin-bottom:6px">
+      <button onclick="clearAllExpReviews()" style="padding:5px 12px;background:#fce8e8;color:#c0392b;border:1.5px solid #fca5a5;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-trash"></i> Clear all Expedia reviews</button>
+    </div>
+    <div id="exp-summary-box" style="display:none"></div>
+    <div class="rev-history" id="exp-history-wrap">
+      <h3 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px"><span><i class="ti ti-history" style="color:var(--sea)"></i> Review History</span><button class="print-rev-btn" onclick="printRevHistory('exp')"><i class="ti ti-printer"></i> Print</button></h3>
+      <div id="exp-history-list"><div class="rev-empty"><i class="ti ti-plane"></i>No saved reviews yet</div></div>
+    </div>
+  </div>
+</div>
+
 <!-- GYM -->
 <div id="tab-gym" class="hidden">
   <div class="fit-wrap">
@@ -1259,6 +1319,8 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div class="an-stat-card"><div class="an-stat-lbl">Google Overall Avg</div><div class="an-stat-val" id="an-goo-avg" style="color:#4285f4">-</div><div class="an-stat-sub">/ 5.0</div></div>
       <div class="an-stat-card"><div class="an-stat-lbl">Booking.com Periods</div><div class="an-stat-val" id="an-bk-periods" style="color:#003580">-</div><div class="an-stat-sub" id="an-bk-reviews">saved</div></div>
       <div class="an-stat-card"><div class="an-stat-lbl">Booking.com Avg</div><div class="an-stat-val" id="an-bk-avg" style="color:#003580">-</div><div class="an-stat-sub">/ 10.0</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">Expedia Periods</div><div class="an-stat-val" id="an-expe-periods" style="color:#fcb900">-</div><div class="an-stat-sub" id="an-expe-reviews">saved</div></div>
+      <div class="an-stat-card"><div class="an-stat-lbl">Expedia Overall Avg</div><div class="an-stat-val" id="an-expe-avg" style="color:#fcb900">-</div><div class="an-stat-sub">/ 5.0</div></div>
       <div class="an-stat-card" style="border-top:3px solid #1a6ca8"><div class="an-stat-lbl">Experiences Revenue</div><div class="an-stat-val" id="an-exp-rev" style="color:#1a6ca8">€-</div><div class="an-stat-sub" id="an-exp-rev-sub">excl. cancelled</div></div>
       <div class="an-stat-card" style="border-top:3px solid #b45309"><div class="an-stat-lbl">Massage Revenue</div><div class="an-stat-val" id="an-ms-rev" style="color:#b45309">€-</div><div class="an-stat-sub" id="an-ms-rev-sub">excl. no-cost</div></div>
       <div class="an-stat-card" style="border-top:3px solid #be185d"><div class="an-stat-lbl">Flowers Revenue</div><div class="an-stat-val" id="an-fl-rev" style="color:#be185d">€-</div><div class="an-stat-sub" id="an-fl-rev-sub">excl. cancelled</div></div>
@@ -1289,6 +1351,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <div class="ai-src-tabs" style="margin-bottom:8px">
           <button class="ai-src-tab on" id="ai-tab-ta" onclick="setAISrc('ta')"><i class="ti ti-brand-tripadvisor"></i> TripAdvisor</button>
           <button class="ai-src-tab" id="ai-tab-goo" onclick="setAISrc('goo')"><i class="ti ti-brand-google"></i> Google</button>
+          <button class="ai-src-tab" id="ai-tab-exp" onclick="setAISrc('exp')"><i class="ti ti-plane"></i> Expedia</button>
         </div>
         <div class="ai-rev-list" id="ai-rev-list"></div>
       </div>
@@ -4225,13 +4288,14 @@ function carModalClose(){
   document.getElementById('carModal').classList.remove('open');
 }
 function printRevHistory(src){
-  const MN={ta:'TripAdvisor',goo:'Google Reviews',bk:'Booking.com'};
-  const COLOR={ta:'#2d9c68',goo:'#4285f4',bk:'#0069ff'};
+  const MN={ta:'TripAdvisor',goo:'Google Reviews',bk:'Booking.com',exp:'Expedia'};
+  const COLOR={ta:'#2d9c68',goo:'#4285f4',bk:'#0069ff',exp:'#0066cc'};
   const platform=MN[src],color=COLOR[src];
   let history=[];
   if(src==='ta')history=taHistory;
   else if(src==='goo')history=gooHistory;
   else if(src==='bk')history=bkHistory;
+  else if(src==='exp')history=expHistory;
   if(!history.length){showToast('No history to print','w');return;}
   const sorted=[...history].reverse();
   const totalReviews=history.reduce((s,r)=>s+r.count,0);
@@ -4685,7 +4749,7 @@ function ddGo(tab,lbl){
   goTab(tab);
 }
 function goTab(t){
-  ['res','day3','report','grooms','ac','comp','import','ta','goo','analytics','gym','yoga','pilates','massage','alerts','experiences','suggestions','breakfast','dinner','wine'].forEach(x=>{
+  ['res','day3','report','grooms','ac','comp','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','alerts','experiences','suggestions','breakfast','dinner','wine'].forEach(x=>{
     const el=document.getElementById('tab-'+x);
     const nt=document.getElementById('nt-'+x);
     if(el)el.classList.toggle('hidden',x!==t);
@@ -5377,6 +5441,21 @@ function pasteFromClaude(){if(!window.CLAUDE_DATA||!window.CLAUDE_DATA.length){s
 /* REVIEWS */
 let taHistory=JSON.parse(localStorage.getItem('ta_reviews')||'[]');
 let gooHistory=JSON.parse(localStorage.getItem('goo_reviews')||'[]');
+let expHistory=JSON.parse(localStorage.getItem('exp_reviews')||'[]');
+const svExp=()=>{try{localStorage.setItem('exp_reviews',JSON.stringify(expHistory));}catch(e){}};
+function clearAllExpReviews(){
+  if(!confirm('Delete ALL Expedia reviews?'))return;
+  const saved=expHistory.slice();
+  expHistory=[];
+  svExp();
+  if(typeof fbdb!=='undefined')fbdb.ref('exp_reviews').set([]);
+  renderRevHistory('exp');
+  showToast('All Expedia reviews deleted','w',function(){
+    expHistory=saved;svExp();
+    if(typeof fbdb!=='undefined')fbdb.ref('exp_reviews').set(saved);
+    renderRevHistory('exp');
+  });
+}
 const svTA=()=>{try{localStorage.setItem('ta_reviews',JSON.stringify(taHistory));}catch(e){}};
 function clearAllTAReviews(){
   if(!confirm('Delete ALL TripAdvisor reviews?'))return;
@@ -5405,12 +5484,16 @@ function clearAllGooReviews(){
     renderRevHistory('goo');
   });
 }
-function starsHtml(score,max){const full=Math.floor(score);const half=score-full>=0.5?1:0;const empty=max-full-half;return '\u2605'.repeat(full)+(half?'\u00bd':'')+'\u2606'.repeat(empty);}
+function starsHtml(score,max){const full=Math.max(0,Math.min(max,Math.floor(score)));const half=(score-full>=0.5&&full<max)?1:0;const empty=Math.max(0,max-full-half);return '\u2605'.repeat(full)+(half?'\u00bd':'')+'\u2606'.repeat(empty);}
+function revHistoryOf(src){return src==='ta'?taHistory:src==='goo'?gooHistory:expHistory;}
+function revSetHistoryOf(src,val){if(src==='ta')taHistory=val;else if(src==='goo')gooHistory=val;else expHistory=val;}
+function revSaveOf(src){if(src==='ta')svTA();else if(src==='goo')svGoo();else svExp();}
+function revFbRefOf(src){return src==='ta'?'ta_reviews':src==='goo'?'goo_reviews':'exp_reviews';}
 async function parseReviews(src){
   const txt=document.getElementById(src+'-text').value.trim();if(!txt){alert('Please paste some reviews first.');return;}
   const btn=document.getElementById(src+'-parse-btn');const parsing=document.getElementById(src+'-parsing');
   btn.disabled=true;parsing.classList.remove('hidden');
-  const platform=src==='ta'?'TripAdvisor':'Google';
+  const platform=src==='ta'?'TripAdvisor':src==='goo'?'Google':'Expedia';
   const prompt='You are a hotel review analyst. Analyze these '+platform+' reviews.\nReturn ONLY a valid JSON object:\n{"score":4.5,"count":12,"summary":"2-3 sentence summary","positives":["point1","point2"],"improvements":["point1","point2"]}\nReviews:\n'+txt.slice(0,5000);
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -5444,23 +5527,30 @@ function showRevResults(src,result){
 }
 function saveReview(src){
   const pending=window[src+'_pending'];if(!pending){showToast('Nothing to save','w');return;}
-  if(src==='ta'){taHistory=taHistory.filter(r=>r.period!==pending.period);taHistory.unshift(pending);svTA();if(typeof fbdb!=='undefined')fbdb.ref('ta_reviews').set(taHistory);renderRevHistory('ta');}
-  else{gooHistory=gooHistory.filter(r=>r.period!==pending.period);gooHistory.unshift(pending);svGoo();if(typeof fbdb!=='undefined')fbdb.ref('goo_reviews').set(gooHistory);renderRevHistory('goo');}
+  let h=revHistoryOf(src);
+  h=h.filter(r=>r.period!==pending.period);
+  h.unshift(pending);
+  revSetHistoryOf(src,h);
+  revSaveOf(src);
+  if(typeof fbdb!=='undefined')fbdb.ref(revFbRefOf(src)).set(h);
+  renderRevHistory(src);
   showToast('Saved to history','s');
 }
 // Multi-select state for period summary
-const revSelected={ta:new Set(), goo:new Set()};
+const revSelected={ta:new Set(), goo:new Set(), exp:new Set()};
 
 function revDeleteEntry(src,idx){
-  const history=src==='ta'?taHistory:gooHistory;
+  const history=revHistoryOf(src);
   const saved=history.splice(idx,1)[0];
-  if(src==='ta'){svTA();if(typeof fbdb!=='undefined')fbdb.ref('ta_reviews').set(taHistory);}
-  else{svGoo();if(typeof fbdb!=='undefined')fbdb.ref('goo_reviews').set(gooHistory);}
+  revSaveOf(src);
+  if(typeof fbdb!=='undefined')fbdb.ref(revFbRefOf(src)).set(history);
   revSelected[src].clear();
   renderRevHistory(src);
   showToast('"'+saved.period+'" deleted','w',function(){
-    if(src==='ta'){taHistory.splice(idx,0,saved);svTA();if(typeof fbdb!=='undefined')fbdb.ref('ta_reviews').set(taHistory);}
-    else{gooHistory.splice(idx,0,saved);svGoo();if(typeof fbdb!=='undefined')fbdb.ref('goo_reviews').set(gooHistory);}
+    const h2=revHistoryOf(src);
+    h2.splice(idx,0,saved);
+    revSaveOf(src);
+    if(typeof fbdb!=='undefined')fbdb.ref(revFbRefOf(src)).set(h2);
     revSelected[src].clear();renderRevHistory(src);
   });
 }
@@ -5472,13 +5562,13 @@ function revToggleSelect(src,idx){
 }
 
 function revShowSummary(src){
-  const history=src==='ta'?taHistory:gooHistory;
+  const history=revHistoryOf(src);
   const sel=[...revSelected[src]].map(i=>history[i]).filter(Boolean);
   if(!sel.length){showToast('Select at least one period','w');return;}
   const totalCount=sel.reduce((s,r)=>s+r.count,0);
   const avgScore=totalCount?(sel.reduce((s,r)=>s+r.score*r.count,0)/totalCount).toFixed(2):0;
   const periods=sel.map(r=>r.period).join(', ');
-  const color=src==='ta'?'#2d9c68':'#4285f4';
+  const color=src==='ta'?'#2d9c68':src==='goo'?'#4285f4':'#0066cc';
   const allPos=sel.flatMap(r=>r.positives||[]);
   const allImp=sel.flatMap(r=>r.improvements||[]);
   const posHtml=allPos.length?allPos.slice(0,5).map(p=>'<div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:3px"><span style="color:#16a34a;font-size:13px">✓</span><span style="font-size:12px">'+esc(p)+'</span></div>').join(''):'<span style="font-size:11px;color:var(--muted)">—</span>';
@@ -5504,10 +5594,10 @@ function revShowSummary(src){
 
 function revClearSel(src){revSelected[src].clear();renderRevHistory(src);}
 function renderRevHistory(src){
-  const history=src==='ta'?taHistory:gooHistory;
+  const history=revHistoryOf(src);
   const el=document.getElementById(src+'-history-list');
   const statsEl=document.getElementById(src+'-stats-bar');
-  const color=src==='ta'?'#2d9c68':'#4285f4';
+  const color=src==='ta'?'#2d9c68':src==='goo'?'#4285f4':'#0066cc';
   if(statsEl){
     if(history.length){
       const totalReviews=history.reduce((s,r)=>s+r.count,0);
@@ -5517,7 +5607,7 @@ function renderRevHistory(src){
       statsEl.classList.remove('hidden');
     }else{statsEl.classList.add('hidden');}
   }
-  if(!history.length){el.innerHTML='<div class="rev-empty"><i class="ti ti-'+(src==='ta'?'brand-tripadvisor':'brand-google')+'"></i>No saved reviews yet</div>';return;}
+  if(!history.length){el.innerHTML='<div class="rev-empty"><i class="ti ti-'+(src==='ta'?'brand-tripadvisor':src==='goo'?'brand-google':'plane')+'"></i>No saved reviews yet</div>';return;}
   const selSet=revSelected[src];
   const selCount=selSet.size;
   // Summary button bar
@@ -5583,8 +5673,8 @@ function renderRevHistory(src){
     </div>`;
   }).join('');
 }
-function showHistoryDetail(src,idx){const history=src==='ta'?taHistory:gooHistory;const r=history[idx];window[src+'_pending']=r;showRevResults(src,r);document.getElementById(src+'-text').value='';document.getElementById(src+'-period-m').value=r.period.split(' ')[0];document.getElementById(src+'-period-y').value=r.period.split(' ')[1];goTab(src);}
-function importReviewJSON(src,inp){const file=inp.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{try{const result=JSON.parse(e.target.result);showRevResults(src,result);showToast('Review analysis loaded!','s');}catch(err){showToast('Error: '+err.message,'w');}inp.value='';};reader.readAsText(file);}
+function showHistoryDetail(src,idx){const history=revHistoryOf(src);const r=history[idx];window[src+'_pending']=r;showRevResults(src,r);document.getElementById(src+'-text').value='';document.getElementById(src+'-period-m').value=r.period.split(' ')[0];document.getElementById(src+'-period-y').value=r.period.split(' ')[1];goTab(src);}
+function importReviewJSON(src,inp){const file=inp.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{try{const result=JSON.parse(e.target.result);if(result.score>5)result.score=result.score/2;showRevResults(src,result);showToast('Review analysis loaded!','s');}catch(err){showToast('Error: '+err.message,'w');}inp.value='';};reader.readAsText(file);}
 renderRevHistory('ta');renderRevHistory('goo');
 
 /* BOOKING.COM REVIEWS */
@@ -5746,10 +5836,10 @@ renderBKHistory();
 /* ANALYTICS */
 let aiSrc='ta',aiSelectedPeriod=null,anChartInstance=null,aiMode='json';
 function setAIMode(mode){aiMode=mode;document.getElementById('ai-mode-json').classList.toggle('on',mode==='json');document.getElementById('ai-mode-period').classList.toggle('on',mode==='period');document.getElementById('ai-json-mode').style.display=mode==='json'?'block':'none';document.getElementById('ai-period-mode').style.display=mode==='period'?'block':'none';document.getElementById('ai-resp-out').classList.remove('show');document.getElementById('ai-resp-acts').style.display='none';}
-function setAISrc(src){aiSrc=src;aiSelectedPeriod=null;document.getElementById('ai-tab-ta').classList.toggle('on',src==='ta');document.getElementById('ai-tab-goo').classList.toggle('on',src==='goo');document.getElementById('ai-resp-out').classList.remove('show');document.getElementById('ai-resp-acts').style.display='none';renderAIRevList();}
-function renderAIRevList(){const history=aiSrc==='ta'?taHistory:gooHistory;const el=document.getElementById('ai-rev-list');if(!history.length){el.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted2);font-size:12px">No saved reviews</div>';return;}el.innerHTML=history.map((r,i)=>'<div class="ai-rev-item'+(aiSelectedPeriod===i?' sel':'')+'" onclick="selectAIPeriod('+i+')"><div><div class="ai-rev-period">'+r.period+'</div><div class="ai-rev-count">'+r.count+' reviews</div></div><div class="ai-rev-score">'+r.score.toFixed(1)+'/5</div></div>').join('');}
+function setAISrc(src){aiSrc=src;aiSelectedPeriod=null;document.getElementById('ai-tab-ta').classList.toggle('on',src==='ta');document.getElementById('ai-tab-goo').classList.toggle('on',src==='goo');document.getElementById('ai-tab-exp').classList.toggle('on',src==='exp');document.getElementById('ai-resp-out').classList.remove('show');document.getElementById('ai-resp-acts').style.display='none';renderAIRevList();}
+function renderAIRevList(){const history=revHistoryOf(aiSrc);const el=document.getElementById('ai-rev-list');if(!history.length){el.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted2);font-size:12px">No saved reviews</div>';return;}el.innerHTML=history.map((r,i)=>'<div class="ai-rev-item'+(aiSelectedPeriod===i?' sel':'')+'" onclick="selectAIPeriod('+i+')"><div><div class="ai-rev-period">'+r.period+'</div><div class="ai-rev-count">'+r.count+' reviews</div></div><div class="ai-rev-score">'+r.score.toFixed(1)+'/5</div></div>').join('');}
 function selectAIPeriod(idx){aiSelectedPeriod=idx;document.getElementById('ai-gen-btn').disabled=false;document.getElementById('ai-resp-out').classList.remove('show');document.getElementById('ai-resp-acts').style.display='none';renderAIRevList();}
-function buildPrompt(){const style=document.getElementById('ai-style').value;const lang=document.getElementById('ai-lang').value;const styleGuide={professional:'Write a professional yet warm response.',personal:'Write a personal heartfelt thank-you.',concise:'Write a short polite 2-3 sentence response.',detailed:'Write a detailed response addressing all points.'}[style];const langStr=lang==='greek'?'Greek':'English';if(aiMode==='json'){const raw=document.getElementById('ai-json-inp').value.trim();if(!raw){showToast('Paste a review JSON first','w');return null;}let review;try{review=JSON.parse(raw);}catch(e){showToast('Invalid JSON','w');return null;}const platform=review.platform||'TripAdvisor';const reviewer=review.reviewer||review.name||'Guest';const score=review.score||review.rating||'5';const text=review.text||review.review||review.content||'';return 'You are the Front Office Manager of White Rocks Hotel & Bungalows in Kefalonia, Greece.\nWrite a '+platform+' management response.\nStyle: '+styleGuide+'\nLanguage: '+langStr+'\nReviewer: '+reviewer+'\nScore: '+score+'/5\nReview: '+text+'\n\nWrite ONLY the response, starting with "Dear '+reviewer+'," — sign off as "White Rocks Hotel & Bungalows Team".';}else{if(aiSelectedPeriod===null){showToast('Select a period first','w');return null;}const history=aiSrc==='ta'?taHistory:gooHistory;const r=history[aiSelectedPeriod];const platform=aiSrc==='ta'?'TripAdvisor':'Google Reviews';return 'You are the Front Office Manager of White Rocks Hotel & Bungalows in Kefalonia, Greece.\nWrite a '+platform+' management response.\nStyle: '+styleGuide+'\nLanguage: '+langStr+'\nPeriod: '+r.period+'\nScore: '+r.score+'/5\nReviews: '+r.count+'\nSummary: '+r.summary+'\nPositives: '+(r.positives||[]).join('; ')+'\nImprovements: '+(r.improvements||[]).join('; ')+'\n\nWrite ONLY the response — sign off as "White Rocks Hotel & Bungalows Team".';}}
+function buildPrompt(){const style=document.getElementById('ai-style').value;const lang=document.getElementById('ai-lang').value;const styleGuide={professional:'Write a professional yet warm response.',personal:'Write a personal heartfelt thank-you.',concise:'Write a short polite 2-3 sentence response.',detailed:'Write a detailed response addressing all points.'}[style];const langStr=lang==='greek'?'Greek':'English';if(aiMode==='json'){const raw=document.getElementById('ai-json-inp').value.trim();if(!raw){showToast('Paste a review JSON first','w');return null;}let review;try{review=JSON.parse(raw);}catch(e){showToast('Invalid JSON','w');return null;}const platform=review.platform||'TripAdvisor';const reviewer=review.reviewer||review.name||'Guest';const score=review.score||review.rating||'5';const text=review.text||review.review||review.content||'';return 'You are the Front Office Manager of White Rocks Hotel & Bungalows in Kefalonia, Greece.\nWrite a '+platform+' management response.\nStyle: '+styleGuide+'\nLanguage: '+langStr+'\nReviewer: '+reviewer+'\nScore: '+score+'/5\nReview: '+text+'\n\nWrite ONLY the response, starting with "Dear '+reviewer+'," — sign off as "White Rocks Hotel & Bungalows Team".';}else{if(aiSelectedPeriod===null){showToast('Select a period first','w');return null;}const history=revHistoryOf(aiSrc);const r=history[aiSelectedPeriod];const platform=aiSrc==='ta'?'TripAdvisor':aiSrc==='goo'?'Google Reviews':'Expedia';return 'You are the Front Office Manager of White Rocks Hotel & Bungalows in Kefalonia, Greece.\nWrite a '+platform+' management response.\nStyle: '+styleGuide+'\nLanguage: '+langStr+'\nPeriod: '+r.period+'\nScore: '+r.score+'/5\nReviews: '+r.count+'\nSummary: '+r.summary+'\nPositives: '+(r.positives||[]).join('; ')+'\nImprovements: '+(r.improvements||[]).join('; ')+'\n\nWrite ONLY the response — sign off as "White Rocks Hotel & Bungalows Team".';}}
 function openInClaude(){const prompt=buildPrompt();if(!prompt)return;window.open('https://claude.ai/new?q='+encodeURIComponent(prompt),'_blank');}
 function copyPromptToClipboard(){const prompt=buildPrompt();if(!prompt)return;navigator.clipboard.writeText(prompt).then(()=>showToast('Prompt copied!','s'));}
 function copyAIResponse(){navigator.clipboard.writeText(document.getElementById('ai-resp-out').textContent).then(()=>showToast('Copied!','s'));}
@@ -5777,6 +5867,7 @@ function renderAnalytics(){
   const _taH=anFilterHistory(taHistory);
   const _gooH=anFilterHistory(gooHistory);
   const _bkH=anFilterHistory(bkHistory);
+  const _expeH=anFilterHistory(expHistory);
 
   const taAvg=_taH.length?(_taH.reduce((s,r)=>s+r.score*r.count,0)/_taH.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
   const gooAvg=_gooH.length?(_gooH.reduce((s,r)=>s+r.score*r.count,0)/_gooH.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
@@ -5787,12 +5878,17 @@ function renderAnalytics(){
   const bkAvg=_bkH.length?(_bkH.reduce((s,r)=>s+(r.score||r.rating||0)*(r.count||1),0)/_bkH.reduce((s,r)=>s+(r.count||1),0)).toFixed(1):'-';
   const bkPEl=document.getElementById('an-bk-periods');if(bkPEl)bkPEl.textContent=_bkH.length||'-';
   const bkAEl=document.getElementById('an-bk-avg');if(bkAEl)bkAEl.textContent=bkAvg;
+  const expeAvg=_expeH.length?(_expeH.reduce((s,r)=>s+r.score*r.count,0)/_expeH.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
+  const expePEl=document.getElementById('an-expe-periods');if(expePEl)expePEl.textContent=_expeH.length||'-';
+  const expeAEl=document.getElementById('an-expe-avg');if(expeAEl)expeAEl.textContent=expeAvg;
   const taTotal=_taH.reduce((s,r)=>s+(r.count||0),0);
   const gooTotal=_gooH.reduce((s,r)=>s+(r.count||0),0);
   const bkTotal=_bkH.reduce((s,r)=>s+(r.count||r.reviews||0),0);
+  const expeTotal=_expeH.reduce((s,r)=>s+(r.count||0),0);
   const taRevEl=document.getElementById('an-ta-reviews');if(taRevEl)taRevEl.textContent=taTotal>0?taTotal+' reviews total':'saved';
   const gooRevEl=document.getElementById('an-goo-reviews');if(gooRevEl)gooRevEl.textContent=gooTotal>0?gooTotal+' reviews total':'saved';
   const bkRevEl=document.getElementById('an-bk-reviews');if(bkRevEl)bkRevEl.textContent=bkTotal>0?bkTotal+' reviews total':'saved';
+  const expeRevEl=document.getElementById('an-expe-reviews');if(expeRevEl)expeRevEl.textContent=expeTotal>0?expeTotal+' reviews total':'saved';
   // Experiences revenue
   let expRev=0,expCount=0,flowersRev=0,flowersCount=0;
   const SEASON_MONTHS=['05','06','07','08','09','10'];
@@ -5825,35 +5921,38 @@ function renderAnalytics(){
   });
   const msEl=document.getElementById('an-ms-rev');if(msEl)msEl.textContent='€'+msRev.toFixed(0);
   const msSub=document.getElementById('an-ms-rev-sub');if(msSub)msSub.textContent=msCount+' sessions';
-  renderAnChart(_taH,_gooH,_bkH);renderTopThemes(_taH,_gooH);renderAIRevList();
+  renderAnChart(_taH,_gooH,_bkH,_expeH);renderTopThemes(_taH,_gooH,_expeH);renderAIRevList();
 }
-function renderAnChart(_taH,_gooH,_bkH){
-  if(!_taH)_taH=taHistory;if(!_gooH)_gooH=gooHistory;if(!_bkH)_bkH=bkHistory;
+function renderAnChart(_taH,_gooH,_bkH,_expeH){
+  if(!_taH)_taH=taHistory;if(!_gooH)_gooH=gooHistory;if(!_bkH)_bkH=bkHistory;if(!_expeH)_expeH=expHistory;
   const canvas=document.getElementById('anChart');if(!canvas)return;
-  const allPeriods=[...new Set([..._taH.map(r=>r.period),..._gooH.map(r=>r.period),..._bkH.map(r=>r.period)])];
+  const allPeriods=[...new Set([..._taH.map(r=>r.period),..._gooH.map(r=>r.period),..._bkH.map(r=>r.period),..._expeH.map(r=>r.period)])];
   const monthOrder=['January','February','March','April','May','June','July','August','September','October','November','December'];
   allPeriods.sort((a,b)=>{const[am2,ay]=(a+' ').split(' ');const[bm2,by]=(b+' ').split(' ');return(parseInt(ay)-parseInt(by))||monthOrder.indexOf(am2)-monthOrder.indexOf(bm2);});
   if(!allPeriods.length){canvas.parentElement.innerHTML='<div class="an-empty"><i class="ti ti-chart-line"></i>No data for chart</div>';return;}
   const taScores=allPeriods.map(p=>{const r=_taH.find(x=>x.period===p);return r?r.score:null;});
   const gooScores=allPeriods.map(p=>{const r=_gooH.find(x=>x.period===p);return r?r.score:null;});
+  const expeScores=allPeriods.map(p=>{const r=_expeH.find(x=>x.period===p);return r?r.score:null;});
   if(anChartInstance)anChartInstance.destroy();
-  anChartInstance=new Chart(canvas.getContext('2d'),{type:'line',data:{labels:allPeriods,datasets:[{label:'TripAdvisor',data:taScores,borderColor:'#2d9c68',backgroundColor:'rgba(45,156,104,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#2d9c68'},{label:'Google',data:gooScores,borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#4285f4'},{label:'Booking.com',data:allPeriods.map(p=>{const r=_bkH.find(x=>x.period===p);return r?(r.score||r.rating||0)/2:null;}),borderColor:'#003580',backgroundColor:'rgba(0,53,128,.08)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#003580',borderDash:[5,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:3.5,max:5.0,ticks:{callback:v=>v.toFixed(1)}},x:{grid:{color:'rgba(0,0,0,.04)'}}}}});
+  anChartInstance=new Chart(canvas.getContext('2d'),{type:'line',data:{labels:allPeriods,datasets:[{label:'TripAdvisor',data:taScores,borderColor:'#2d9c68',backgroundColor:'rgba(45,156,104,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#2d9c68'},{label:'Google',data:gooScores,borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#4285f4'},{label:'Booking.com',data:allPeriods.map(p=>{const r=_bkH.find(x=>x.period===p);return r?(r.score||r.rating||0)/2:null;}),borderColor:'#003580',backgroundColor:'rgba(0,53,128,.08)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#003580',borderDash:[5,3]},{label:'Expedia',data:expeScores,borderColor:'#fcb900',backgroundColor:'rgba(252,185,0,.1)',tension:.3,fill:true,spanGaps:true,pointRadius:5,pointBackgroundColor:'#fcb900',borderDash:[2,2]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:3.5,max:5.0,ticks:{callback:v=>v.toFixed(1)}},x:{grid:{color:'rgba(0,0,0,.04)'}}}}});
 }
 function anPrintAll(){
-  if(!taHistory.length&&!gooHistory.length&&!bkHistory.length){showToast('No analytics data to print','w');return;}
+  if(!taHistory.length&&!gooHistory.length&&!bkHistory.length&&!expHistory.length){showToast('No analytics data to print','w');return;}
   const canvas=document.getElementById('anChart');
   const chartImg=canvas?canvas.toDataURL('image/png'):'';
-  const _taH=taHistory;const _gooH=gooHistory;const _bkH=bkHistory;
+  const _taH=taHistory;const _gooH=gooHistory;const _bkH=bkHistory;const _expeH=expHistory;
   const allPos={};const allNeg={};
-  [..._taH,..._gooH].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
+  [..._taH,..._gooH,..._expeH].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
   const topPos=Object.entries(allPos).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const topNeg=Object.entries(allNeg).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const taTotal=_taH.reduce((s,r)=>s+(r.count||0),0);
   const gooTotal=_gooH.reduce((s,r)=>s+(r.count||0),0);
   const bkTotal=_bkH.reduce((s,r)=>s+(r.count||r.reviews||0),0);
+  const expeTotal=_expeH.reduce((s,r)=>s+(r.count||0),0);
   const taAvg2=taHistory.length?(taHistory.reduce((s,r)=>s+r.score*r.count,0)/taHistory.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
   const gooAvg2=gooHistory.length?(gooHistory.reduce((s,r)=>s+r.score*r.count,0)/gooHistory.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
   const bkAvg2=bkHistory.length?(bkHistory.reduce((s,r)=>s+(r.score||r.rating||0)*(r.count||1),0)/bkHistory.reduce((s,r)=>s+(r.count||1),0)).toFixed(1):'-';
+  const expeAvg2=expHistory.length?(expHistory.reduce((s,r)=>s+r.score*r.count,0)/expHistory.reduce((s,r)=>s+r.count,0)).toFixed(2):'-';
   const posRows=topPos.map(([t,cnt],i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(t)+'</td><td style="text-align:center;font-weight:700">'+cnt+'x</td></tr>').join('');
   const negRows=topNeg.map(([t,cnt],i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(t)+'</td><td style="text-align:center;font-weight:700">'+cnt+'x</td></tr>').join('');
   const win=window.open('','_blank','width=1000,height=800');
@@ -5866,6 +5965,7 @@ function anPrintAll(){
     +'<div class="stat"><div class="stat-val" style="color:#2d9c68">'+taAvg2+'/5</div><div class="stat-lbl">TripAdvisor</div><div class="stat-sub">'+taHistory.length+' periods \u00b7 '+taTotal+' reviews</div></div>'
     +'<div class="stat"><div class="stat-val" style="color:#4285f4">'+gooAvg2+'/5</div><div class="stat-lbl">Google</div><div class="stat-sub">'+gooHistory.length+' periods \u00b7 '+gooTotal+' reviews</div></div>'
     +'<div class="stat"><div class="stat-val" style="color:#003580">'+bkAvg2+'/10</div><div class="stat-lbl">Booking.com</div><div class="stat-sub">'+bkHistory.length+' periods \u00b7 '+bkTotal+' reviews</div></div>'
+    +'<div class="stat"><div class="stat-val" style="color:#fcb900">'+expeAvg2+'/5</div><div class="stat-lbl">Expedia</div><div class="stat-sub">'+expHistory.length+' periods \u00b7 '+expeTotal+' reviews</div></div>'
     +'</div>'
     +(chartImg?'<h2>Score Trend</h2><img class="chart" src="'+chartImg+'">':'')
     +'<div class="two-col">'
@@ -5876,10 +5976,10 @@ function anPrintAll(){
     +'</body></html>');
   win.document.close();
 }
-function renderTopThemes(_taH,_gooH){
-  if(!_taH)_taH=taHistory;if(!_gooH)_gooH=gooHistory;
+function renderTopThemes(_taH,_gooH,_expeH){
+  if(!_taH)_taH=taHistory;if(!_gooH)_gooH=gooHistory;if(!_expeH)_expeH=expHistory;
   const allPos={};const allNeg={};
-  [..._taH,..._gooH].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
+  [..._taH,..._gooH,..._expeH].forEach(r=>{(r.positives||[]).forEach(p=>{allPos[p]=(allPos[p]||0)+1;});(r.improvements||[]).forEach(p=>{allNeg[p]=(allNeg[p]||0)+1;});});
   const topPos=Object.entries(allPos).sort((a,b)=>b[1]-a[1]).slice(0,5);const topNeg=Object.entries(allNeg).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const maxPos=topPos[0]?.[1]||1;const maxNeg=topNeg[0]?.[1]||1;
   document.getElementById('an-pos-list').innerHTML=topPos.length?topPos.map(([t,c])=>'<div class="an-theme-item"><div class="an-theme-bar pos" style="width:'+Math.round(c/maxPos*60)+'px"></div><span style="flex:1;font-size:11px;white-space:normal;line-height:1.4">'+esc(t)+'</span><span class="an-theme-count">'+c+'x</span></div>').join(''):'<div class="an-empty">No data</div>';
@@ -7640,20 +7740,21 @@ const TAB_DEFS = [
   {id:'day3',  label:'Day 1 & Day 3',   icon:'ti-calendar-check',color:'var(--sea)',    visible:true,  order:2,  group:''},
   {id:'report',label:'Report',          icon:'ti-chart-bar',     color:'var(--sea)',    visible:true,  order:3,  group:''},
   {id:'grooms',label:'Grooms Daily List',icon:'ti-luggage',      color:'var(--pur)',    visible:true,  order:4,  group:''},
-  {id:'import',label:'Booking.com',     icon:'ti-brand-booking', color:'var(--amber)',  visible:true,  order:5,  group:''},
-  {id:'ta',    label:'TripAdvisor',     icon:'ti-brand-tripadvisor',color:'#2d9c68',    visible:true,  order:6,  group:''},
-  {id:'goo',   label:'Google Reviews',  icon:'ti-brand-google',  color:'#4285f4',       visible:true,  order:7,  group:''},
-  {id:'analytics',label:'Analytics',   icon:'ti-chart-dots',    color:'#2563aa',       visible:true,  order:8,  group:''},
-  {id:'gym',   label:'Gym',             icon:'ti-barbell',       color:'#2563aa',       visible:true,  order:9,  group:''},
-  {id:'yoga',  label:'Yoga',            icon:'ti-yin-yang',      color:'#9c4dcc',       visible:true,  order:10, group:''},
-  {id:'pilates',label:'Pilates',        icon:'ti-stretching',    color:'#c0395a',       visible:true,  order:11, group:''},
-  {id:'massage',label:'Massage',        icon:'ti-heart-handshake',color:'#b45309',      visible:true,  order:12, group:''},
-  {id:'experiences',label:'Experiences',icon:'ti-map-pin',       color:'#1a6644',       visible:true,  order:13, group:''},
-  {id:'suggestions',label:'Suggestions',icon:'ti-map-2',         color:'#0e7490',       visible:true,  order:14, group:''},
-  {id:'ac',label:'A/C Issues',icon:'ti-air-conditioning',color:'#0e7490',visible:true,order:15,group:''},
-  {id:'comp',label:'Complaints',icon:'ti-mood-sad',color:'#be185d',visible:true,order:16,group:''},
-  {id:'breakfast',label:'Breakfast Buffet',icon:'ti-coffee',color:'#d97706',visible:true,order:17,group:''},
-  {id:'dinner',label:'Dinner Buffet',icon:'ti-tools-kitchen-2',color:'#7c3aed',visible:true,order:18,group:''},
+  {id:'ta',    label:'TripAdvisor',     icon:'ti-brand-tripadvisor',color:'#2d9c68',    visible:true,  order:5,  group:''},
+  {id:'goo',   label:'Google Reviews',  icon:'ti-brand-google',  color:'#4285f4',       visible:true,  order:6,  group:''},
+  {id:'exp',   label:'Expedia',         icon:'ti-plane',         color:'#0066cc',       visible:true,  order:7,  group:''},
+  {id:'import',label:'Booking.com',     icon:'ti-brand-booking', color:'var(--amber)',  visible:true,  order:8,  group:''},
+  {id:'analytics',label:'Analytics',   icon:'ti-chart-dots',    color:'#2563aa',       visible:true,  order:9,  group:''},
+  {id:'gym',   label:'Gym',             icon:'ti-barbell',       color:'#2563aa',       visible:true,  order:10, group:''},
+  {id:'yoga',  label:'Yoga',            icon:'ti-yin-yang',      color:'#9c4dcc',       visible:true,  order:11, group:''},
+  {id:'pilates',label:'Pilates',        icon:'ti-stretching',    color:'#c0395a',       visible:true,  order:12, group:''},
+  {id:'massage',label:'Massage',        icon:'ti-heart-handshake',color:'#b45309',      visible:true,  order:13, group:''},
+  {id:'experiences',label:'Experiences',icon:'ti-map-pin',       color:'#1a6644',       visible:true,  order:14, group:''},
+  {id:'suggestions',label:'Suggestions',icon:'ti-map-2',         color:'#0e7490',       visible:true,  order:15, group:''},
+  {id:'ac',label:'A/C Issues',icon:'ti-air-conditioning',color:'#0e7490',visible:true,order:16,group:''},
+  {id:'comp',label:'Complaints',icon:'ti-mood-sad',color:'#be185d',visible:true,order:17,group:''},
+  {id:'breakfast',label:'Breakfast Buffet',icon:'ti-coffee',color:'#d97706',visible:true,order:18,group:''},
+  {id:'dinner',label:'Dinner Buffet',icon:'ti-tools-kitchen-2',color:'#7c3aed',visible:true,order:19,group:''},
 ];
 let tsmTabs = null;
 let tsmGroups = [];
@@ -8185,6 +8286,7 @@ fbdb.ref('reservations').on('value',snap=>{const data=snap.val();if(data&&Array.
 fbdb.ref('grooms_by_date').on('value',snap=>{const data=snap.val();if(data&&typeof data==='object'&&JSON.stringify(data)!==JSON.stringify(GROOMS_BY_DATE)){GROOMS_BY_DATE=data;try{localStorage.setItem('wrag_bydate',JSON.stringify(data));}catch(e){}groomsLoadDate();renderGrooms();setSyncStatus('ok','Updated from cloud \u2601 '+new Date().toLocaleTimeString());}});
 fbdb.ref('ta_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){taHistory=d;localStorage.setItem('ta_reviews',JSON.stringify(d));renderRevHistory('ta');}});
 fbdb.ref('goo_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){gooHistory=d;localStorage.setItem('goo_reviews',JSON.stringify(d));renderRevHistory('goo');}});
+fbdb.ref('exp_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){expHistory=d;localStorage.setItem('exp_reviews',JSON.stringify(d));renderRevHistory('exp');}});
 fbdb.ref('bk_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){bkHistory=d;localStorage.setItem('bk_reviews',JSON.stringify(d));renderBKHistory();}});
 fbdb.ref('alerts_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){alertsData=d;try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}checkOverdueTasks();}const seeded=alSeedRecurringAC();if(seeded>0){checkOverdueTasks();const alTab=document.getElementById('tab-alerts');if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();}});
 fbdb.ref('al_templates').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){alTemplates=d;try{localStorage.setItem('al_templates',JSON.stringify(d));}catch(e){}}});
