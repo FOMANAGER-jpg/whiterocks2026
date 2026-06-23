@@ -656,6 +656,21 @@ canvas.an-chart{width:100%!important;height:220px!important}
   </div>
 </div>
 
+<div class="pwd-screen" id="nameScreen" style="display:none">
+  <div class="pwd-card">
+    <div class="pwd-logo"><i class="ti ti-user"></i></div>
+    <div class="pwd-title">Welcome!</div>
+    <div class="pwd-sub">Please select your name to continue</div>
+    <select id="nameSelect" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-family:var(--sans);margin:14px 0;background:var(--white);color:var(--ink)">
+      <option value="">-- Select your name --</option>
+    </select>
+    <button class="pwd-btn" onclick="confirmUserName()">
+      <i class="ti ti-arrow-right"></i> Continue
+    </button>
+    <div class="pwd-footer">We'll remember this for the current session only</div>
+  </div>
+</div>
+
 <div class="app" id="mainApp">
 
 <!-- HEADER -->
@@ -704,8 +719,14 @@ canvas.an-chart{width:100%!important;height:220px!important}
       </div>
     </div>
   </div>
+  <button id="hdr-activitylog-btn" onclick="goTab('activitylog')" style="display:none;align-items:center;gap:6px;padding:8px 14px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:9px;cursor:pointer;color:#fff;font-size:13px;font-weight:600;font-family:var(--sans);margin-left:8px"><i class="ti ti-history" style="font-size:15px"></i> Activity Log</button>
   <div class="hdr-r">
     <div class="sync-pill"><span class="sdot"></span><span class="s-lbl">live</span></div>
+    <div id="userBadge" style="display:none;align-items:center;gap:7px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 6px 5px 5px">
+      <div id="userBadgeInitial" style="width:22px;height:22px;border-radius:50%;background:#fff;color:var(--sea);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center"></div>
+      <span id="userBadgeName" style="font-size:12px;color:#fff;font-weight:600"></span>
+      <button onclick="switchUser()" title="Log out" style="width:20px;height:20px;background:rgba(255,255,255,.2);border:none;border-radius:50%;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;margin-left:2px;padding:0"><i class="ti ti-logout-2" style="font-size:11px"></i></button>
+    </div>
     <div class="clk" id="clk">--:--:--</div>
     <button id="menu-edit-btn" onclick="menuEditToggle()" title="Edit Menu" style="width:32px;height:32px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:8px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.15)'"><i class="ti ti-pencil" style="font-size:16px"></i></button>
 <button onclick="openTabSettings()" title="Tab Settings" style="width:32px;height:32px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:8px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.15)'"><i class="ti ti-settings" style="font-size:16px"></i></button>
@@ -830,6 +851,35 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div class="rep-sub">Booking.com overview &mdash; White Rocks Hotel &amp; Bungalows</div>
     <div id="rep-month-tabs" style="display:flex;gap:4px;flex-wrap:wrap;margin:14px 0"></div>
     <div id="repWrap" class="rep-grid"></div>
+  </div>
+</div>
+
+<!-- ACTIVITY LOG (FOM only) -->
+<div id="tab-activitylog" class="hidden">
+  <div style="padding:0 20px 40px">
+    <div style="background:linear-gradient(135deg,#5b21b6,#7c3aed);border-radius:var(--r);padding:18px 20px;margin-bottom:18px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)">
+      <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0"><i class="ti ti-history"></i></div>
+      <div><div style="font-size:18px;font-weight:800;color:#fff;font-family:var(--serif)">Activity Log</div><div style="font-size:12px;color:rgba(255,255,255,.75);margin-top:2px">Who did what, and when &mdash; across Alerts, A/C Issues, Complaints, Gym, Yoga, Pilates &amp; Massage</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+      <select id="al-log-who" onchange="renderActivityLog()" style="padding:8px 14px;border-radius:9px;border:1.5px solid var(--border);font-size:12px;font-family:var(--sans)"><option value="all">All staff</option></select>
+      <select id="al-log-tab" onchange="renderActivityLog()" style="padding:8px 14px;border-radius:9px;border:1.5px solid var(--border);font-size:12px;font-family:var(--sans)">
+        <option value="all">All sections</option>
+        <option value="Alerts">Alerts</option>
+        <option value="A/C Issues">A/C Issues</option>
+        <option value="Complaints">Complaints</option>
+        <option value="Gym">Gym</option>
+        <option value="Yoga">Yoga</option>
+        <option value="Pilates">Pilates</option>
+        <option value="Massage">Massage</option>
+      </select>
+      <input type="date" id="al-log-date" onchange="renderActivityLog()" style="padding:8px 14px;border-radius:9px;border:1.5px solid var(--border);font-size:12px;font-family:var(--sans)">
+      <button onclick="document.getElementById('al-log-who').value='all';document.getElementById('al-log-tab').value='all';document.getElementById('al-log-date').value='';renderActivityLog()" style="padding:8px 14px;background:var(--bg);color:var(--muted);border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)">Clear filters</button>
+      <button onclick="alMarkLogRead()" style="padding:8px 14px;background:#f0fdf4;color:#15803d;border:1.5px solid #bbf7d0;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:5px"><i class="ti ti-checks" style="font-size:14px"></i> Mark all as read</button>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer"><input type="checkbox" id="al-log-show-cleared" onchange="renderActivityLog()" style="cursor:pointer"> Show read entries</label>
+      <div id="al-log-count" style="margin-left:auto;font-size:12px;color:var(--muted)"></div>
+    </div>
+    <div id="al-log-list" style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);max-height:75vh;overflow-y:auto"></div>
   </div>
 </div>
 
@@ -1471,6 +1521,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div class="al-form-row">
         <div class="al-form-group"><label>Date</label><input type="date" id="al-add-date" class="al-inp"></div>
         <div class="al-form-group"><label>Time</label><input type="time" id="al-add-time" class="al-inp" style="width:110px"></div>
+        <div class="al-form-group"><label>Room <span style="opacity:.6;font-weight:400">(optional)</span></label><input id="al-add-room" class="al-inp" placeholder="e.g. 407" style="width:80px"></div>
         <div class="al-form-group" style="flex:1;min-width:200px;position:relative"><label>Task Description</label><input id="al-add-desc" class="al-inp" placeholder="e.g. SMITH/407 late checkout... or type / for templates" oninput="alDescInput(this)" autocomplete="off"><div id="al-tpl-suggest" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1.5px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:100;max-height:200px;overflow-y:auto;margin-top:2px"></div></div>
         <div class="al-form-group"><label>Priority</label><select id="al-add-pri" class="al-pri-sel"><option value="high">&#128308; Urgent</option><option value="mid" selected>&#128993; Normal</option><option value="low">&#128994; Low</option></select></div>
         <button class="al-save-btn" onclick="addAlert()"><i class="ti ti-bell-plus"></i> Add</button>
@@ -2982,7 +3033,7 @@ function renderExpStats(){
     +'</div>';
 }
 
-function genDel(tab,i){const saved=GEN_DATA[tab].splice(i,1)[0];svGen(tab);renderGenTab(tab);setTimeout(function(){showToast('Deleted','w',function(){GEN_DATA[tab].splice(i,0,saved);svGen(tab);renderGenTab(tab);});},50);}
+function genDel(tab,i){const saved=GEN_DATA[tab].splice(i,1)[0];svGen(tab);renderGenTab(tab);setTimeout(function(){showToast('Deleted','w',function(){GEN_DATA[tab].splice(i,0,saved);svGen(tab);renderGenTab(tab);});},50);const EXP_TAB_LABELS={excursions:'Excursions',moto:'Moto & Bikes',boats:'Boats',transfers:'Transfers',vantours:'Van Tours',flowers:'Flowers'};if(saved)logActivity('Experiences','deleted '+(EXP_TAB_LABELS[tab]||tab)+' booking','"'+(saved.name||saved.ref||'')+'"');}
 
 const GEN_FIELDS={
   excursions:[
@@ -3371,6 +3422,8 @@ function genModalSave(){
   }
   if(!row.name&&!row.ref){showToast('Please fill in at least Name or Ref','w');return;}
   GEN_DATA[tab].unshift(row);svGen(tab);genModalClose();renderGenTab(tab);showToast('Booking added!','s');
+  const EXP_TAB_LABELS={excursions:'Excursions',moto:'Moto & Bikes',boats:'Boats',transfers:'Transfers',vantours:'Van Tours',flowers:'Flowers'};
+  logActivity('Experiences','added '+(EXP_TAB_LABELS[tab]||tab)+' booking','"'+(row.name||row.ref||'')+'"'+(row.room?' (Rm '+row.room+')':''));
 }
 
 /* ── Price List ── */
@@ -3994,6 +4047,7 @@ function carShowCommission(month,rev,comm,tabName){
 function carDel(i){
   const saved=CARS.splice(i,1)[0];svCars();carOpenEP=null;renderCars();
   setTimeout(function(){showToast('Deleted','w',function(){CARS.splice(i,0,saved);svCars();renderCars();});},50);
+  if(saved)logActivity('Experiences','deleted Cars booking','"'+(saved.name||saved.ref||'')+'"');
 }
 
 function setCarM(m,el){
@@ -4283,6 +4337,9 @@ function carModalSave(){
   document.getElementById('carModal').classList.remove('open');
   renderCars();
   showToast('Car booking added!','s');
+  const _carName=document.getElementById('cm-name').value.trim().toUpperCase();
+  const _carRoom=document.getElementById('cm-room').value.trim();
+  logActivity('Experiences','added Cars booking','"'+_carName+'"'+(_carRoom?' (Rm '+_carRoom+')':''));
 }
 
 function carModalClose(){
@@ -4750,7 +4807,7 @@ function ddGo(tab,lbl){
   goTab(tab);
 }
 function goTab(t){
-  ['res','day3','report','grooms','ac','comp','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','alerts','experiences','suggestions','breakfast','dinner','wine'].forEach(x=>{
+  ['res','day3','report','grooms','ac','comp','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','alerts','experiences','suggestions','breakfast','dinner','wine','activitylog'].forEach(x=>{
     const el=document.getElementById('tab-'+x);
     const nt=document.getElementById('nt-'+x);
     if(el)el.classList.toggle('hidden',x!==t);
@@ -4761,6 +4818,7 @@ function goTab(t){
   if(t==='day3'){setTrToday();renderDay1();renderDay3();}
   if(t==='rooms')renderRA();
   if(t==='report')renderReport();
+  if(t==='activitylog')renderActivityLog();
   if(t==='grooms'){document.getElementById('groomDate').value=new Date().toISOString().split('T')[0];renderGrooms();}
   if(t==='import'){renderBKStats();renderBKHistory();}
   if(t==='gym')renderGym();
@@ -4924,6 +4982,16 @@ function renderRA(){
 function setRAF(f,el){raFlt=f;document.querySelectorAll('#raf-no,#raf-all').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderRA();}
 function assignRoom(idx){RES[idx].room=document.getElementById('ri-'+idx).value.trim();sv();renderRA();renderStats();showToast('Room assigned','s');}
 function setTrToday(){document.getElementById('trdate').value=new Date().toISOString().split('T')[0];renderDay1();renderDay3();}
+function day1UpdAndLog(idx,val){
+  const r=RES[idx];if(!r)return;
+  r.day1=val;sv();showToast('Saved','s');
+  if(val.trim())logActivity('Reservations','added Day 1 note','"'+esc(r.name||'')+'" (Rm '+(r.room||'TBA')+') \u2014 "'+val.trim()+'"');
+}
+function day3UpdAndLog(idx,val){
+  const r=RES[idx];if(!r)return;
+  r.day3=val;sv();showToast('Saved','s');
+  if(val.trim())logActivity('Reservations','added Day 3 follow-up','"'+esc(r.name||'')+'" (Rm '+(r.room||'TBA')+') \u2014 "'+val.trim()+'"');
+}
 function renderDay1(){
   const dv=document.getElementById('trdate').value;if(!dv)return;
   const date=new Date(dv);date.setHours(0,0,0,0);
@@ -4934,7 +5002,7 @@ function renderDay1(){
     return '<div class="tr-item"><div class="trico k"><i class="ti ti-key"></i></div>'+
       '<div style="flex:1;min-width:0"><div class="triname">'+esc(r.name)+'</div>'+
       '<div class="trimeta">'+r.type+' · Rm '+(r.room||'TBA')+' · '+fd(r.arr)+' → '+fd(r.dep)+'</div></div>'+
-      '<input class="tr-note-inp" placeholder="Day 1 note..." value="'+esc(r.day1||'')+'" onchange="RES['+idx+'].day1=this.value;sv();showToast(\'Saved\',\'s\')"></div>';
+      '<div style="display:flex;align-items:center;gap:4px"><input class="tr-note-inp" placeholder="Day 1 note..." value="'+esc(r.day1||'')+'" onchange="day1UpdAndLog('+idx+',this.value)">'+(r.day1?'<button onclick="event.stopPropagation();showFullText(this,RES['+idx+'].day1)" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;flex-shrink:0" title="View full note"><i class="ti ti-eye" style="font-size:14px"></i></button>':'')+'</div></div>';
   }).join(''):'<div class="tr-empty">No arrivals for this date</div>';
 }
 function renderDay3(){
@@ -4950,7 +5018,7 @@ function renderDay3(){
     return '<div class="tr-item" style="align-items:flex-start"><div class="trico p"><i class="ti ti-phone"></i></div>'+
       '<div style="flex:1;min-width:0"><div class="triname">'+esc(r.name)+(isDepartingToday?' <span style="font-size:10px;font-weight:700;color:#b91c1c">\u2022 LEAVING TODAY</span>':'')+'</div>'+
       '<div class="trimeta">'+r.type+' · Rm '+(r.room||'TBA')+' · '+fd(r.arr)+' → '+fd(r.dep)+'</div>'+depBadge+'</div>'+
-      '<input class="tr-note-inp" placeholder="Follow-up note..." value="'+esc(r.day3||'')+'" onchange="RES['+idx+'].day3=this.value;sv();showToast(\'Saved\',\'s\')"></div>';
+      '<div style="display:flex;align-items:center;gap:4px"><input class="tr-note-inp" placeholder="Follow-up note..." value="'+esc(r.day3||'')+'" onchange="day3UpdAndLog('+idx+',this.value)">'+(r.day3?'<button onclick="event.stopPropagation();showFullText(this,RES['+idx+'].day3)" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;flex-shrink:0" title="View full note"><i class="ti ti-eye" style="font-size:14px"></i></button>':'')+'</div></div>';
   }).join(''):'<div class="tr-empty">No follow-ups for this date</div>';
 }
 let repMFilter='all';
@@ -5524,7 +5592,19 @@ function showRevResults(src,result){
   document.getElementById(src+'-pos').innerHTML=(result.positives||[]).map(p=>`<li><i class="ti ti-check" style="color:var(--olive)"></i>${p}</li>`).join('');
   document.getElementById(src+'-neg').innerHTML=(result.improvements||[]).map(p=>`<li><i class="ti ti-arrow-up" style="color:var(--coral)"></i>${p}</li>`).join('');
   document.getElementById(src+'-results').classList.remove('hidden');
-  window[src+'_pending']={period,score:result.score,count:result.count,summary:result.summary,positives:result.positives,improvements:result.improvements,date:new Date().toISOString()};
+  // Find the most recent review (by review_date) to surface in the trend list
+  let latestReview=null;
+  if(Array.isArray(result.reviews)&&result.reviews.length){
+    const withDates=result.reviews.filter(r=>r.review_date);
+    const sorted=(withDates.length?withDates:result.reviews).slice().sort((a,b)=>{
+      const da=a.review_date?new Date(a.review_date):new Date(0);
+      const db=b.review_date?new Date(b.review_date):new Date(0);
+      return db-da;
+    });
+    const withText=sorted.find(r=>r.text&&r.text.trim());
+    latestReview=withText||sorted[0]||null;
+  }
+  window[src+'_pending']={period,score:result.score,count:result.count,summary:result.summary,positives:result.positives,improvements:result.improvements,date:new Date().toISOString(),latestReview:latestReview?{reviewer:latestReview.reviewer||'',text:(latestReview.text||'').trim(),rating:latestReview.rating,date:latestReview.review_date||''}:null};
 }
 function saveReview(src){
   const pending=window[src+'_pending'];if(!pending){showToast('Nothing to save','w');return;}
@@ -5621,7 +5701,7 @@ function renderRevHistory(src){
   const _trendSrc=src;
   const _trendWrap=document.getElementById(_trendSrc+'-trend-bar-wrap');
   const _trendEl=document.getElementById(_trendSrc+'-trend-bar');
-  const _trendColor=_trendSrc==='ta'?'#2d9c68':'#4285f4';
+  const _trendColor=_trendSrc==='ta'?'#2d9c68':_trendSrc==='goo'?'#4285f4':'#fcb900';
   if(_trendWrap&&_trendEl){
     if(history.length>=1){
       const _sorted=[...history].reverse();
@@ -5653,6 +5733,14 @@ function renderRevHistory(src){
         _trendHtml+='</div></div>';
         if(cnt)_trendHtml+='<div style="width:24px;font-size:10px;font-weight:700;color:var(--muted);text-align:right;flex-shrink:0">'+cnt+'</div>';
         _trendHtml+='</div>';
+        if(r.latestReview&&r.latestReview.text){
+          const _lrText=r.latestReview.text;
+          const _lrShort=_lrText.length>70?_lrText.slice(0,70)+'\u2026':_lrText;
+          const _lrIdx=window._latestReviewStore?window._latestReviewStore.length:0;
+          if(!window._latestReviewStore)window._latestReviewStore=[];
+          window._latestReviewStore[_lrIdx]=_lrText+(r.latestReview.reviewer?' \u2014 '+r.latestReview.reviewer:'');
+          _trendHtml+='<div style="margin:0 0 8px 60px;font-size:11px;color:var(--muted);font-style:italic;cursor:pointer;border-bottom:1px dotted var(--border2);display:inline-block" onclick="showFullText(this,window._latestReviewStore['+_lrIdx+'])">\u201c'+esc(_lrShort)+'\u201d'+(r.latestReview.reviewer?' \u2014 '+esc(r.latestReview.reviewer):'')+'</div>';
+        }
       });
       _trendHtml+='</div></div>';
       _trendEl.innerHTML=_trendHtml;
@@ -6209,6 +6297,7 @@ function gymQuickBookRange(startMin,endMin){
   }
   svGym();renderGym();renderGymTodayAvailable();
   showToast('Booked room '+room.trim()+' at '+minToStr(chosenStart)+' \u2713','s');
+  logActivity('Gym','added booking (quick)','Rm '+room.trim()+' at '+minToStr(chosenStart)+' ('+chosenDur+' min) on '+todayKey);
 }
 function addGymBookingSimple(){
   const room=document.getElementById('gym-add-room').value.trim();const dateKey=document.getElementById('gym-add-date').value;const slot=parseInt(document.getElementById('gym-add-time').value);const dur=parseInt(document.getElementById('gym-add-dur').value);
@@ -6219,8 +6308,9 @@ function addGymBookingSimple(){
   gymBookings[slotKey]={room,dur,date:dateKey,slot};
   if(dur===60){const nextSlot=slot+30;const nextKey=dateKey+'_'+nextSlot;if(gymBookings[nextKey]&&!gymBookings[nextKey].isTail&&!confirm('Slot '+minToStr(nextSlot)+' is already booked. Continue?'))return;gymBookings[nextKey]={room,dur:30,isTail:true,headKey:slotKey,date:dateKey,slot:nextSlot};}
   svGym();const bkDate=new Date(dateKey);const bkMonth=bkDate.getMonth();if(bkMonth!==gymMonth){gymMonth=bkMonth;}renderGym();document.getElementById('gym-add-room').value='';showToast('Booking saved! \u2713','s');
+  logActivity('Gym','added booking','Rm '+room+' at '+minToStr(slot)+' ('+dur+' min) on '+dateKey);
 }
-function deleteGymByKey(key){const b=gymBookings[key];if(!b)return;if(!confirm('Delete booking for room '+b.room+'?'))return;const removed={};removed[key]=b;if(b.isTail&&b.headKey){removed[b.headKey]=gymBookings[b.headKey];delete gymBookings[b.headKey];}if(!b.isTail&&b.dur===60){const tailKey=b.date+'_'+(b.slot+30);if(gymBookings[tailKey]&&gymBookings[tailKey].isTail){removed[tailKey]=gymBookings[tailKey];delete gymBookings[tailKey];}}delete gymBookings[key];svGym();renderGym();showToast('Deleted','w',function(){Object.keys(removed).forEach(function(k){gymBookings[k]=removed[k];});svGym();renderGym();});}
+function deleteGymByKey(key){const b=gymBookings[key];if(!b)return;if(!confirm('Delete booking for room '+b.room+'?'))return;const removed={};removed[key]=b;if(b.isTail&&b.headKey){removed[b.headKey]=gymBookings[b.headKey];delete gymBookings[b.headKey];}if(!b.isTail&&b.dur===60){const tailKey=b.date+'_'+(b.slot+30);if(gymBookings[tailKey]&&gymBookings[tailKey].isTail){removed[tailKey]=gymBookings[tailKey];delete gymBookings[tailKey];}}delete gymBookings[key];svGym();renderGym();showToast('Deleted','w',function(){Object.keys(removed).forEach(function(k){gymBookings[k]=removed[k];});svGym();renderGym();});logActivity('Gym','deleted booking','Rm '+(b.room||'')+' at '+minToStr(b.slot)+' on '+(b.date||''));}
 function openGymModal(){}function closeGymModal(){}function saveGymBooking(){}function deleteGymBooking(){}function setDur(){}
 
 /* YOGA & PILATES */
@@ -6324,9 +6414,14 @@ function renderCls(type){
   document.getElementById(type+'-sessions').innerHTML=html;
 }
 function printCls(type){const dates=getClsDates(type);const d=dates[clsIdx[type]];if(!d)return;const DAY3=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const lbl=DAY3[d.getDay()]+' '+d.getDate()+' '+MON3[d.getMonth()]+' '+d.getFullYear();const dateKey=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');const entries=(clsData[type]&&clsData[type][dateKey])||[];const color=type==='yoga'?'#6b2d8f':'#7a1a3a';const title=type==='yoga'?'Yoga':'Pilates';const rows=entries.length?entries.map((e,i)=>'<tr><td style="padding:8px 12px;text-align:center;color:#888;font-size:12px">'+(i+1)+'</td><td style="padding:8px 12px;font-weight:600">'+e.name+'</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:'+color+'">'+e.room+'</td><td style="padding:8px 12px;text-align:center">'+(e.attended?'\u2713':'')+'</td></tr>').join(''):'<tr><td colspan="4" style="padding:20px;text-align:center;color:#aaa">No bookings</td></tr>';const win=window.open('','_blank','width=700,height=900');win.document.write('<!DOCTYPE html><html><head><title>'+title+' - '+lbl+'</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#1a2535;max-width:680px;margin:0 auto}table{width:100%;border-collapse:collapse;font-size:13px}thead{background:'+color+';color:#fff}th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:.8px;text-transform:uppercase}tbody tr{border-bottom:1px solid #e8e0f0}tbody tr:nth-child(even){background:#fdf8ff}@media print{body{padding:15px}}</style></head><body><h1 style="font-size:22px;color:'+color+';margin-bottom:4px">'+title+' Class</h1><div style="font-size:13px;color:#6b85a0;margin-bottom:20px">'+lbl+' • White Rocks Hotel & Bungalows</div><table><thead><tr><th style="width:40px">#</th><th>Guest Name</th><th style="width:100px;text-align:center">Room</th><th style="width:100px;text-align:center">Attended</th></tr></thead><tbody>'+rows+'</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>');win.document.close();}
-function clsUpdate(type,dateKey,idx,field,val){clsData[type][dateKey][idx][field]=val;svCls();}
+function clsUpdate(type,dateKey,idx,field,val){
+  clsData[type][dateKey][idx][field]=val;svCls();
+  const TYPE_LABEL={yoga:'Yoga',pilates:'Pilates'};
+  if(field==='name'&&val.trim())logActivity(TYPE_LABEL[type]||type,'added/edited name','"'+val.trim()+'" on '+dateKey);
+  if(field==='attended')logActivity(TYPE_LABEL[type]||type,val?'marked attended':'unmarked attended','"'+(clsData[type][dateKey][idx].name||'')+'" on '+dateKey);
+}
 function clsAddRow(type,dateKey){if(!clsData[type])clsData[type]={};if(!clsData[type][dateKey])clsData[type][dateKey]=[];if(clsData[type][dateKey].length>=15){showToast('Class is full (15/15)','w');return;}clsData[type][dateKey].push({name:'',room:'',attended:false});svCls();renderCls(type);setTimeout(()=>{const rows=document.querySelectorAll('#'+type+'-sessions .cls-inp');if(rows.length)rows[rows.length-2].focus();},60);}
-function clsDelRow(type,dateKey,idx){const saved=clsData[type][dateKey].splice(idx,1)[0];svCls();renderCls(type);showToast('Row removed','w',function(){clsData[type][dateKey].splice(idx,0,saved);svCls();renderCls(type);});}
+function clsDelRow(type,dateKey,idx){const saved=clsData[type][dateKey].splice(idx,1)[0];svCls();renderCls(type);showToast('Row removed','w',function(){clsData[type][dateKey].splice(idx,0,saved);svCls();renderCls(type);});const TYPE_LABEL={yoga:'Yoga',pilates:'Pilates'};if(saved&&saved.name)logActivity(TYPE_LABEL[type]||type,'removed booking','"'+saved.name+'" on '+dateKey);}
 function wlAddRow(type,dateKey){if(!clsData[type+'_wl'])clsData[type+'_wl']={};if(!clsData[type+'_wl'][dateKey])clsData[type+'_wl'][dateKey]=[];clsData[type+'_wl'][dateKey].push({name:'',room:''});svCls();renderCls(type);}
 function wlDelRow(type,dateKey,idx){const saved=clsData[type+'_wl'][dateKey].splice(idx,1)[0];svCls();renderCls(type);showToast('Removed from waiting list','w',function(){clsData[type+'_wl'][dateKey].splice(idx,0,saved);svCls();renderCls(type);});}
 function wlUpdate(type,dateKey,idx,field,val){clsData[type+'_wl'][dateKey][idx][field]=val;svCls();}
@@ -6724,7 +6819,7 @@ function renderMassage(){
     const txtCol=isConfirmed?'#15803d':'var(--ink)';
     const mutedCol=isConfirmed?'#15803d':'var(--muted)';
     return '<tr style="border-top:1px solid var(--border2);background:'+rowBg+'">'
-      +'<td style="padding:7px 4px;font-size:13px;font-weight:700;color:'+(isBooked?stColor:'#15803d')+'">'+slotTime+(isBooked?'':' <span style="font-size:10px;font-weight:700;background:#dcfce7;color:#15803d;padding:1px 6px;border-radius:5px;margin-left:4px">FREE</span>')+'</td>'
+      +'<td style="padding:7px 4px;font-size:13px;font-weight:700;color:'+(isBooked?stColor:'#15803d')+'">'+slotTime+(isBooked?'':' <span style="font-size:10px;font-weight:700;background:#dcfce7;color:#15803d;padding:1px 6px;border-radius:5px;margin-left:4px">AVAILABLE</span>')+'</td>'
       +'<td style="opacity:'+(isBooked?'1':'.6')+'"><input value="'+esc(b.room||'')+'" placeholder="-" style="width:100%;border:none;background:transparent;font-size:13px;font-weight:'+(isConfirmed?'700':'400')+';color:'+txtCol+';padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'room\',this.value)"></td>'
       +'<td style="opacity:'+(isBooked?'1':'.6')+'"><input value="'+esc(b.name||'')+'" placeholder="-" style="width:100%;border:none;background:transparent;font-size:13px;font-weight:'+(isConfirmed?'700':'400')+';color:'+txtCol+';padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'name\',this.value)"></td>'
       +'<td style="opacity:'+(isBooked?'1':'.6')+'"><select style="border:none;background:transparent;font-size:12px;color:'+mutedCol+';outline:none;cursor:pointer" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'dur\',this.value)"><option value="60" '+((b.dur||60)==60?'selected':'')+'>60 min</option><option value="90" '+(b.dur==90?'selected':'')+'>90 min</option></select></td>'
@@ -6841,6 +6936,8 @@ function msUpdate(dateKey,slotTime,field,val){
   }
   svMassage();
   if(field==='dur')renderMassage();
+  if(field==='name'&&val.trim())logActivity('Massage','added/edited booking','"'+val.trim()+'" at '+slotTime+' on '+dateKey);
+  if(field==='status')logActivity('Massage','changed status to "'+val+'"','"'+(massageData[dateKey][slotTime].name||'')+'" at '+slotTime+' on '+dateKey);
 }
 function msEmailDraft(dateKey,slotTime){
   const b=(massageData[dateKey]||{})[slotTime];if(!b||!b.name)return;
@@ -6889,10 +6986,12 @@ let _msUndoData=null;
 function msClear(dateKey,slotTime){
   if(!massageData[dateKey])return;
   _msUndoData={dateKey,slotTime,booking:{...massageData[dateKey][slotTime]}};
+  const clearedName=massageData[dateKey][slotTime]?.name||'';
   delete massageData[dateKey][slotTime];
   if(!Object.keys(massageData[dateKey]).filter(k=>k!=='__customSlots').length&&!massageData[dateKey].__customSlots)delete massageData[dateKey];
   svMassage();renderMassage();
   showToast('Cleared · <button onclick="msUndo()" style="background:none;border:none;color:#1a6644;font-weight:700;cursor:pointer;text-decoration:underline;font-size:12px">Undo</button>','w',6000);
+  if(clearedName)logActivity('Massage','cleared booking','"'+clearedName+'" at '+slotTime+' on '+dateKey);
 }
 function msUndo(){
   if(!_msUndoData)return;
@@ -6961,13 +7060,22 @@ function alSeedRecurringAC(){
 }
 function alSetToday(){alCurrentDate=new Date().toISOString().split('T')[0];renderAlerts();}
 function alNavDay(dir){const d=new Date(alCurrentDate);d.setDate(d.getDate()+dir);alCurrentDate=d.toISOString().split('T')[0];renderAlerts();}
+function roomLabel(room){
+  if(!room)return'';
+  const n=parseInt(room);
+  if(isNaN(n))return room;
+  if(n>=1&&n<=61)return'B.'+room;
+  if(n>=101&&n<=417)return'R.'+room;
+  return room;
+}
 function addAlert(){
-  const date=document.getElementById('al-add-date').value;const time=document.getElementById('al-add-time').value;const desc=document.getElementById('al-add-desc').value.trim();const pri=document.getElementById('al-add-pri').value;
+  const date=document.getElementById('al-add-date').value;const time=document.getElementById('al-add-time').value;const desc=document.getElementById('al-add-desc').value.trim();const pri=document.getElementById('al-add-pri').value;const room=document.getElementById('al-add-room').value.trim();
   if(!date||!time||!desc){showToast('Fill in all fields','w');return;}
   if(!alertsData[date])alertsData[date]=[];
-  alertsData[date].push({id:Date.now().toString(),time,desc,pri,done:false,doneBy:'',doneAt:'',createdAt:new Date().toISOString()});
+  alertsData[date].push({id:Date.now().toString(),time,desc,room,pri,done:false,doneBy:'',doneAt:'',createdAt:new Date().toISOString()});
   alertsData[date].sort((a,b)=>a.time.localeCompare(b.time));
-  svAlerts();alCurrentDate=date;renderAlerts();document.getElementById('al-add-desc').value='';showToast('Task added!','s');checkOverdueTasks();
+  svAlerts();alCurrentDate=date;renderAlerts();document.getElementById('al-add-desc').value='';document.getElementById('al-add-room').value='';showToast('Task added!','s');checkOverdueTasks();
+  logActivity('Alerts','added task','"'+desc+'"'+(room?' (Rm '+room+')':'')+' for '+date+' '+time);
 }
 function alToggleEP(id){
   window._alOpenEP=window._alOpenEP||{};
@@ -6987,14 +7095,18 @@ function alertEditDesc(dateKey,id,val){
   const task=tasks.find(t=>t.id===id);
   if(task){task.desc=val;svAlerts();}
 }
-function toggleAlert(dateKey,id){const tasks=alertsData[dateKey]||[];const task=tasks.find(t=>t.id===id);if(!task)return;task.done=!task.done;task.doneAt=task.done?new Date().toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'}):'';svAlerts();renderAlerts();checkOverdueTasks();if(task.done)showToast('\u2713 Task completed!','s');}
-function deleteAlert(dateKey,id){if(!confirm('Delete this task?'))return;const list=alertsData[dateKey]||[];const idx=list.findIndex(t=>t.id===id);const saved=idx>=0?list[idx]:null;alertsData[dateKey]=list.filter(t=>t.id!==id);svAlerts();renderAlerts();checkOverdueTasks();showToast('Deleted','w',function(){if(saved){if(!alertsData[dateKey])alertsData[dateKey]=[];alertsData[dateKey].splice(idx,0,saved);svAlerts();renderAlerts();checkOverdueTasks();}});}
+function toggleAlert(dateKey,id){const tasks=alertsData[dateKey]||[];const task=tasks.find(t=>t.id===id);if(!task)return;task.done=!task.done;task.doneAt=task.done?new Date().toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'}):'';task.doneBy=task.done?WR_USER:'';svAlerts();renderAlerts();checkOverdueTasks();if(task.done)showToast('\u2713 Task completed!','s');logActivity('Alerts',task.done?'completed task':'reopened task','"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':''));}
+function deleteAlert(dateKey,id){if(!confirm('Delete this task?'))return;const list=alertsData[dateKey]||[];const idx=list.findIndex(t=>t.id===id);const saved=idx>=0?list[idx]:null;alertsData[dateKey]=list.filter(t=>t.id!==id);svAlerts();renderAlerts();checkOverdueTasks();showToast('Deleted','w',function(){if(saved){if(!alertsData[dateKey])alertsData[dateKey]=[];alertsData[dateKey].splice(idx,0,saved);svAlerts();renderAlerts();checkOverdueTasks();}});if(saved)logActivity('Alerts','deleted task','"'+(saved.desc||'')+'"'+(saved.room?' (Rm '+saved.room+')':''));}
 function renderAlerts(){
   const DAY_GR=['\u039a\u03c5\u03c1','\u0394\u03b5\u03c5\u03c4','\u03a4\u03c1','\u03a4\u03b5\u03c4','\u03a0\u03ad\u03bc','\u03a0\u03b1\u03c1','\u03a3\u03b1\u03b2'];
   const MON_GR=['\u0399\u03b1\u03bd','\u03a6\u03b5\u03b2','\u039c\u03b1\u03c1','\u0391\u03c0\u03c1','\u039c\u03b1\u0390','\u0399\u03bf\u03c5\u03bd','\u0399\u03bf\u03c5\u03bb','\u0391\u03c5\u03b3','\u03a3\u03b5\u03c0','\u039f\u03ba\u03c4','\u039d\u03bf\u03b5','\u0394\u03b5\u03ba'];
   const d=new Date(alCurrentDate);const isToday=alCurrentDate===new Date().toISOString().split('T')[0];
+  const _tmrwDate=new Date();_tmrwDate.setDate(_tmrwDate.getDate()+1);const isTomorrow=alCurrentDate===_tmrwDate.toISOString().split('T')[0];
+  const _ystrDate=new Date();_ystrDate.setDate(_ystrDate.getDate()-1);const isYesterday=alCurrentDate===_ystrDate.toISOString().split('T')[0];
   let dayLbl=DAY_GR[d.getDay()]+' '+d.getDate()+' '+MON_GR[d.getMonth()]+' '+d.getFullYear();
   if(isToday)dayLbl='\ud83d\udcc5 Today \u2014 '+dayLbl;
+  else if(isTomorrow)dayLbl='\u27a1\ufe0f Tomorrow \u2014 '+dayLbl;
+  else if(isYesterday)dayLbl='\u2b05\ufe0f Yesterday \u2014 '+dayLbl;
   document.getElementById('al-date-lbl').textContent=dayLbl;
   const addDateEl=document.getElementById('al-add-date');if(addDateEl&&!addDateEl.value){const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);addDateEl.value=tomorrow.toISOString().split('T')[0];}
   const tasks=alertsData[alCurrentDate]||[];const now=new Date();const nowMins=now.getHours()*60+now.getMinutes();
@@ -7012,16 +7124,18 @@ function renderAlerts(){
     let html='<div class="al-task pri-'+task.pri+(task.done?' done':'')+(isOverdue?' overdue':'')+'\">';
     html+='<input type="checkbox" class="al-chk" '+(task.done?'checked':'')+' onchange="toggleAlert(\''+alCurrentDate+'\',\''+task.id+'\')">';
     html+='<div class="al-task-time'+(isOverdue?' overdue':'')+'">'+task.time+'</div>';
-    html+='<div class="al-task-desc'+(task.done?' done':'')+'">'+esc(task.desc||'')+'</div>';
+    html+='<div class="al-task-desc'+(task.done?' done':'')+'">'+(task.room?'<span style="background:var(--sea-light);color:var(--sea);font-weight:700;font-size:11px;padding:2px 7px;border-radius:6px;margin-right:6px">'+esc(roomLabel(task.room))+'</span>':'')+esc(task.desc||'')+'</div>';
     html+='<span class="al-pri-badge '+(task.pri||'mid')+'">'+priLbl+'</span>';
     if(task.done&&task.doneAt)html+='<span class="al-task-who">\u2713 '+task.doneAt+'</span>';
     html+='<button onclick="alToggleEP(\''+task.id+'\')" style="width:28px;height:28px;background:'+(isOpen?'var(--sea)':'var(--sea-light)')+';border:none;border-radius:7px;cursor:pointer;color:'+(isOpen?'#fff':'var(--sea)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-pencil" style="font-size:13px"></i></button>';
     html+='<button class="al-task-del" onclick="deleteAlert(\''+alCurrentDate+'\',\''+task.id+'\')"><i class="ti ti-trash" style="font-size:13px"></i></button>';
     html+='</div>';
     if(isOpen){
-      html+='<div style="background:#f0f7ff;border:1px solid var(--sea-mid);border-radius:10px;padding:12px 16px;margin-top:4px;display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end">';
+      html+='<div style="background:#f0f7ff;border:1px solid var(--sea-mid);border-radius:10px;padding:12px 16px;margin-top:4px;display:grid;grid-template-columns:1fr auto auto auto auto;gap:10px;align-items:end">';
       html+='<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Description</label>';
       html+='<input value="'+esc(task.desc||'')+'" style="width:100%;padding:7px 10px;border:1.5px solid var(--sea-mid);border-radius:8px;font-family:var(--sans);font-size:13px;color:var(--ink);outline:none" onchange="alertUpd(\''+alCurrentDate+'\',\''+task.id+'\',\'desc\',this.value)"></div>';
+      html+='<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Room</label>';
+      html+='<input value="'+esc(task.room||'')+'" placeholder="optional" style="width:80px;padding:7px 10px;border:1.5px solid var(--sea-mid);border-radius:8px;font-family:var(--sans);font-size:13px;color:var(--ink);outline:none" onchange="alertUpd(\''+alCurrentDate+'\',\''+task.id+'\',\'room\',this.value)"></div>';
       html+='<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Time</label>';
       html+='<input type="time" value="'+task.time+'" style="padding:7px 10px;border:1.5px solid var(--sea-mid);border-radius:8px;font-family:var(--sans);font-size:13px;outline:none;width:110px" onchange="alertUpd(\''+alCurrentDate+'\',\''+task.id+'\',\'time\',this.value)"></div>';
       html+='<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Priority</label>';
@@ -7161,6 +7275,61 @@ function alRenderStatsContent(){
   html+='</div>';
   el.innerHTML=html;
 }
+let alLogClearedAt=localStorage.getItem('al_log_cleared_at')||'';
+let alReadIds=new Set(JSON.parse(localStorage.getItem('al_log_read_ids')||'[]'));
+function alEntryKey(e){return e.id||e.at;}
+function renderActivityLog(){
+  const whoSel=document.getElementById('al-log-who');
+  if(whoSel&&whoSel.options.length<=1){
+    STAFF_NAMES.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;whoSel.appendChild(o);});
+  }
+  const who=document.getElementById('al-log-who')?.value||'all';
+  const tabF=document.getElementById('al-log-tab')?.value||'all';
+  const dateF=document.getElementById('al-log-date')?.value||'';
+  const showCleared=document.getElementById('al-log-show-cleared')?.checked||false;
+  let filtered=activityLog.filter(e=>{
+    if(who!=='all'&&e.who!==who)return false;
+    if(tabF!=='all'&&e.tab!==tabF)return false;
+    if(dateF&&e.at.slice(0,10)!==dateF)return false;
+    const isCleared=(alLogClearedAt&&e.at<=alLogClearedAt)||alReadIds.has(alEntryKey(e));
+    if(showCleared)return isCleared;
+    return!isCleared;
+  });
+  document.getElementById('al-log-count').textContent=filtered.length+' entries'+(showCleared?' (read)':'');
+  const TAB_COLORS={'Alerts':'#dc2626','A/C Issues':'#0e7490','Complaints':'#be185d','Gym':'#2563aa','Yoga':'#9c4dcc','Pilates':'#c0395a','Massage':'#b45309','Experiences':'#1a6644','Reservations':'#0e7490'};
+  const list=document.getElementById('al-log-list');
+  if(!filtered.length){list.innerHTML='<div style="padding:40px;text-align:center;color:var(--muted2)"><i class="ti ti-history" style="font-size:36px;display:block;margin-bottom:10px;opacity:.3"></i>'+(showCleared?'No read entries':'No new activity \u2014 all caught up')+'</div>';return;}
+  list.innerHTML=filtered.slice(0,500).map(e=>{
+    const dt=new Date(e.at);
+    const dateStr=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    const timeStr=dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const color=TAB_COLORS[e.tab]||'var(--sea)';
+    const key=alEntryKey(e);
+    const isRead=showCleared;
+    return '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border2)">'
+      +'<div style="width:26px;height:26px;border-radius:50%;background:'+color+';color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">'+esc((e.who||'?').charAt(0).toUpperCase())+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:13px;color:var(--ink)"><strong>'+esc(e.who||'Unknown')+'</strong> '+esc(e.action||'')+(e.details?' \u2014 '+esc(e.details):'')+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:2px"><span style="color:'+color+';font-weight:600">'+esc(e.tab||'')+'</span> &middot; '+dateStr+' '+timeStr+'</div>'
+      +'</div>'
+      +'<button onclick="alToggleEntryRead(\''+key+'\')" title="'+(isRead?'Mark as unread':'Mark as read')+'" style="background:none;border:none;cursor:pointer;color:'+(isRead?'#d97706':'#16a34a')+';padding:4px;flex-shrink:0"><i class="ti ti-'+(isRead?'rotate':'check')+'" style="font-size:16px"></i></button>'
+    +'</div>';
+  }).join('');
+}
+function alToggleEntryRead(key){
+  if(alReadIds.has(key))alReadIds.delete(key);
+  else alReadIds.add(key);
+  try{localStorage.setItem('al_log_read_ids',JSON.stringify([...alReadIds]));}catch(e){}
+  renderActivityLog();
+}
+function alMarkLogRead(){
+  if(!confirm('Mark all currently visible entries as read? They will move to "Show read entries".'))return;
+  alLogClearedAt=new Date().toISOString();
+  try{localStorage.setItem('al_log_cleared_at',alLogClearedAt);}catch(e){}
+  const cb=document.getElementById('al-log-show-cleared');if(cb)cb.checked=false;
+  renderActivityLog();
+  showToast('Marked as read','s');
+}
 function checkOverdueTasks(){const today=new Date().toISOString().split('T')[0];const tasks=alertsData[today]||[];const now=new Date();const nowMins=now.getHours()*60+now.getMinutes();const hasOverdue=tasks.some(t=>{if(t.done)return false;const[h,m]=t.time.split(':').map(Number);return(h*60+m)<nowMins;});const tabEl=document.getElementById('nt-alerts');if(tabEl){if(hasOverdue){tabEl.classList.add('tab-alert-pulse');tabEl.style.color='#dc2626';}else{tabEl.classList.remove('tab-alert-pulse');tabEl.style.color='';}}}
 setInterval(()=>{checkOverdueTasks();const alertTab=document.getElementById('tab-alerts');if(alertTab&&!alertTab.classList.contains('hidden'))renderAlerts();},60000);
 setTimeout(checkOverdueTasks,2000);
@@ -7174,6 +7343,18 @@ const PWD_ROLES={
 };
 const PWD_SESSION_KEY='wr_auth';
 let WR_ROLE=sessionStorage.getItem('wr_role')||'';
+const STAFF_NAMES=['Nikos','Marinos','Elsa','Izabella','Sandra','Stephanie','Lefteris','Vassiliki','Marian','Athina','Vassilis','George'];
+let WR_USER=sessionStorage.getItem('wr_user_name')||'';
+/* ── ACTIVITY LOG (audit trail) ── */
+let activityLog=JSON.parse(localStorage.getItem('activity_log')||'[]');
+function logActivity(tab,action,details){
+  if(!WR_USER)return; // only log when we know who's acting
+  const entry={id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),who:WR_USER,role:WR_ROLE,tab,action,details:details||'',at:new Date().toISOString()};
+  activityLog.unshift(entry);
+  if(activityLog.length>2000)activityLog=activityLog.slice(0,2000); // cap to avoid unbounded growth
+  try{localStorage.setItem('activity_log',JSON.stringify(activityLog));}catch(e){}
+  if(typeof fbdb!=='undefined')fbdb.ref('activity_log').push(entry).catch(()=>{});
+}
 
 
 function fomShowColorPicker(){
@@ -7208,16 +7389,39 @@ function fomSetColor(hex){
 }
 // Apply saved color on load
 (function(){const saved=localStorage.getItem('fom_theme_color');if(saved)fomSetColor(saved);})();
+const ALL_RESTRICTABLE_TABS=['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','experiences','suggestions','breakfast','dinner','wine'];
+function resetRoleRestrictions(){
+  // Show every nav tab + dropdown item again
+  ALL_RESTRICTABLE_TABS.forEach(t=>{
+    const el=document.getElementById('nt-'+t);if(el)el.style.display='';
+    const dd=document.getElementById('ddi-'+t);if(dd)dd.style.display='';
+  });
+  // Re-show massage / experiences stats & revenue sections
+  const msStatsBtn=document.getElementById('ms-tab-stats');if(msStatsBtn)msStatsBtn.style.display='';
+  const msSum=document.getElementById('ms-sum');if(msSum)msSum.style.display='';
+  const xb=document.getElementById('exp-stats-btn');if(xb)xb.style.display='';
+  ['excursions-sum','moto-sum','flowers-sum','boats-sum','transfers-sum','vantours-sum'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='';
+  });
+  window._hideCarsRevenue=false;
+  // Remove any previously injected role banner / FOM-only buttons
+  document.querySelectorAll('.wr-role-banner').forEach(b=>b.remove());
+  const fomColorBtn=document.getElementById('fom-color-btn');if(fomColorBtn)fomColorBtn.remove();
+  const fomAlBtn=document.getElementById('al-fom-btn');if(fomAlBtn)fomAlBtn.style.display='none';
+  const ntLog=document.getElementById('hdr-activitylog-btn');if(ntLog)ntLog.style.display='none';
+}
 function applyRoleRestrictions(){
+  resetRoleRestrictions();
   // FOM: full access
-  if(WR_ROLE==='fom'){const btn=document.getElementById('al-fom-btn');if(btn)btn.style.display='flex';return;}
-  const BO_TABS=['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','gym','yoga','pilates','suggestions','breakfast','dinner'];
+  if(WR_ROLE==='fom'){const btn=document.getElementById('al-fom-btn');if(btn)btn.style.display='flex';const ntLog=document.getElementById('hdr-activitylog-btn');if(ntLog)ntLog.style.display='flex';return;}
+  const BO_TABS=['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','exp','gym','yoga','pilates','suggestions','breakfast','dinner'];
   if(WR_ROLE==='backoffice'){
     BO_TABS.forEach(t=>{
       const el=document.getElementById('nt-'+t);if(el)el.style.display='none';
       const dd=document.getElementById('ddi-'+t);if(dd)dd.style.display='none';
     });
     const banner=document.createElement('div');
+    banner.className='wr-role-banner';
     banner.style.cssText='position:fixed;bottom:12px;right:16px;background:#1a3a6e;color:#fff;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;z-index:999;opacity:.85;pointer-events:none';
     banner.textContent='Back Office View';
     document.body.appendChild(banner);
@@ -7228,7 +7432,7 @@ function applyRoleRestrictions(){
     // Reservations role: only res, gym, yoga, pilates, massage(no stats), experiences(no stats)
     const SHOW_TABS=['res','gym','yoga','pilates','massage','experiences'];
     // Hide all tabs except the allowed ones
-    ['alerts','day3','report','comp','ac','grooms','import','ta','goo','analytics','suggestions','breakfast','dinner','wine'].forEach(t=>{
+    ['alerts','day3','report','comp','ac','grooms','import','ta','goo','exp','analytics','suggestions','breakfast','dinner','wine'].forEach(t=>{
       const el=document.getElementById('nt-'+t);if(el)el.style.display='none';
       const dd=document.getElementById('ddi-'+t);if(dd)dd.style.display='none';
     });
@@ -7245,6 +7449,7 @@ function applyRoleRestrictions(){
     // Go to reservations tab
     goTab('res');
     const banner=document.createElement('div');
+    banner.className='wr-role-banner';
     banner.style.cssText='position:fixed;bottom:12px;right:16px;background:#1a3a6e;color:#fff;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;z-index:999;opacity:.85;pointer-events:none';
     banner.textContent='Reservations View';
     document.body.appendChild(banner);
@@ -7278,10 +7483,16 @@ function checkPwd(){
     sessionStorage.setItem(PWD_SESSION_KEY,'1');
     sessionStorage.setItem('wr_role',roleObj.role);
     WR_ROLE=roleObj.role;
+    if(WR_ROLE==='frontoffice'){
+      document.getElementById('pwdScreen').style.display='none';
+      showNameScreen();
+      return;
+    }
     document.getElementById('pwdScreen').style.display='none';
     err.style.display='none';
     applyRoleRestrictions();
-    if(WR_ROLE==='fom'){const btn=document.createElement('button');btn.innerHTML='<i class="ti ti-palette" style="font-size:16px"></i>';btn.title='Theme Color';btn.onclick=fomShowColorPicker;btn.style.cssText='position:fixed;bottom:50px;right:16px;width:40px;height:40px;background:var(--sea);color:#fff;border:none;border-radius:50%;cursor:pointer;z-index:998;box-shadow:0 4px 12px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center';document.body.appendChild(btn);}
+    updateUserBadge();
+    if(WR_ROLE==='fom'){const btn=document.createElement('button');btn.id='fom-color-btn';btn.innerHTML='<i class="ti ti-palette" style="font-size:16px"></i>';btn.title='Theme Color';btn.onclick=fomShowColorPicker;btn.style.cssText='position:fixed;bottom:50px;right:16px;width:40px;height:40px;background:var(--sea);color:#fff;border:none;border-radius:50%;cursor:pointer;z-index:998;box-shadow:0 4px 12px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center';document.body.appendChild(btn);}
     showToast('Welcome, '+roleObj.label+'!  ☁','s');
   } else {
     err.style.display='block';
@@ -7292,12 +7503,64 @@ function checkPwd(){
     setTimeout(()=>card.style.animation='',400);
   }
 }
+function switchUser(){
+  if(!confirm('Log out? You will need to enter the password again.'))return;
+  WR_USER='';WR_ROLE='';
+  sessionStorage.removeItem('wr_user_name');
+  sessionStorage.removeItem('wr_role');
+  sessionStorage.removeItem(PWD_SESSION_KEY);
+  resetRoleRestrictions();
+  document.getElementById('userBadge').style.display='none';
+  const sel=document.getElementById('nameSelect');if(sel)sel.value='';
+  document.getElementById('nameScreen').style.display='none';
+  document.getElementById('pwdInp').value='';
+  document.getElementById('pwdErr').style.display='none';
+  document.getElementById('pwdScreen').style.display='flex';
+  setTimeout(()=>document.getElementById('pwdInp').focus(),200);
+}
+function showNameScreen(){
+  const sel=document.getElementById('nameSelect');
+  if(sel.options.length<=1){
+    STAFF_NAMES.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+  }
+  document.getElementById('nameScreen').style.display='flex';
+}
+function confirmUserName(){
+  const sel=document.getElementById('nameSelect');
+  const name=sel.value;
+  if(!name){
+    sel.style.border='1.5px solid var(--coral)';
+    setTimeout(()=>{sel.style.border='1.5px solid var(--border)';},1200);
+    return;
+  }
+  WR_USER=name;
+  sessionStorage.setItem('wr_user_name',name);
+  document.getElementById('nameScreen').style.display='none';
+  applyRoleRestrictions();
+  updateUserBadge();
+  showToast('Welcome, '+name+'!  ☁','s');
+}
+function updateUserBadge(){
+  const badge=document.getElementById('userBadge');
+  const ROLE_LABELS={fom:'FOM',backoffice:'Backoffice',reservations:'Reservations'};
+  const displayName=WR_USER||ROLE_LABELS[WR_ROLE]||'';
+  if(!displayName){badge.style.display='none';return;}
+  badge.style.display='flex';
+  document.getElementById('userBadgeInitial').textContent=displayName.charAt(0).toUpperCase();
+  document.getElementById('userBadgeName').textContent=displayName;
+}
 function togglePwdEye(){const inp=document.getElementById('pwdInp');const ico=document.getElementById('pwdEyeIco');if(inp.type==='password'){inp.type='text';ico.className='ti ti-eye-off';}else{inp.type='password';ico.className='ti ti-eye';}}
 (function(){
   if(sessionStorage.getItem(PWD_SESSION_KEY)==='1'){
     WR_ROLE=sessionStorage.getItem('wr_role')||'frontoffice';
+    if(WR_ROLE==='frontoffice'&&!WR_USER){
+      document.getElementById('pwdScreen').style.display='none';
+      showNameScreen();
+      return;
+    }
     document.getElementById('pwdScreen').style.display='none';
     applyRoleRestrictions();
+    updateUserBadge();
   } else {
     setTimeout(()=>document.getElementById('pwdInp').focus(),200);
   }
@@ -8012,6 +8275,7 @@ function acAdd(){
     action:'',technician:'',dateResolved:'',status:'open'});
   svAC();renderAC();showToast('Issue added','s');
   ['ac-room','ac-issue','ac-reportedby'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  logActivity('A/C Issues','added issue','Rm '+room+' \u2014 "'+issue+'"');
 }
 
 function acPrint(){
@@ -8045,6 +8309,7 @@ function acPrint(){
 function acDel(i){
   if(!confirm('Delete this issue?'))return;
   const saved=AC_DATA.splice(i,1)[0];svAC();renderAC();showToast('Deleted','w',function(){AC_DATA.splice(i,0,saved);svAC();renderAC();});
+  if(saved)logActivity('A/C Issues','deleted issue','Rm '+(saved.room||'')+' \u2014 "'+(saved.issue||'')+'"');
 }
 
 function acCycleStatus(i){
@@ -8053,6 +8318,7 @@ function acCycleStatus(i){
   if(AC_DATA[i].status==='resolved'&&!AC_DATA[i].dateResolved)AC_DATA[i].dateResolved=new Date().toISOString().split('T')[0];
   if(AC_DATA[i].status!=='resolved')AC_DATA[i].dateResolved='';
   svAC();renderAC();
+  logActivity('A/C Issues','changed status to "'+AC_DATA[i].status+'"','Rm '+(AC_DATA[i].room||'')+' \u2014 "'+(AC_DATA[i].issue||'')+'"');
 }
 
 function acUpd(i,field,val){AC_DATA[i][field]=val;svAC();}
@@ -8168,9 +8434,10 @@ function compAdd(){
   COMP_DATA.unshift({id:Date.now()+'',date:document.getElementById('comp-date')?.value||new Date().toISOString().split('T')[0],room,guest:(document.getElementById('comp-guest')?.value||'').trim(),reason,gift:(document.getElementById('comp-gift')?.value||'').trim(),notes:(document.getElementById('comp-notes')?.value||'').trim(),resolveDate:'',resolveNotes:'',status:'open'});
   svComp();renderComp();showToast('Entry added','s');
   ['comp-room','comp-guest','comp-reason','comp-gift','comp-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  logActivity('Complaints','added complaint','Rm '+room+' \u2014 "'+reason+'"');
 }
 
-function compDel(i){const saved=COMP_DATA.splice(i,1)[0];svComp();renderComp();setTimeout(function(){showToast('Deleted','w',function(){COMP_DATA.splice(i,0,saved);svComp();renderComp();});},50);}
+function compDel(i){const saved=COMP_DATA.splice(i,1)[0];svComp();renderComp();setTimeout(function(){showToast('Deleted','w',function(){COMP_DATA.splice(i,0,saved);svComp();renderComp();});},50);if(saved)logActivity('Complaints','deleted complaint','Rm '+(saved.room||'')+' \u2014 "'+(saved.reason||'')+'"');}
 
 function compCycleStatus(i){
   const o=['open','pending','resolved'];
@@ -8178,6 +8445,7 @@ function compCycleStatus(i){
   if(COMP_DATA[i].status==='resolved'&&!COMP_DATA[i].resolveDate)COMP_DATA[i].resolveDate=new Date().toISOString().split('T')[0];
   if(COMP_DATA[i].status!=='resolved')COMP_DATA[i].resolveDate='';
   svComp();renderComp();
+  logActivity('Complaints','changed status to "'+COMP_DATA[i].status+'"','Rm '+(COMP_DATA[i].room||'')+' \u2014 "'+(COMP_DATA[i].reason||'')+'"');
 }
 
 function compUpd(i,field,val){COMP_DATA[i][field]=val;svComp();}
@@ -8290,6 +8558,14 @@ fbdb.ref('goo_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array
 fbdb.ref('exp_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){expHistory=d;localStorage.setItem('exp_reviews',JSON.stringify(d));renderRevHistory('exp');}});
 fbdb.ref('bk_reviews').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){bkHistory=d;localStorage.setItem('bk_reviews',JSON.stringify(d));renderBKHistory();}});
 fbdb.ref('alerts_data').once('value').then(snap=>{const d=snap.val();if(d&&typeof d==='object'){alertsData=d;try{localStorage.setItem('alerts_data',JSON.stringify(d));}catch(e){}checkOverdueTasks();}const seeded=alSeedRecurringAC();if(seeded>0){checkOverdueTasks();const alTab=document.getElementById('tab-alerts');if(alTab&&!alTab.classList.contains('hidden'))renderAlerts();}});
+fbdb.ref('activity_log').limitToLast(2000).on('value',snap=>{
+  const d=snap.val();if(!d)return;
+  const entries=Object.values(d).sort((a,b)=>new Date(b.at)-new Date(a.at));
+  activityLog=entries;
+  try{localStorage.setItem('activity_log',JSON.stringify(entries));}catch(e){}
+  const logTab=document.getElementById('tab-activitylog');
+  if(logTab&&!logTab.classList.contains('hidden'))renderActivityLog();
+});
 fbdb.ref('al_templates').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){alTemplates=d;try{localStorage.setItem('al_templates',JSON.stringify(d));}catch(e){}}});
 fbdb.ref('comp_data').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d))COMP_DATA=d;});
 fbdb.ref('ac_issues').once('value').then(snap=>{const d=snap.val();if(d&&Array.isArray(d)){AC_DATA=d;}});
