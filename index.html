@@ -1068,6 +1068,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
     </div>
     <div class="rev-input-card">
       <h3><i class="ti ti-clipboard-text" style="color:var(--sea)"></i> Paste TripAdvisor Reviews</h3>
+      <div id="ta-latest-from-history" style="display:none;margin-bottom:14px;padding:12px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px">
+        <div style="font-size:10px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;display:flex;align-items:center;gap:5px"><i class="ti ti-message-circle" style="font-size:13px"></i> Most recent saved review</div>
+        <div id="ta-latest-from-history-body" style="font-size:13px;color:var(--ink)"></div>
+      </div>
       <div class="rev-period">
         <label>Period:</label>
         <select id="ta-period-m">
@@ -1084,6 +1088,13 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <textarea class="rev-ta" id="ta-text" style="min-height:80px;margin-top:6px" placeholder="Or paste raw review text here..."></textarea>
       <div class="rev-parsing hidden" id="ta-parsing"><i class="ti ti-loader spin"></i> AI is analyzing...</div>
       <button class="rev-parse-btn" id="ta-parse-btn" onclick="parseReviews('ta')" style="margin-top:6px"><i class="ti ti-sparkles"></i> Analyze with AI</button>
+      <div style="margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:9px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Latest Review Preview <span style="font-weight:400;text-transform:none">(optional, shown in Score Trend)</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input id="ta-latest-name" placeholder="Guest name" style="flex:1;min-width:140px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px">
+          <input id="ta-latest-text" placeholder="Review excerpt..." style="flex:2;min-width:200px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px">
+        </div>
+      </div>
     </div>
     <div class="rev-results hidden" id="ta-results">
       <h3><i class="ti ti-chart-bar" style="color:#2d9c68"></i> Analysis Results — <span id="ta-res-period"></span></h3>
@@ -1127,6 +1138,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
     </div>
     <div class="rev-input-card">
       <h3><i class="ti ti-clipboard-text" style="color:var(--sea)"></i> Paste Google Reviews</h3>
+      <div id="goo-latest-from-history" style="display:none;margin-bottom:14px;padding:12px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px">
+        <div style="font-size:10px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;display:flex;align-items:center;gap:5px"><i class="ti ti-message-circle" style="font-size:13px"></i> Most recent saved review</div>
+        <div id="goo-latest-from-history-body" style="font-size:13px;color:var(--ink)"></div>
+      </div>
       <div class="rev-period">
         <label>Period:</label>
         <select id="goo-period-m">
@@ -1143,6 +1158,13 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <textarea class="rev-ta" id="goo-text" style="min-height:80px;margin-top:6px" placeholder="Or paste raw review text here..."></textarea>
       <div class="rev-parsing hidden" id="goo-parsing"><i class="ti ti-loader spin"></i> AI is analyzing...</div>
       <button class="rev-parse-btn" id="goo-parse-btn" onclick="parseReviews('goo')" style="margin-top:6px"><i class="ti ti-sparkles"></i> Analyze with AI</button>
+      <div style="margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:9px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Latest Review Preview <span style="font-weight:400;text-transform:none">(optional, shown in Score Trend)</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input id="goo-latest-name" placeholder="Guest name" style="flex:1;min-width:140px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px">
+          <input id="goo-latest-text" placeholder="Review excerpt..." style="flex:2;min-width:200px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px">
+        </div>
+      </div>
     </div>
     <div class="rev-results hidden" id="goo-results">
       <h3><i class="ti ti-chart-bar" style="color:#4285f4"></i> Analysis Results — <span id="goo-res-period"></span></h3>
@@ -1185,6 +1207,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
     </div>
     <div class="rev-input-card">
       <h3><i class="ti ti-clipboard-text" style="color:var(--sea)"></i> Paste Expedia Reviews</h3>
+      <div id="exp-latest-from-history" style="display:none;margin-bottom:14px;padding:12px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px">
+        <div style="font-size:10px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;display:flex;align-items:center;gap:5px"><i class="ti ti-message-circle" style="font-size:13px"></i> Most recent saved review</div>
+        <div id="exp-latest-from-history-body" style="font-size:13px;color:var(--ink)"></div>
+      </div>
       <div class="rev-period">
         <label>Period:</label>
         <select id="exp-period-m">
@@ -1201,6 +1227,13 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <textarea class="rev-ta" id="exp-text" style="min-height:80px;margin-top:6px" placeholder="Or paste raw review text here..."></textarea>
       <div class="rev-parsing hidden" id="exp-parsing"><i class="ti ti-loader spin"></i> AI is analyzing...</div>
       <button class="rev-parse-btn" id="exp-parse-btn" onclick="parseReviews('exp')" style="margin-top:6px"><i class="ti ti-sparkles"></i> Analyze with AI</button>
+      <div style="margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:9px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Latest Review Preview <span style="font-weight:400;text-transform:none">(optional, shown in Score Trend)</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input id="exp-latest-name" placeholder="Guest name" style="flex:1;min-width:140px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px">
+          <input id="exp-latest-text" placeholder="Review excerpt..." style="flex:2;min-width:200px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px">
+        </div>
+      </div>
     </div>
     <div class="rev-results hidden" id="exp-results">
       <h3><i class="ti ti-chart-bar" style="color:#0066cc"></i> Analysis Results — <span id="exp-res-period"></span></h3>
@@ -1900,20 +1933,15 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <input class="tr-inp" style="width:100%" id="cm-rentaldate" type="date" onchange="carModalUpdatePrice()"></div>
     </div>
 
+    <div style="margin-bottom:10px"><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Company</label>
+      <select class="tr-inp" style="width:100%" id="cm-company" onchange="carModalUpdateCarList()">
+        <option value="ACE">ACE Rent a Car</option>
+        <option value="Katsouris">Katsouris Travel</option>
+      </select>
+    </div>
+
     <div style="margin-bottom:10px"><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Car Type</label>
       <select class="tr-inp" style="width:100%" id="cm-type" onchange="carModalUpdatePrice()">
-        <option value="A-M">A Manual — KIA Picanto / Toyota Aygo / Hyundai i10</option>
-        <option value="A-A">A Automatic — Skoda Citigo / KIA Picanto Auto</option>
-        <option value="B-M">B Manual — Ford Fiesta / Seat Ibiza / Opel Corsa</option>
-        <option value="B1-M">B1 Manual — Toyota Aygo Convertible</option>
-        <option value="B-A">B Automatic — Seat Ibiza / Mazda 2 Auto</option>
-        <option value="C-M">C Manual — Ford Focus / Citroen C-Elysee</option>
-        <option value="C1-M">C1 Manual — Citroen C3 Aircross (SUV)</option>
-        <option value="D-M">D Manual — Fiat Doblo 7-Seater</option>
-        <option value="J-M">J Manual — Jeep Renegade / Nissan Qashqai</option>
-        <option value="J-A">J Automatic — Dacia Sandero Stepway Auto</option>
-        <option value="J-E">J Electric — Jeep Avenger Electric Auto</option>
-        <option value="T">T — Tesla Model 3 (On Request)</option>
       </select>
     </div>
 
@@ -2219,9 +2247,47 @@ function carBasePrice(id,days,d){
   return null;
 }
 function carInsPrice(id,days){return(ACE_INS[id]||0)*days;}
+
+/* ── KATSOURIS TRAVEL — second car rental company ── */
+const KAT_CARS=[
+  {id:'K-A',   s:'A',      l:'Toyota Aygo X or similar'},
+  {id:'K-A-AUT',s:'A-AUT', l:'Toyota Aygo X (Auto) or similar'},
+  {id:'K-B',   s:'B',      l:'Fiat Panda or similar'},
+  {id:'K-C',   s:'C',      l:'Peugeot 208 or similar'},
+  {id:'K-C-AUT',s:'C-AUT', l:'MG3+ (Auto) or similar'},
+  {id:'K-E',   s:'E',      l:'MG ZS or similar'},
+  {id:'K-E-AUT-YC',s:'E-AUT',l:'Toyota Yaris Cross (Auto)'},
+  {id:'K-E-AUT-PG',s:'E-AUT',l:'Peugeot 2008 (Auto)'},
+  {id:'K-E-AUT-JA',s:'E-AUT',l:'Jeep Avenger (Auto)'}
+];
+// mid = June & September (1-7 days available), high = July & August (3-7 days only, no 1-2 day rates)
+const KAT_PRICES={
+  'K-A':        {mid:[40,72,108,144,180,216,252,30],   high:[null,null,165,209,261,314,366,45],   low:[30,51,77,102,128,153,179,20]},
+  'K-A-AUT':    {mid:[45,81,122,162,203,243,284,35],   high:[null,null,180,228,285,342,399,50],   low:[35,56,89,119,149,179,208,25]},
+  'K-B':        {mid:[50,90,135,180,225,270,315,40],   high:[null,null,195,247,309,371,432,55],   low:[40,68,102,136,170,204,238,30]},
+  'K-C':        {mid:[60,108,162,216,270,324,378,50],  high:[null,null,225,285,357,428,499,65],   low:[50,85,128,170,213,255,298,40]},
+  'K-C-AUT':    {mid:[65,111,166,234,293,351,410,55],  high:[null,null,240,304,380,456,532,70],   low:[55,94,140,187,234,281,327,45]},
+  'K-E':        {mid:[70,126,189,252,315,378,441,60],  high:[null,null,285,361,451,542,632,85],   low:[60,102,153,204,255,306,357,50]},
+  'K-E-AUT-YC': {mid:[75,139,211,283,355,427,499,65],  high:[null,null,310,394,494,594,694,90],   low:[65,114,174,233,293,352,411,55]},
+  'K-E-AUT-PG': {mid:[80,144,216,288,360,432,504,70],  high:[null,null,315,399,499,599,699,95],   low:[70,119,179,238,298,357,416,60]},
+  'K-E-AUT-JA': {mid:[90,154,226,298,370,442,514,80],  high:[null,null,325,409,509,609,709,105],  low:[80,129,189,248,308,367,426,70]}
+};
+const KAT_EXCESS={'K-A':600,'K-A-AUT':600,'K-B':600,'K-C':700,'K-C-AUT':700,'K-E':1000,'K-E-AUT-YC':1000,'K-E-AUT-PG':1000,'K-E-AUT-JA':1000};
+const KAT_INS={'K-A':15,'K-A-AUT':15,'K-B':15,'K-C':17,'K-C-AUT':17,'K-E':17,'K-E-AUT-YC':17,'K-E-AUT-PG':17,'K-E-AUT-JA':17};
+const KAT_PHONE='+30 6981788681 (Alexandra Birkou)';
+function katSeason(d){if(!d)return'mid';const m=new Date(d).getMonth()+1;if(m===7||m===8)return'high';if(m===10)return'low';return'mid';}
+function katSeasonLbl(d){const s=katSeason(d);return s==='high'?'High Season (Jul\u2013Aug)':s==='low'?'Low Season (Oct)':'Mid Season (Jun, Sep)';}
+function katBasePrice(id,days,d){
+  const s=(KAT_PRICES[id]||{})[katSeason(d)];if(!s)return null;
+  if(days>=1&&days<=7){const p=s[days-1];if(p!=null)return p;}
+  if(days>7){const b=s[6],e=s[7];if(b!=null&&e!=null)return b+(days-7)*e;}
+  return null;
+}
+function katInsPrice(id,days){return(KAT_INS[id]||0)*days;}
 function carCalc(c){
-  const base=c.priceOverride!=null?c.priceOverride:carBasePrice(c.carType,c.days,c.rentalDate||c.bookDate);
-  const ins=c.insurance?carInsPrice(c.carType,c.days):0;
+  const isKat=c.company==='Katsouris';
+  const base=c.priceOverride!=null?c.priceOverride:(isKat?katBasePrice(c.carType,c.days,c.rentalDate||c.bookDate):carBasePrice(c.carType,c.days,c.rentalDate||c.bookDate));
+  const ins=c.insurance?(isKat?katInsPrice(c.carType,c.days):carInsPrice(c.carType,c.days)):0;
   const extrasTotal=ACE_EXTRAS.reduce((s,e)=>{const v=c.extras&&c.extras[e.id];if(!v)return s;const qty=e.qty?(parseInt(v)||1):1;return s+e.price*qty*(c.days||1);},0);
   return{base,ins,extras:extrasTotal,total:base!=null?base+ins+extrasTotal:null};
 }
@@ -2241,7 +2307,7 @@ function carGetMonth(c){const d=new Date(c.rentalDate||c.bookDate||'');return is
 const EXP_TABS=['cars','excursions','moto','flowers','boats','transfers','vantours'];
 const EXP_COLORS={cars:'#1a6644',excursions:'#1a6ca8',moto:'#5c3d8f',flowers:'#be185d',boats:'#0e7490',transfers:'#92400e',vantours:'#7c5e2e'};
 const EXP_ICONS={cars:'ti-car',excursions:'ti-binoculars',moto:'ti-motorbike',flowers:'ti-plant-2',boats:'ti-sailboat',transfers:'ti-bus',vantours:'ti-steering-wheel'};
-const EXP_LABELS={cars:'Car Rentals',excursions:'Excursions',moto:'Moto & Bikes',boats:'Boats & Cruises',transfers:'Transfers',vantours:'Van Tours'};
+const EXP_LABELS={cars:'Car Rentals',excursions:'Excursions',moto:'Moto & Bikes',flowers:'Flowers',boats:'Boats & Cruises',transfers:'Transfers',vantours:'Van Tours'};
 
 let expCurrentTab='cars';
 
@@ -2835,6 +2901,7 @@ const EXP_COMM_RATES={
   cars:{rate:0.20,label:'20%',useBase:true},
   excursions:{rate:null,label:'10-20%',useBase:false}, // per company
   moto:{rate:0.10,label:'10%',useBase:false},
+  flowers:{rate:0,label:'\u2014',useBase:false}, // direct retail, no commission
   boats:{rate:null,label:'10-20%',useBase:false}, // per company
   transfers:{rate:0.07,label:'7%',useBase:false},
   vantours:{rate:0.10,label:'10%',useBase:false}
@@ -2847,7 +2914,7 @@ function getCommForRow(tab,r){
   const base=parseFloat(r.base||cost)||0;
   const cfg=EXP_COMM_RATES[tab];
   if(!cfg||cfg.rate===0)return 0;
-  if(tab==='cars'){const{base:b}=carCalc(r);return Math.round((b||0)*0.20);}
+  if(tab==='cars'){const{base:b}=carCalc(r);const rate=r.company==='Katsouris'?0.10:0.20;return Math.round((b||0)*rate);}
   if(tab==='boats'){
     const co=(r.company||'').toLowerCase();
     return Math.round(cost*(co.includes('ego')?0.20:0.10));
@@ -3466,6 +3533,7 @@ function renderPLMBody(tab){
 
   // ── CARS ──
   if(tab==='cars'){
+    html+='<div style="background:linear-gradient(135deg,#1a6644,#2d8659);padding:10px 16px;border-radius:10px 10px 0 0;margin-bottom:0"><span style="color:#fff;font-weight:800;font-size:14px">ACE Rent a Car</span></div>';
     const seasons=[
       {key:'low',label:'Low Season',sub:'Apr–May · Oct',color:'#1a6644',bg:'#f0fff4'},
       {key:'mid',label:'Mid Season',sub:'Jun · Sep',color:'#0369a1',bg:'#f0f9ff'},
@@ -3501,7 +3569,43 @@ function renderPLMBody(tab){
       });
       html+='</tbody></table></div></div>';
     });
-    html+='<div style="padding:10px 14px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;font-size:12px;color:var(--muted)"><b style="color:var(--ink)">Tesla Model 3</b> — On request · Insurance €25/day</div>';
+    html+='<div style="padding:10px 14px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;font-size:12px;color:var(--muted);margin-bottom:24px"><b style="color:var(--ink)">Tesla Model 3</b> — On request · Insurance €25/day</div>';
+
+    // ── KATSOURIS TRAVEL price list ──
+    html+='<div style="background:linear-gradient(135deg,#0e4a6e,#1a6ca8);padding:10px 16px;border-radius:10px 10px 0 0;margin-bottom:0"><span style="color:#fff;font-weight:800;font-size:14px">Katsouris Travel &amp; Destination Services</span></div>';
+    const katSeasons=[
+      {key:'mid',label:'Mid Season',sub:'Jun · Sep',color:'#0369a1',bg:'#f0f9ff',days:dayLabels},
+      {key:'high',label:'High Season',sub:'Jul · Aug',color:'#7c3aed',bg:'#f5f3ff',days:['1d','2d','3d','4d','5d','6d','7d','+d']},
+      {key:'low',label:'Low Season',sub:'Oct',color:'#1a6644',bg:'#f0fff4',days:dayLabels},
+    ];
+    katSeasons.forEach(function(season){
+      html+='<div style="margin-bottom:22px">';
+      html+='<div style="background:'+season.bg+';border-left:4px solid '+season.color+';padding:8px 14px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:8px">';
+      html+='<span style="font-size:13px;font-weight:800;color:'+season.color+'">'+season.label+'</span>';
+      html+='<span style="font-size:11px;color:var(--muted)">'+season.sub+'</span>';
+      html+='<span style="font-size:11px;color:var(--muted);margin-left:auto">Excess (tax incl.) \u20ac600\u20131000 \u00b7 Full insurance from \u20ac15/day</span>';
+      html+='</div>';
+      html+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+      html+='<thead><tr style="background:#f9fafb;border-bottom:2px solid #e5e7eb">';
+      html+='<th style="padding:7px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);border-right:1px solid #e5e7eb;min-width:200px">Vehicle</th>';
+      season.days.forEach(function(d){html+='<th style="padding:5px 7px;text-align:center;font-size:10px;font-weight:700;color:'+season.color+';border-right:1px solid #e5e7eb">'+d+'</th>';});
+      html+='</tr></thead><tbody>';
+      KAT_CARS.forEach(function(car){
+        const pr=(KAT_PRICES[car.id]||{})[season.key]||[];
+        const allNull=pr.every(function(v){return v==null;});if(allNull)return;
+        html+='<tr style="border-bottom:1px solid #f3f4f6">';
+        html+='<td style="padding:7px 10px;border-right:1px solid #e5e7eb"><div style="font-weight:700;color:var(--ink)">'+car.s+'</div><div style="font-size:10px;color:var(--muted)">'+car.l+'</div></td>';
+        pr.forEach(function(p,idx){
+          const isExtra=idx===7;
+          const val=p!=null?(isExtra?'+€'+p:'€'+p):'—';
+          const clr=p!=null?(isExtra?'#6b7280':season.color):'#d1d5db';
+          html+='<td style="padding:6px 7px;text-align:center;font-size:12px;border-right:1px solid #f3f4f6;font-weight:'+(isExtra?'500':'700')+';color:'+clr+(p==null?';opacity:.4':'')+'">'+(isExtra&&p==null?'—':val)+'</td>';
+        });
+        html+='</tr>';
+      });
+      html+='</tbody></table></div></div>';
+    });
+    html+='<div style="padding:12px 16px;background:#0e4a6e;border-radius:8px;color:#fff;font-size:13px;display:flex;align-items:center;gap:8px"><i class="ti ti-phone" style="font-size:15px"></i> For reservations please call: <b>'+KAT_PHONE+'</b></div>';
 
   // ── EXCURSIONS ──
   } else if(tab==='excursions'){
@@ -4004,15 +4108,18 @@ function carEmailDraft(i){
   carEmailRenderTos();
 }
 function carShowCommission(month,rev,comm,tabName){
-  const _rateLabel=tabName==='transfers'?'7%':tabName==='moto'||tabName==='vantours'?'10%':tabName==='excursions'?'10-20%':'20%';
+  const _rateLabel=tabName==='transfers'?'7%':tabName==='moto'||tabName==='vantours'?'10%':tabName==='excursions'?'10-20%':tabName==='cars'?'10-20%':'20%';
   const breakdown=tabName==='boats'?(window._boatsBreakdown&&window._boatsBreakdown[month])||null
     :tabName==='excursions'?(window._excBreakdown&&window._excBreakdown[month])||null
+    :tabName==='cars'?(window._carsBreakdown&&window._carsBreakdown[month])||null
     :null;
   let breakdownHtml='';
   if(breakdown&&Object.keys(breakdown).length>=1){
     const rows=Object.entries(breakdown).map(([co,d])=>{
       const coL=co.toLowerCase();
-      const rate=tabName==='excursions'?((coL.includes('katsouris')||coL.includes('kcg'))?10:20):(coL.includes('ego')?20:10);
+      const rate=tabName==='excursions'?((coL.includes('katsouris')||coL.includes('kcg'))?10:20)
+        :tabName==='cars'?(coL.includes('katsouris')?10:20)
+        :(coL.includes('ego')?20:10);
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px">'
         +'<div style="text-align:left"><div style="font-size:12px;font-weight:700;color:var(--ink)">'+co+'</div>'
         +'<div style="font-size:10px;color:var(--muted);margin-top:2px">€'+d.rev.toFixed(0)+' revenue · '+rate+'%</div></div>'
@@ -4039,7 +4146,8 @@ function carShowCommission(month,rev,comm,tabName){
     +'</div>'
     +'</div>'
     +'<div style="font-size:11px;color:var(--muted);margin-bottom:16px">Revenue \u00d7 '+_rateLabel+' = Commission</div>'
-    +'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="width:100%;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)">Close</button>'
+    +breakdownHtml
+    +'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="width:100%;padding:10px;background:var(--sea);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);margin-top:'+(breakdownHtml?'16px':'0')+'">Close</button>'
     +'</div>';
   document.body.appendChild(ov);
   ov.onclick=function(e){if(e.target===ov)ov.remove();};
@@ -4058,13 +4166,20 @@ function carUpd(i,field,val){
   CARS[i][field]=val;svCars();
   if(['carType','days','rentalDate','bookDate','insurance'].includes(field))renderCars();
 }
+function carUpdCompany(i,val){
+  CARS[i].company=val;
+  CARS[i].carType=''; // reset car type since catalogs differ between companies
+  CARS[i].priceOverride=null;
+  svCars();renderCars();
+}
 
 function carSetStatus(i,s){
   CARS[i].status=s;
   if(s==='commission'){
     const{base}=carCalc(CARS[i]);
-    const comm=Math.round((base||0)*0.20);
-    if(comm>0)showToast('Commission: €'+comm+' (20% of base €'+base+')','s');
+    const rate=CARS[i].company==='Katsouris'?0.10:0.20;
+    const comm=Math.round((base||0)*rate);
+    if(comm>0)showToast('Commission: €'+comm+' ('+(rate*100)+'% of base €'+base+')','s');
   }
   svCars();renderCars();
 }
@@ -4101,13 +4216,16 @@ function renderCars(){
   const SIC={confirmed:'<i class="ti ti-circle-check"></i>',waiting:'<i class="ti ti-clock"></i>',cancelled:'<i class="ti ti-circle-x"></i>'};
   const SLB={confirmed:'Confirmed',waiting:'Waiting',cancelled:'Cancelled'};
   const SRCLS={confirmed:'car-rc',waiting:'car-rw',cancelled:'car-rx'};
-  const carOpts=ACE_CARS.map(a=>`<option value="${a.id}">`+a.s+' — '+a.l+'</option>').join('');
+  const carOptsACE=ACE_CARS.map(a=>`<option value="${a.id}">`+a.s+' — '+a.l+'</option>').join('');
+  const carOptsKAT=KAT_CARS.map(a=>`<option value="${a.id}">`+a.s+' — '+a.l+'</option>').join('');
 
   let html='';
   filtered.forEach((c,n)=>{
     const i=CARS.indexOf(c);const isOpen=carOpenEP===i;
     const{base,ins,total}=carCalc(c);
-    const selOpts=ACE_CARS.map(a=>`<option value="${a.id}"${c.carType===a.id?' selected':''}>${a.s} — ${a.l}</option>`).join('');
+    const isKat=c.company==='Katsouris';
+    const carList=isKat?KAT_CARS:ACE_CARS;
+    const selOpts=carList.map(a=>`<option value="${a.id}"${c.carType===a.id?' selected':''}>${a.s} — ${a.l}</option>`).join('');
 
     html+=`<tr class="${SRCLS[c.status]||'car-rw'}${isOpen?' car-ep-open':''}">
       <td style="padding:7px 9px;color:var(--muted2);font-size:11px;text-align:center">${n+1}</td>
@@ -4120,7 +4238,7 @@ function renderCars(){
       <td><input class="car-ci" type="time" value="${c.rentalTime||''}" style="font-size:11px;padding:6px 7px" onchange="CARS[${i}].rentalTime=this.value;svCars()"></td>
       <td><select class="car-ci" style="font-size:11px;padding:5px 4px" onchange="carUpd(${i},'carType',this.value)">${selOpts}</select></td>
       <td><input class="car-ci" type="number" min="1" max="60" value="${c.days||1}" style="text-align:center;font-weight:700;padding:5px 4px" onchange="CARS[${i}].days=Math.max(1,parseInt(this.value)||1);this.value=CARS[${i}].days;carUpd(${i},'days',CARS[${i}].days)"></td>
-      <td><input class="car-ci" value="${esc(c.company||'')}" placeholder="Company" onchange="CARS[${i}].company=this.value;svCars()"></td>
+      <td><select class="car-ci" style="font-size:11px;padding:5px 4px;font-weight:600;color:${isKat?'#0e4a6e':'#1a6644'}" onchange="carUpdCompany(${i},this.value)"><option value="ACE"${!isKat?' selected':''}>ACE</option><option value="Katsouris"${isKat?' selected':''}>Katsouris</option></select></td>
       <td><input class="car-ci" value="${esc(c.bookedBy||'')}" placeholder="Staff" onchange="CARS[${i}].bookedBy=this.value;svCars()"></td>
       <td style="padding:7px 9px;text-align:right;font-weight:700;color:${c.priceOverride!=null?'#b45309':'#1a6644'}">${base!=null?'€'+base+(c.priceOverride!=null?' ✎':''):c.carType==='T'?'On Req':'—'}</td>
       <td style="padding:4px 7px;text-align:center">
@@ -4232,9 +4350,19 @@ function renderCarSum(){
     const canc=mc.filter(c=>c.status==='cancelled').length;
     const confCards=mc.filter(c=>c.status==='confirmed');
     const rev=confCards.reduce((s,c)=>{const{total}=carCalc(c);return s+(total||0);},0);
-    const commBase=confCards.reduce((s,c)=>{const{base}=carCalc(c);return s+(base||0);},0);
-    const comm=Math.round(commBase*0.20);
-    html+='<div class="car-sum-card" style="cursor:pointer" onclick="carShowCommission(\''+MN[m]+'\','+rev+','+comm+')" title="Click for commission breakdown">'
+    const comm=confCards.reduce((s,c)=>{const{base}=carCalc(c);const rate=c.company==='Katsouris'?0.10:0.20;return s+Math.round((base||0)*rate);},0);
+    const carsCoBreakdown={};
+    confCards.forEach(c=>{
+      const co=c.company||'ACE';
+      if(!carsCoBreakdown[co])carsCoBreakdown[co]={rev:0,comm:0};
+      const{base,total}=carCalc(c);
+      const rate=co==='Katsouris'?0.10:0.20;
+      carsCoBreakdown[co].rev+=(total||0);
+      carsCoBreakdown[co].comm+=Math.round((base||0)*rate);
+    });
+    if(!window._carsBreakdown)window._carsBreakdown={};
+    window._carsBreakdown[MN[m]]=carsCoBreakdown;
+    html+='<div class="car-sum-card" style="cursor:pointer" onclick="carShowCommission(\''+MN[m]+'\','+rev+','+comm+',\'cars\')" title="Click for commission breakdown">'
       +'<div class="car-sum-count">'+mc.length+' bookings</div>'
       +(rev>0&&!window._hideCarsRevenue?'<div class="car-sum-rev">€'+rev.toFixed(0)+' confirmed</div>':'')
       +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'
@@ -4252,8 +4380,8 @@ function renderCarSum(){
     ['05','06','07','08','09','10'].forEach(m=>{
       const mc=CARS.filter(c=>carGetMonth(c)===m&&c.status==='commission');
       if(!mc.length)return;hasComm=true;
-      const baseTotal=mc.reduce((s,c)=>{const{base}=carCalc(c);return s+(base||0);},0);
-      const comm=Math.round(baseTotal*0.20);
+      const baseTotal=mc.reduce((s,c)=>{const{base}=carCalc(c);const rate=c.company==='Katsouris'?0.10:0.20;return s+Math.round((base||0)*rate);},0);
+      const comm=baseTotal;
       commHtml+='<div class="car-sum-card" style="background:#fffbeb;border:1px solid #fde68a">'
         +'<div class="car-sum-month">'+MN[m]+'</div>'
         +'<div class="car-sum-count">'+mc.length+' booking'+(mc.length>1?'s':'')+'</div>'
@@ -4281,25 +4409,35 @@ function carAdd(){
   document.getElementById('cm-bookdate').value=new Date().toISOString().split('T')[0];
   document.getElementById('cm-rentaldate').value='';
   document.getElementById('cm-time').value='';
-  document.getElementById('cm-type').value='A-M';
+  document.getElementById('cm-company').value='ACE';
+  carModalUpdateCarList();
   document.getElementById('cm-days').value=1;
   document.getElementById('cm-ins').checked=false;
   document.getElementById('cm-status').value='waiting';
   carModalUpdatePrice();
 }
+function carModalUpdateCarList(){
+  const company=document.getElementById('cm-company').value;
+  const sel=document.getElementById('cm-type');
+  const list=company==='Katsouris'?KAT_CARS:ACE_CARS;
+  sel.innerHTML=list.map(c=>'<option value="'+c.id+'">'+c.s+' — '+c.l+'</option>').join('');
+  carModalUpdatePrice();
+}
 
 function carModalUpdatePrice(){
+  const company=document.getElementById('cm-company')?.value||'ACE';
+  const isKat=company==='Katsouris';
   const type=document.getElementById('cm-type').value;
   const days=parseInt(document.getElementById('cm-days').value)||1;
   const rentalDate=document.getElementById('cm-rentaldate').value||document.getElementById('cm-bookdate').value;
   const ins=document.getElementById('cm-ins').checked;
   const bookedBy=(document.getElementById('cm-bookedby')?.value||'').trim();
   const extras={};ACE_EXTRAS.forEach(e=>{if(e.qty){const n=parseInt(document.getElementById('cm-extra-'+e.id+'-qty')?.value)||0;if(n>0)extras[e.id]=n;}else{const el=document.getElementById('cm-extra-'+e.id);if(el&&el.checked)extras[e.id]=true;}});
-  const base=carBasePrice(type,days,rentalDate);
-  const insAmt=ins?carInsPrice(type,days):0;
+  const base=isKat?katBasePrice(type,days,rentalDate):carBasePrice(type,days,rentalDate);
+  const insAmt=ins?(isKat?katInsPrice(type,days):carInsPrice(type,days)):0;
   const extrasTotal=ACE_EXTRAS.reduce((s,e)=>{const el=document.getElementById('cm-extra-'+e.id);if(!el)return s;if(e.qty){const n=parseInt(document.getElementById('cm-extra-'+e.id+'-qty')?.value)||0;return s+e.price*n*days;}return(el.checked)?s+e.price*days:s;},0);
   const total=base!=null?base+insAmt+extrasTotal:null;
-  const sl=carSeasonLbl(rentalDate);
+  const sl=isKat?katSeasonLbl(rentalDate):carSeasonLbl(rentalDate);
   const el=document.getElementById('cm-pricebox');
   if(!el)return;
   if(type==='T'){el.innerHTML='<div class="cpl">Price</div><div class="cpv" style="font-size:16px">On Request</div>';return;}
@@ -4312,6 +4450,8 @@ function carModalUpdatePrice(){
 }
 
 function carModalSave(){
+  const company=document.getElementById('cm-company')?.value||'ACE';
+  const isKat=company==='Katsouris';
   const type=document.getElementById('cm-type').value;
   const days=Math.max(1,parseInt(document.getElementById('cm-days').value)||1);
   const rentalDate=document.getElementById('cm-rentaldate').value;
@@ -4319,8 +4459,8 @@ function carModalSave(){
   const ins=document.getElementById('cm-ins').checked;
   const bookedBy=(document.getElementById('cm-bookedby')?.value||'').trim();
   const extras={};ACE_EXTRAS.forEach(e=>{if(e.qty){const n=parseInt(document.getElementById('cm-extra-'+e.id+'-qty')?.value)||0;if(n>0)extras[e.id]=n;}else{const el=document.getElementById('cm-extra-'+e.id);if(el&&el.checked)extras[e.id]=true;}});
-  const base=carBasePrice(type,days,rentalDate||bookDate);
-  const insAmt=ins?carInsPrice(type,days):0;
+  const base=isKat?katBasePrice(type,days,rentalDate||bookDate):carBasePrice(type,days,rentalDate||bookDate);
+  const insAmt=ins?(isKat?katInsPrice(type,days):carInsPrice(type,days)):0;
   CARS.unshift({
     id:Date.now()+'',
     ref:document.getElementById('cm-ref').value.trim(),
@@ -4329,7 +4469,7 @@ function carModalSave(){
     room:document.getElementById('cm-room').value.trim(),
     bookDate,rentalDate,
     rentalTime:document.getElementById('cm-time').value,
-    carType:type,days,insurance:ins,
+    carType:type,days,insurance:ins,company,
     status:document.getElementById('cm-status').value,bookedBy:bookedBy,extras:extras,
     base,insAmt,total:base!=null?base+insAmt:null
   });
@@ -4895,14 +5035,20 @@ function setM(m,el){mflt=m;document.querySelectorAll('.mpill').forEach(b=>b.clas
 function toggleEP(idx){openEP=openEP===idx?null:idx;renderRes();}
 function saveEP(idx){
   const r=RES[idx];const g=id=>document.getElementById(id+idx);
+  const oldDay1=r.day1||'',oldDay3=r.day3||'',oldNotes=r.notes||'',oldRating=r.rating||0;
   r.name=g('en-').value.trim().toUpperCase()||r.name;r.room=g('er-').value.trim();
   r.arr=fromInp(g('ea-').value)||r.arr;r.dep=fromInp(g('ed-').value)||r.dep;
   r.ad=parseInt(g('ead-').value)||r.ad;r.ch=parseInt(g('ech-').value)||0;r.type=g('et-').value;r.ref=g('erf-').value.trim()||r.ref;
   r.day1=g('e1-').value.trim();r.day3=g('e3-').value.trim();r.notes=g('eno-').value.trim();
   r.rating=Math.min(10,Math.max(0,parseInt(g('ert-').value)||0));
   sv();openEP=null;renderRes();renderStats();showToast('Saved','s');
+  const _who='"'+esc(r.name||'')+'" (Rm '+(r.room||'TBA')+')';
+  if(r.day1&&r.day1!==oldDay1)logActivity('Reservations','added Day 1 note',_who+' \u2014 "'+r.day1+'"');
+  if(r.day3&&r.day3!==oldDay3)logActivity('Reservations','added Day 3 follow-up',_who+' \u2014 "'+r.day3+'"');
+  if(r.notes&&r.notes!==oldNotes)logActivity('Reservations','updated notes',_who+' \u2014 "'+r.notes+'"');
+  if(r.rating&&r.rating!==oldRating)logActivity('Reservations','set rating to '+r.rating+'/10',_who);
 }
-function deleteEP(idx){if(!confirm('Delete '+RES[idx].name+'?'))return;const saved=RES.splice(idx,1)[0];sv();openEP=null;renderRes();renderStats();showToast('Deleted','w',function(){RES.splice(idx,0,saved);sv();renderRes();renderStats();});}
+function deleteEP(idx){if(!confirm('Delete '+RES[idx].name+'?'))return;const saved=RES.splice(idx,1)[0];sv();openEP=null;renderRes();renderStats();showToast('Deleted','w',function(){RES.splice(idx,0,saved);sv();renderRes();renderStats();});if(saved)logActivity('Reservations','deleted reservation','"'+esc(saved.name||'')+'" (Rm '+(saved.room||'TBA')+')');}
 function renderRes(){
   renderStats();
   const rs=getF();
@@ -5293,6 +5439,7 @@ function saveRAndAddAnother(){
   window._mGroupId=r.groupId;
   if(editIdx!==null)RES[editIdx]=r;else RES.unshift(r);
   sv();renderRes();showToast('Saved \u2014 add the next room','s');
+  logActivity('Reservations','added reservation (linked group)','"'+esc(r.name||'')+'" (Rm '+(r.room||'TBA')+') \u2014 '+fd(r.arr));
   // Reset form but KEEP name/arrival/departure/adults/children for convenience, clear room/ref so user enters the next room
   editIdx=null;
   document.getElementById('mtitle').textContent='New Reservation (linked)';
@@ -5402,10 +5549,12 @@ function showFullText(el,text){
 function saveR(){
   const r={ref:document.getElementById('m-ref').value.trim(),room:document.getElementById('m-room').value.trim(),name:document.getElementById('m-name').value.trim().toUpperCase(),arr:fromInp(document.getElementById('m-arr').value),dep:fromInp(document.getElementById('m-dep').value),ad:parseInt(document.getElementById('m-ad').value)||2,ch:parseInt(document.getElementById('m-ch').value)||0,type:document.getElementById('m-type').value,day1:'',day3:'',notes:document.getElementById('m-notes').value.trim(),rating:0,groupId:window._mGroupId||(editIdx!==null&&RES[editIdx]?RES[editIdx].groupId:null)||null};
   if(!r.name||!r.arr){alert('Name and arrival required.');return;}
+  const isNew=editIdx===null;
   if(editIdx!==null)RES[editIdx]=r;else RES.unshift(r);
   sv();renderRes();closeM();showToast('Saved','s');
+  logActivity('Reservations',isNew?'added reservation':'edited reservation','"'+esc(r.name||'')+'" (Rm '+(r.room||'TBA')+') \u2014 '+fd(r.arr)+(r.dep?' \u2192 '+fd(r.dep):''));
 }
-function deleteR(){if(!confirm('Delete?'))return;const idx=editIdx;const saved=RES.splice(idx,1)[0];sv();renderRes();closeM();showToast('Deleted','w',function(){RES.splice(idx,0,saved);sv();renderRes();});}
+function deleteR(){if(!confirm('Delete?'))return;const idx=editIdx;const saved=RES.splice(idx,1)[0];sv();renderRes();closeM();showToast('Deleted','w',function(){RES.splice(idx,0,saved);sv();renderRes();});if(saved)logActivity('Reservations','deleted reservation','"'+esc(saved.name||'')+'" (Rm '+(saved.room||'TBA')+')');}
 // ── ENTER KEY: move to next input in same row, or save current context ──
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Enter') return;
@@ -5608,6 +5757,11 @@ function showRevResults(src,result){
 }
 function saveReview(src){
   const pending=window[src+'_pending'];if(!pending){showToast('Nothing to save','w');return;}
+  const manualName=(document.getElementById(src+'-latest-name')?.value||'').trim();
+  const manualText=(document.getElementById(src+'-latest-text')?.value||'').trim();
+  if(manualText){
+    pending.latestReview={reviewer:manualName,text:manualText,rating:pending.score,date:new Date().toISOString().split('T')[0]};
+  }
   let h=revHistoryOf(src);
   h=h.filter(r=>r.period!==pending.period);
   h.unshift(pending);
@@ -5616,6 +5770,8 @@ function saveReview(src){
   if(typeof fbdb!=='undefined')fbdb.ref(revFbRefOf(src)).set(h);
   renderRevHistory(src);
   showToast('Saved to history','s');
+  const _ln=document.getElementById(src+'-latest-name');if(_ln)_ln.value='';
+  const _lt=document.getElementById(src+'-latest-text');if(_lt)_lt.value='';
 }
 // Multi-select state for period summary
 const revSelected={ta:new Set(), goo:new Set(), exp:new Set()};
@@ -5679,6 +5835,18 @@ function renderRevHistory(src){
   const el=document.getElementById(src+'-history-list');
   const statsEl=document.getElementById(src+'-stats-bar');
   const color=src==='ta'?'#2d9c68':src==='goo'?'#4285f4':'#0066cc';
+  const previewWrap=document.getElementById(src+'-latest-from-history');
+  const previewBody=document.getElementById(src+'-latest-from-history-body');
+  if(previewWrap&&previewBody){
+    const latestWithReview=history.find(r=>r.latestReview&&r.latestReview.text);
+    if(latestWithReview){
+      const lr=latestWithReview.latestReview;
+      previewBody.innerHTML='\u201c'+esc(lr.text)+'\u201d'+(lr.reviewer?' <span style="color:var(--muted)">\u2014 '+esc(lr.reviewer)+'</span>':'')+'<div style="font-size:11px;color:var(--muted2);margin-top:3px">from '+esc(latestWithReview.period)+'</div>';
+      previewWrap.style.display='block';
+    }else{
+      previewWrap.style.display='none';
+    }
+  }
   if(statsEl){
     if(history.length){
       const totalReviews=history.reduce((s,r)=>s+r.count,0);
