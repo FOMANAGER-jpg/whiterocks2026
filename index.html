@@ -2262,21 +2262,21 @@ const KAT_CARS=[
 ];
 // mid = June & September (1-7 days available), high = July & August (3-7 days only, no 1-2 day rates)
 const KAT_PRICES={
-  'K-A':        {mid:[40,72,108,144,180,216,252,30],   high:[null,null,165,209,261,314,366,45]},
-  'K-A-AUT':    {mid:[45,81,122,162,203,243,284,35],   high:[null,null,180,228,285,342,399,50]},
-  'K-B':        {mid:[50,90,135,180,225,270,315,40],   high:[null,null,195,247,309,371,432,55]},
-  'K-C':        {mid:[60,108,162,216,270,324,378,50],  high:[null,null,225,285,357,428,499,65]},
-  'K-C-AUT':    {mid:[65,111,166,234,293,351,410,55],  high:[null,null,240,304,380,456,532,70]},
-  'K-E':        {mid:[70,126,189,252,315,378,441,60],  high:[null,null,285,361,451,542,632,85]},
-  'K-E-AUT-YC': {mid:[75,139,211,283,355,427,499,65],  high:[null,null,310,394,494,594,694,90]},
-  'K-E-AUT-PG': {mid:[80,144,216,288,360,432,504,70],  high:[null,null,315,399,499,599,699,95]},
-  'K-E-AUT-JA': {mid:[90,154,226,298,370,442,514,80],  high:[null,null,325,409,509,609,709,105]}
+  'K-A':        {mid:[40,72,108,144,180,216,252,30],   high:[null,null,165,209,261,314,366,45],   low:[30,51,77,102,128,153,179,20]},
+  'K-A-AUT':    {mid:[45,81,122,162,203,243,284,35],   high:[null,null,180,228,285,342,399,50],   low:[35,56,89,119,149,179,208,25]},
+  'K-B':        {mid:[50,90,135,180,225,270,315,40],   high:[null,null,195,247,309,371,432,55],   low:[40,68,102,136,170,204,238,30]},
+  'K-C':        {mid:[60,108,162,216,270,324,378,50],  high:[null,null,225,285,357,428,499,65],   low:[50,85,128,170,213,255,298,40]},
+  'K-C-AUT':    {mid:[65,111,166,234,293,351,410,55],  high:[null,null,240,304,380,456,532,70],   low:[55,94,140,187,234,281,327,45]},
+  'K-E':        {mid:[70,126,189,252,315,378,441,60],  high:[null,null,285,361,451,542,632,85],   low:[60,102,153,204,255,306,357,50]},
+  'K-E-AUT-YC': {mid:[75,139,211,283,355,427,499,65],  high:[null,null,310,394,494,594,694,90],   low:[65,114,174,233,293,352,411,55]},
+  'K-E-AUT-PG': {mid:[80,144,216,288,360,432,504,70],  high:[null,null,315,399,499,599,699,95],   low:[70,119,179,238,298,357,416,60]},
+  'K-E-AUT-JA': {mid:[90,154,226,298,370,442,514,80],  high:[null,null,325,409,509,609,709,105],  low:[80,129,189,248,308,367,426,70]}
 };
 const KAT_EXCESS={'K-A':600,'K-A-AUT':600,'K-B':600,'K-C':700,'K-C-AUT':700,'K-E':1000,'K-E-AUT-YC':1000,'K-E-AUT-PG':1000,'K-E-AUT-JA':1000};
 const KAT_INS={'K-A':15,'K-A-AUT':15,'K-B':15,'K-C':17,'K-C-AUT':17,'K-E':17,'K-E-AUT-YC':17,'K-E-AUT-PG':17,'K-E-AUT-JA':17};
 const KAT_PHONE='+30 6981788681 (Alexandra Birkou)';
-function katSeason(d){if(!d)return'mid';const m=new Date(d).getMonth()+1;return(m===7||m===8)?'high':'mid';}
-function katSeasonLbl(d){return katSeason(d)==='high'?'High Season (Jul\u2013Aug)':'Mid Season (Jun, Sep)';}
+function katSeason(d){if(!d)return'mid';const m=new Date(d).getMonth()+1;if(m===7||m===8)return'high';if(m===10)return'low';return'mid';}
+function katSeasonLbl(d){const s=katSeason(d);return s==='high'?'High Season (Jul\u2013Aug)':s==='low'?'Low Season (Oct)':'Mid Season (Jun, Sep)';}
 function katBasePrice(id,days,d){
   const s=(KAT_PRICES[id]||{})[katSeason(d)];if(!s)return null;
   if(days>=1&&days<=7){const p=s[days-1];if(p!=null)return p;}
@@ -3576,6 +3576,7 @@ function renderPLMBody(tab){
     const katSeasons=[
       {key:'mid',label:'Mid Season',sub:'Jun · Sep',color:'#0369a1',bg:'#f0f9ff',days:dayLabels},
       {key:'high',label:'High Season',sub:'Jul · Aug',color:'#7c3aed',bg:'#f5f3ff',days:['1d','2d','3d','4d','5d','6d','7d','+d']},
+      {key:'low',label:'Low Season',sub:'Oct',color:'#1a6644',bg:'#f0fff4',days:dayLabels},
     ];
     katSeasons.forEach(function(season){
       html+='<div style="margin-bottom:22px">';
