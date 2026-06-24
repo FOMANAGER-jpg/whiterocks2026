@@ -7584,6 +7584,7 @@ setTimeout(checkOverdueTasks,2000);
 /* PASSWORD */
 const PWD_ROLES={
   fom2026:{role:'fom',label:'Front Office Manager'},
+  napnap:{role:'fom',label:'Front Office Manager',userName:'NAP'},
   frontoffice:{role:'frontoffice',label:'Front Office'},
   backoffice:{role:'backoffice',label:'Back Office'},
   reservations:{role:'reservations',label:'Reservations'}
@@ -7730,6 +7731,10 @@ function checkPwd(){
     sessionStorage.setItem(PWD_SESSION_KEY,'1');
     sessionStorage.setItem('wr_role',roleObj.role);
     WR_ROLE=roleObj.role;
+    if(roleObj.userName){
+      WR_USER=roleObj.userName;
+      sessionStorage.setItem('wr_user_name',WR_USER);
+    }
     if(WR_ROLE==='frontoffice'){
       document.getElementById('pwdScreen').style.display='none';
       showNameScreen();
@@ -7740,7 +7745,7 @@ function checkPwd(){
     applyRoleRestrictions();
     updateUserBadge();
     if(WR_ROLE==='fom'){const btn=document.createElement('button');btn.id='fom-color-btn';btn.innerHTML='<i class="ti ti-palette" style="font-size:16px"></i>';btn.title='Theme Color';btn.onclick=fomShowColorPicker;btn.style.cssText='position:fixed;bottom:50px;right:16px;width:40px;height:40px;background:var(--sea);color:#fff;border:none;border-radius:50%;cursor:pointer;z-index:998;box-shadow:0 4px 12px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center';document.body.appendChild(btn);}
-    showToast('Welcome, '+roleObj.label+'!  ☁','s');
+    showToast('Welcome, '+(roleObj.userName||roleObj.label)+'!  ☁','s');
   } else {
     err.style.display='block';
     document.getElementById('pwdInp').value='';
