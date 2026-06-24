@@ -2779,7 +2779,7 @@ function renderGenSum(tab){
     html+='<div class="car-sum-card" style="cursor:pointer" onclick="carShowCommission(\''+mMo+'\','+mRev+','+mComm+',\''+tab+'\')" title="Click for commission">'
       +'<div class="car-sum-month">'+MN[m]+'</div>'
       +'<div class="car-sum-count">'+mc.length+' bookings</div>'
-      +(rev>0?'<div class="car-sum-rev">€'+rev.toFixed(0)+' confirmed</div>':'')
+      +(rev>0?'<div class="car-sum-rev">€'+fmtNum(rev)+' confirmed</div>':'')
       +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'
       +(conf?'<span style="color:#1a6644;font-size:11px;font-weight:700">✓ '+conf+'</span>':'')
       +(wait?'<span style="color:#b45309;font-size:11px;font-weight:700">⏳ '+wait+'</span>':'')
@@ -2804,8 +2804,8 @@ function renderGenSum(tab){
         _cHtml+='<div class="car-sum-card" style="background:#fffbeb;border:1px solid #fde68a">'
           +'<div class="car-sum-month">'+_MN[m]+'</div>'
           +'<div class="car-sum-count">'+_mc.length+' booking'+(_mc.length>1?'s':'')+'</div>'
-          +'<div class="car-sum-rev" style="color:#d97706">€'+_c.toFixed(0)+'</div>'
-          +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Cost €'+_base.toFixed(0)+' × 10%</div>'
+          +'<div class="car-sum-rev" style="color:#d97706">€'+fmtNum(_c)+'</div>'
+          +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Cost €'+fmtNum(_base)+' × 10%</div>'
           +'</div>';
       });
       _cHtml+='</div>';
@@ -2828,8 +2828,8 @@ function renderGenSum(tab){
         _cHtml+='<div class="car-sum-card" style="background:#fffbeb;border:1px solid #fde68a">'
           +'<div class="car-sum-month">'+_MN[m]+'</div>'
           +'<div class="car-sum-count">'+_mc.length+' booking'+(_mc.length>1?'s':'')+'</div>'
-          +'<div class="car-sum-rev" style="color:#d97706">€'+_c.toFixed(0)+'</div>'
-          +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Cost €'+_base.toFixed(0)+' × 7%</div>'
+          +'<div class="car-sum-rev" style="color:#d97706">€'+fmtNum(_c)+'</div>'
+          +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Cost €'+fmtNum(_base)+' × 7%</div>'
           +'</div>';
       });
       _cHtml+='</div>';
@@ -2861,13 +2861,13 @@ function renderGenSum(tab){
           _byCo[co].rev+=cost;_byCo[co].comm+=comm;_byCo[co].count++;
         });
         const totalComm=Object.values(_byCo).reduce((s,d)=>s+d.comm,0);
-        _bcHtml+='<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:6px">'+_MNB[m]+' <span style="color:#d97706;font-size:12px">\u20ac'+totalComm.toFixed(0)+' total</span></div>';
+        _bcHtml+='<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:6px">'+_MNB[m]+' <span style="color:#d97706;font-size:12px">\u20ac'+fmtNum(totalComm)+' total</span></div>';
         _bcHtml+='<div style="display:flex;flex-direction:column;gap:5px">';
         Object.entries(_byCo).forEach(([co,d])=>{
           _bcHtml+='<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:9px">'
             +'<div><div style="font-size:11px;font-weight:700;color:var(--ink)">'+co+'</div>'
-            +'<div style="font-size:10px;color:var(--muted)">'+d.count+' booking'+(d.count>1?'s':'')+' \u00b7 \u20ac'+d.rev.toFixed(0)+' \u00d7 '+d.rate+'</div></div>'
-            +'<div style="font-size:18px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+d.comm.toFixed(0)+'</div>'
+            +'<div style="font-size:10px;color:var(--muted)">'+d.count+' booking'+(d.count>1?'s':'')+' \u00b7 \u20ac'+fmtNum(d.rev)+' \u00d7 '+d.rate+'</div></div>'
+            +'<div style="font-size:18px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+fmtNum(d.comm)+'</div>'
             +'</div>';
         });
         _bcHtml+='</div></div>';
@@ -2891,8 +2891,8 @@ function renderGenSum(tab){
         _cHtml+='<div class="car-sum-card" style="background:#fffbeb;border:1px solid #fde68a">'
           +'<div class="car-sum-month">'+_MN[m]+'</div>'
           +'<div class="car-sum-count">'+_mc.length+' booking'+(_mc.length>1?'s':'')+'</div>'
-          +'<div class="car-sum-rev" style="color:#d97706">€'+_c.toFixed(0)+'</div>'
-          +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Cost €'+_base.toFixed(0)+' × 10%</div>'
+          +'<div class="car-sum-rev" style="color:#d97706">€'+fmtNum(_c)+'</div>'
+          +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Cost €'+fmtNum(_base)+' × 10%</div>'
           +'</div>';
       });
       _cHtml+='</div>';
@@ -2993,9 +2993,9 @@ function renderExpStats(){
     const pct=totalRev>0?Math.round(d.rev/totalRev*100):0;
     return '<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;min-width:140px">'
       +'<div style="font-size:10px;font-weight:700;color:var(--sea-dark);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">'+d.label+'</div>'
-      +'<div style="font-size:20px;font-weight:700;color:var(--sea);font-family:var(--serif)">\u20ac'+d.rev.toFixed(0)+'</div>'
+      +'<div style="font-size:20px;font-weight:700;color:var(--sea);font-family:var(--serif)">\u20ac'+fmtNum(d.rev)+'</div>'
       +'<div style="font-size:10px;color:var(--muted);margin-top:2px">'+d.count+' sales \u00b7 '+pct+'% of total</div>'
-      +(d.comm>0?'<div style="font-size:11px;font-weight:700;color:#d97706;margin-top:4px">\u20ac'+d.comm.toFixed(0)+' comm ('+d.rate+')</div>':'')
+      +(d.comm>0?'<div style="font-size:11px;font-weight:700;color:#d97706;margin-top:4px">\u20ac'+fmtNum(d.comm)+' comm ('+d.rate+')</div>':'')
       +'<div style="margin-top:6px;background:var(--bg);border-radius:4px;height:4px"><div style="background:var(--sea);height:4px;border-radius:4px;width:'+pct+'%"></div></div>'
       +'</div>';
   }).join('');
@@ -3021,14 +3021,14 @@ function renderExpStats(){
         },0);
         const comm=rows.reduce((s,r)=>s+getCommForRow(tab,r),0);
         rowRev+=rev;rowComm+=comm;
-        cells+='<td style="padding:5px 8px;text-align:right;color:var(--ink)">'+( rev>0?'\u20ac'+rev.toFixed(0):'-')+'</td>';
+        cells+='<td style="padding:5px 8px;text-align:right;color:var(--ink)">'+( rev>0?'\u20ac'+fmtNum(rev):'-')+'</td>';
       });
       if(rowRev===0)return;
       monthHtml+='<tr style="border-bottom:1px solid var(--border2)">'
         +'<td style="padding:5px 10px;font-weight:700;color:var(--ink)">'+MN_LABEL[m]+'</td>'
         +cells
-        +'<td style="padding:5px 10px;text-align:right;font-weight:700;color:var(--sea)">\u20ac'+rowRev.toFixed(0)+'</td>'
-        +'<td style="padding:5px 10px;text-align:right;font-weight:700;color:#d97706">\u20ac'+rowComm.toFixed(0)+'</td>'
+        +'<td style="padding:5px 10px;text-align:right;font-weight:700;color:var(--sea)">\u20ac'+fmtNum(rowRev)+'</td>'
+        +'<td style="padding:5px 10px;text-align:right;font-weight:700;color:#d97706">\u20ac'+fmtNum(rowComm)+'</td>'
         +'</tr>';
     });
     monthHtml+='</tbody></table></div></div>';
@@ -3048,8 +3048,8 @@ function renderExpStats(){
     '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2)">'
     +'<div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--ink)">'+co+'</div>'
     +'<div style="font-size:10px;color:var(--muted)">'+d.count+' bookings</div></div>'
-    +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--sea)">\u20ac'+d.rev.toFixed(0)+'</div>'
-    +'<div style="font-size:11px;color:#d97706">comm \u20ac'+d.comm.toFixed(0)+'</div></div>'
+    +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--sea)">\u20ac'+fmtNum(d.rev)+'</div>'
+    +'<div style="font-size:11px;color:#d97706">comm \u20ac'+fmtNum(d.comm)+'</div></div>'
     +'</div>'
   ).join('');
 
@@ -3067,8 +3067,8 @@ function renderExpStats(){
     '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2)">'
     +'<div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--ink)">'+co+'</div>'
     +'<div style="font-size:10px;color:var(--muted)">'+d.count+' bookings</div></div>'
-    +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--sea)">\u20ac'+d.rev.toFixed(0)+'</div>'
-    +'<div style="font-size:11px;color:#d97706">comm \u20ac'+d.comm.toFixed(0)+'</div></div>'
+    +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--sea)">\u20ac'+fmtNum(d.rev)+'</div>'
+    +'<div style="font-size:11px;color:#d97706">comm \u20ac'+fmtNum(d.comm)+'</div></div>'
     +'</div>'
   ).join('');
 
@@ -3087,7 +3087,7 @@ function renderExpStats(){
     '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2)">'
     +'<div style="width:110px;font-size:11px;font-weight:600;color:var(--ink)">'+d.label+'</div>'
     +'<div style="flex:1;background:var(--bg);border-radius:4px;height:12px"><div style="background:#d97706;height:12px;border-radius:4px;width:'+Math.round(d.rev/totalRev*100)+'%"></div></div>'
-    +'<div style="font-size:10px;font-weight:700;color:#d97706;white-space:nowrap">\u20ac'+d.rev.toFixed(0)+'</div>'
+    +'<div style="font-size:10px;font-weight:700;color:#d97706;white-space:nowrap">\u20ac'+fmtNum(d.rev)+'</div>'
     +'</div>'
   ).join('');
 
@@ -3095,8 +3095,8 @@ function renderExpStats(){
     // Top stats
     '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">'
     +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--sea);font-family:var(--serif)">'+totalSales+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Total Sales</div></div>'
-    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--sea);font-family:var(--serif)">\u20ac'+totalRev.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Total Revenue</div></div>'
-    +'<div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+totalComm.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Total Commission</div></div>'
+    +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--sea);font-family:var(--serif)">\u20ac'+fmtNum(totalRev)+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Total Revenue</div></div>'
+    +'<div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+fmtNum(totalComm)+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Total Commission</div></div>'
     +'</div>'
     // Per tab cards
     +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:18px">'+tabCards+'</div>'
@@ -3809,10 +3809,10 @@ function expPrintTable(tab){
       +'<style>body{font-family:Arial,sans-serif;padding:20px;font-size:11px;color:#1a2535}h1{font-size:17px;color:#1a6644;margin-bottom:2px}.sub{font-size:11px;color:#888;margin-bottom:14px}table{width:100%;border-collapse:collapse}thead{background:#f0fff4}th{padding:6px 8px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;color:#0d4a2f;border-bottom:2px solid #a8d5b8;white-space:nowrap}td{padding:5px 8px;border-bottom:1px solid #e8f5ee}tr:nth-child(even){background:#fafffe}.foot{font-weight:700;background:#e8f5ee}@media print{body{padding:8px}@page{size:A4 landscape}}</style>'
       +'</head><body>'
       +'<h1>Car Rentals \u2014 ACE Rent a Car</h1>'
-      +'<div class="sub">White Rocks Hotel &amp; Bungalows \u00b7 Season 2026 \u00b7 '+CARS.length+' bookings \u00b7 Revenue: \u20ac'+rev.toFixed(0)+'</div>'
+      +'<div class="sub">White Rocks Hotel &amp; Bungalows \u00b7 Season 2026 \u00b7 '+CARS.length+' bookings \u00b7 Revenue: \u20ac'+fmtNum(rev)+'</div>'
       +'<table><thead><tr><th>#</th><th>Ref</th><th>Name</th><th>Room</th><th>Booking</th><th>Rental</th><th>Time</th><th>Car</th><th>Days</th><th>Booked By</th><th>Company</th><th>Base</th><th>Ins</th><th>Extras</th><th>Total</th><th>Status</th></tr></thead>'
       +'<tbody>'+rowsHtml+'</tbody>'
-      +'<tfoot><tr class="foot"><td colspan="14" style="text-align:right">Total (excl. cancelled):</td><td>\u20ac'+rev.toFixed(0)+'</td><td></td></tr></tfoot>'
+      +'<tfoot><tr class="foot"><td colspan="14" style="text-align:right">Total (excl. cancelled):</td><td>\u20ac'+fmtNum(rev)+'</td><td></td></tr></tfoot>'
       +'</table><script>window.onload=function(){window.print();}<\/script></body></html>');
     win.document.close();
     return;
@@ -3843,7 +3843,7 @@ function expPrintTable(tab){
   }
   const total=rows.filter(r=>r.status!=='cancelled').reduce((s,r)=>s+(parseFloat(r.grossPrice||r.cost||0)||0),0);
   const win=window.open('','_blank','width=900,height=700');
-  win.document.write('<!DOCTYPE html><html><head><title>'+label+'</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#1a2535;max-width:960px;margin:0 auto}table{width:100%;border-collapse:collapse;font-size:12px}thead{background:'+col+'}th{padding:8px 10px;text-align:left;color:#fff;font-size:10px;text-transform:uppercase;letter-spacing:.7px}tbody tr{border-bottom:1px solid #eee}tbody tr:nth-child(even){background:#fafafa}td{padding:7px 10px}@media print{body{padding:12px}}</style></head><body><h1 style="font-size:20px;color:'+col+';margin-bottom:2px">'+label+'</h1><div style="font-size:12px;color:#888;margin-bottom:16px">White Rocks Hotel &amp; Bungalows &middot; Kefalonia 2026 &middot; '+rows.length+' bookings</div><table><thead><tr>'+headers+'</tr></thead><tbody>'+rowsHtml+'</tbody></table>'+(total>0?'<div style="margin-top:14px;font-size:13px;font-weight:700;color:'+col+'">Total Revenue (excl. cancelled): \u20ac'+total.toFixed(0)+'</div>':'')+'<script>window.onload=function(){window.print();}<\/script></body></html>');
+  win.document.write('<!DOCTYPE html><html><head><title>'+label+'</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#1a2535;max-width:960px;margin:0 auto}table{width:100%;border-collapse:collapse;font-size:12px}thead{background:'+col+'}th{padding:8px 10px;text-align:left;color:#fff;font-size:10px;text-transform:uppercase;letter-spacing:.7px}tbody tr{border-bottom:1px solid #eee}tbody tr:nth-child(even){background:#fafafa}td{padding:7px 10px}@media print{body{padding:12px}}</style></head><body><h1 style="font-size:20px;color:'+col+';margin-bottom:2px">'+label+'</h1><div style="font-size:12px;color:#888;margin-bottom:16px">White Rocks Hotel &amp; Bungalows &middot; Kefalonia 2026 &middot; '+rows.length+' bookings</div><table><thead><tr>'+headers+'</tr></thead><tbody>'+rowsHtml+'</tbody></table>'+(total>0?'<div style="margin-top:14px;font-size:13px;font-weight:700;color:'+col+'">Total Revenue (excl. cancelled): \u20ac'+fmtNum(total)+'</div>':'')+'<script>window.onload=function(){window.print();}<\/script></body></html>');
   win.document.close();
 }
 
@@ -4140,8 +4140,8 @@ function carShowCommission(month,rev,comm,tabName){
         :(coL.includes('ego')?20:10);
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px">'
         +'<div style="text-align:left"><div style="font-size:12px;font-weight:700;color:var(--ink)">'+co+'</div>'
-        +'<div style="font-size:10px;color:var(--muted);margin-top:2px">€'+d.rev.toFixed(0)+' revenue · '+rate+'%</div></div>'
-        +'<div style="font-size:20px;font-weight:700;color:#d97706;font-family:var(--serif)">€'+d.comm.toFixed(0)+'</div>'
+        +'<div style="font-size:10px;color:var(--muted);margin-top:2px">€'+fmtNum(d.rev)+' revenue · '+rate+'%</div></div>'
+        +'<div style="font-size:20px;font-weight:700;color:#d97706;font-family:var(--serif)">€'+fmtNum(d.comm)+'</div>'
         +'</div>';
     }).join('');
     breakdownHtml='<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">'+rows+'</div>';
@@ -4156,11 +4156,11 @@ function carShowCommission(month,rev,comm,tabName){
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">'
     +'<div style="background:#e8f5ee;border-radius:10px;padding:14px">'
     +'<div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Revenue</div>'
-    +'<div style="font-size:24px;font-weight:700;color:#1a6644;font-family:var(--serif)">\u20ac'+rev.toFixed(0)+'</div>'
+    +'<div style="font-size:24px;font-weight:700;color:#1a6644;font-family:var(--serif)">\u20ac'+fmtNum(rev)+'</div>'
     +'</div>'
     +'<div style="background:#fff8f0;border:2px solid #fcd34d;border-radius:10px;padding:14px">'
     +'<div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Commission ('+_rateLabel+')</div>'
-    +'<div style="font-size:24px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+comm.toFixed(0)+'</div>'
+    +'<div style="font-size:24px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+fmtNum(comm)+'</div>'
     +'</div>'
     +'</div>'
     +'<div style="font-size:11px;color:var(--muted);margin-bottom:16px">Revenue \u00d7 '+_rateLabel+' = Commission</div>'
@@ -4279,7 +4279,7 @@ function renderCars(){
       <td style="padding:5px 7px;text-align:center">
         ${ACE_EXTRAS.filter(e=>c.extras&&c.extras[e.id]).map(e=>'<span style="display:inline-block;background:#e8f5ee;color:#1a6644;border:1px solid #a8d5b8;border-radius:5px;padding:2px 6px;font-size:10px;font-weight:700;margin:1px">'+e.label+(e.qty&&c.extras[e.id]>1?' x'+c.extras[e.id]:'')+' +€'+(e.price*(e.qty?parseInt(c.extras[e.id]||1):1)*(c.days||1))+'</span>').join('')||''}
       </td>
-      <td style="padding:7px 9px;text-align:right;font-weight:700;font-size:14px;color:#0d4a2f;font-family:var(--serif)">${total!=null?'€'+total:c.carType==='T'?'On Req':'—'}</td>
+      <td style="padding:7px 9px;text-align:right;font-weight:700;font-size:14px;color:#0d4a2f;font-family:var(--serif)">${total!=null?'€'+fmtNum(total):c.carType==='T'?'On Req':'—'}</td>
       <td style="padding:4px 7px;text-align:center">
         <button class="car-badge ${c.status}" onclick="carCycleStatus(${i})" title="Click to change">
           ${SIC[c.status]||SIC.waiting} ${SLB[c.status]||'Waiting'}
@@ -4395,7 +4395,7 @@ function renderCarSum(){
     window._carsBreakdown[MN[m]]=carsCoBreakdown;
     html+='<div class="car-sum-card" style="cursor:pointer" onclick="carShowCommission(\''+MN[m]+'\','+rev+','+comm+',\'cars\')" title="Click for commission breakdown">'
       +'<div class="car-sum-count">'+mc.length+' bookings</div>'
-      +(rev>0&&!window._hideCarsRevenue?'<div class="car-sum-rev">€'+rev.toFixed(0)+' confirmed</div>':'')
+      +(rev>0&&!window._hideCarsRevenue?'<div class="car-sum-rev">€'+fmtNum(rev)+' confirmed</div>':'')
       +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'
       +(conf?'<span style="color:#1a6644;font-size:11px;font-weight:700">&#10003; '+conf+'</span>':'')
       +(wait?'<span style="color:#b45309;font-size:11px;font-weight:700">&#9203; '+wait+'</span>':'')
@@ -4416,8 +4416,8 @@ function renderCarSum(){
       commHtml+='<div class="car-sum-card" style="background:#fffbeb;border:1px solid #fde68a">'
         +'<div class="car-sum-month">'+MN[m]+'</div>'
         +'<div class="car-sum-count">'+mc.length+' booking'+(mc.length>1?'s':'')+'</div>'
-        +'<div class="car-sum-rev" style="color:#d97706">€'+comm.toFixed(0)+'</div>'
-        +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Base €'+baseTotal.toFixed(0)+' × 20%</div>'
+        +'<div class="car-sum-rev" style="color:#d97706">€'+fmtNum(comm)+'</div>'
+        +'<div style="font-size:9px;color:var(--muted);margin-top:2px">Base €'+fmtNum(baseTotal)+' × 20%</div>'
         +'</div>';
     });
     commSumGrid.innerHTML=commHtml;
@@ -4825,12 +4825,12 @@ function renderGenRevSummary(tab,rows){
   const maxRev=Math.max(...sortedM.map(m=>byMonth[m].total),1);
   const MN={'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
   const bars=sortedM.map(m=>{const d=byMonth[m];const[yr,mo]=m.split('-');const pct=Math.round((d.total/maxRev)*100);
-    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><div style="width:52px;font-size:11px;color:var(--ink2);font-weight:600">'+(MN[mo]||mo)+' '+yr.slice(2)+'</div><div style="flex:1;background:#e8e8e8;border-radius:20px;height:10px"><div style="width:'+pct+'%;background:'+col+';border-radius:20px;height:10px"></div></div><div style="font-size:11px;font-weight:700;color:'+col+';width:65px;text-align:right">\u20ac'+d.total.toFixed(0)+'</div>'+(d.comm?'<div style="font-size:10px;color:#d97706;width:65px">\u20ac'+d.comm.toFixed(0)+' comm.</div>':'<div style="width:65px"></div>')+'</div>';
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><div style="width:52px;font-size:11px;color:var(--ink2);font-weight:600">'+(MN[mo]||mo)+' '+yr.slice(2)+'</div><div style="flex:1;background:#e8e8e8;border-radius:20px;height:10px"><div style="width:'+pct+'%;background:'+col+';border-radius:20px;height:10px"></div></div><div style="font-size:11px;font-weight:700;color:'+col+';width:65px;text-align:right">\u20ac'+fmtNum(d.total)+'</div>'+(d.comm?'<div style="font-size:10px;color:#d97706;width:65px">\u20ac'+fmtNum(d.comm)+' comm.</div>':'<div style="width:65px"></div>')+'</div>';
   }).join('');
   const confCount=rows.filter(r=>r.status==='confirmed').length;
   const commCount=rows.filter(r=>r.status==='commission').length;
   const waitCount=rows.filter(r=>r.status==='waiting').length;
-  el.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap"><i class="ti ti-chart-bar-popular" style="color:'+col+';font-size:18px"></i><span style="font-size:13px;font-weight:700;color:var(--ink)">Revenue Summary</span><div style="display:flex;gap:12px;margin-left:auto;flex-wrap:wrap"><span style="text-align:center"><div style="font-size:24px;font-weight:700;color:'+col+';font-family:var(--serif)">\u20ac'+totalRev.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted)">Total Revenue</div></span>'+(totalConf?'<span style="text-align:center"><div style="font-size:20px;font-weight:700;color:#1a6644;font-family:var(--serif)">\u20ac'+totalConf.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted)">\u2713 '+confCount+' confirmed</div></span>':'')+(totalComm?'<span style="text-align:center"><div style="font-size:20px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+totalComm.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted)">\u25cf '+commCount+' commission</div></span>':'')+'</div></div><div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap"><span style="background:#e8f5ee;color:#1a6644;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">\u2713 '+confCount+' confirmed</span><span style="background:#d97706;color:#fff;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">\u128176 '+commCount+' commission</span><span style="background:#fef3c7;color:#b45309;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">\u23f3 '+waitCount+' waiting</span></div>'+(bars?'<div style="border-top:1px solid var(--border);padding-top:10px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:6px">Monthly</div>'+bars+'</div>':'');
+  el.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap"><i class="ti ti-chart-bar-popular" style="color:'+col+';font-size:18px"></i><span style="font-size:13px;font-weight:700;color:var(--ink)">Revenue Summary</span><div style="display:flex;gap:12px;margin-left:auto;flex-wrap:wrap"><span style="text-align:center"><div style="font-size:24px;font-weight:700;color:'+col+';font-family:var(--serif)">\u20ac'+fmtNum(totalRev)+'</div><div style="font-size:10px;color:var(--muted)">Total Revenue</div></span>'+(totalConf?'<span style="text-align:center"><div style="font-size:20px;font-weight:700;color:#1a6644;font-family:var(--serif)">\u20ac'+fmtNum(totalConf)+'</div><div style="font-size:10px;color:var(--muted)">\u2713 '+confCount+' confirmed</div></span>':'')+(totalComm?'<span style="text-align:center"><div style="font-size:20px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+fmtNum(totalComm)+'</div><div style="font-size:10px;color:var(--muted)">\u25cf '+commCount+' commission</div></span>':'')+'</div></div><div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap"><span style="background:#e8f5ee;color:#1a6644;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">\u2713 '+confCount+' confirmed</span><span style="background:#d97706;color:#fff;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">\u128176 '+commCount+' commission</span><span style="background:#fef3c7;color:#b45309;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">\u23f3 '+waitCount+' waiting</span></div>'+(bars?'<div style="border-top:1px solid var(--border);padding-top:10px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:6px">Monthly</div>'+bars+'</div>':'');
 }
 
 /* ── Column resize ── */
@@ -5000,6 +5000,7 @@ function toInp(s){if(!s)return '';if(s.includes('-'))return s;const p=s.split('/
 function fromInp(s){if(!s)return '';const d=new Date(s);return d.getDate()+'/'+(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(-2);}
 function am(r){const d=pd(r.arr);return d?String(d.getMonth()+1).padStart(2,'0'):'';}
 function esc(s){if(!s)return'';return String(s).replace(/&/g,'\x26amp;').replace(/"/g,'\x26quot;').replace(/</g,'\x26lt;');}
+function fmtNum(n){n=Math.round(parseFloat(n)||0);return n.toLocaleString('el-GR');}
 setInterval(()=>{const n=new Date();document.getElementById('clk').textContent=n.toTimeString().slice(0,8);},1000);
 function toggleDD(){document.getElementById('ddMenu').classList.toggle('open');}
 document.addEventListener('click',e=>{if(!document.getElementById('ddWrap').contains(e.target))document.getElementById('ddMenu').classList.remove('open');});
@@ -6237,11 +6238,11 @@ function renderAnalytics(){
       }
     });
   });
-  const expEl=document.getElementById('an-exp-rev');if(expEl)expEl.textContent='€'+expRev.toFixed(0);
+  const expEl=document.getElementById('an-exp-rev');if(expEl)expEl.textContent='€'+fmtNum(expRev);
   const expSub=document.getElementById('an-exp-rev-sub');if(expSub)expSub.textContent=expCount+' bookings';
-  const expCommEl=document.getElementById('an-exp-comm');if(expCommEl)expCommEl.textContent='€'+expComm.toFixed(0);
+  const expCommEl=document.getElementById('an-exp-comm');if(expCommEl)expCommEl.textContent='€'+fmtNum(expComm);
   const expCommSub=document.getElementById('an-exp-comm-sub');if(expCommSub)expCommSub.textContent='from '+expCount+' booking'+(expCount!==1?'s':'');
-  const flEl=document.getElementById('an-fl-rev');if(flEl)flEl.textContent='€'+flowersRev.toFixed(0);
+  const flEl=document.getElementById('an-fl-rev');if(flEl)flEl.textContent='€'+fmtNum(flowersRev);
   const flSub=document.getElementById('an-fl-rev-sub');if(flSub)flSub.textContent=flowersCount+' orders';
   // Massage revenue
   let msRev=0,msCount=0;
@@ -6255,7 +6256,7 @@ function renderAnalytics(){
       if(b&&b.name&&b.status!=='cancelled'){const cost=parseFloat(b.cost||0);if(cost>0){msRev+=cost;msCount++;}}
     });
   });
-  const msEl=document.getElementById('an-ms-rev');if(msEl)msEl.textContent='€'+msRev.toFixed(0);
+  const msEl=document.getElementById('an-ms-rev');if(msEl)msEl.textContent='€'+fmtNum(msRev);
   const msSub=document.getElementById('an-ms-rev-sub');if(msSub)msSub.textContent=msCount+' sessions';
   renderAnChart(_taH,_gooH,_bkH,_expeH);renderTopThemes(_taH,_gooH,_expeH);renderAIRevList();
 }
@@ -6924,7 +6925,7 @@ function renderMsStats(){
     +'<div style="width:130px;font-size:11px;color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+name+'">'+name+'</div>'
     +'<div style="flex:1;background:var(--bg);border-radius:4px;height:12px"><div style="background:#b45309;height:12px;border-radius:4px;width:'+Math.round(d.count/maxG*100)+'%"></div></div>'
     +'<div style="font-size:11px;font-weight:700;color:var(--muted);width:22px;text-align:right">'+d.count+'x</div>'
-    +'<div style="font-size:11px;font-weight:700;color:#b45309;width:50px;text-align:right">\u20ac'+d.rev.toFixed(0)+'</div>'
+    +'<div style="font-size:11px;font-weight:700;color:#b45309;width:50px;text-align:right">\u20ac'+fmtNum(d.rev)+'</div>'
     +'</div>'
   ).join('');
   // Peak hours chart
@@ -6945,8 +6946,8 @@ function renderMsStats(){
       +'<div style="font-size:10px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">'+MNL[m]+'</div>'
       +'<div style="font-size:22px;font-weight:700;color:#b45309;font-family:var(--serif)">'+occ+'%</div>'
       +'<div style="font-size:10px;color:var(--muted);margin-top:2px">'+d.sessions+' / '+d.slots+' slots</div>'
-      +'<div style="font-size:11px;font-weight:700;color:var(--ink);margin-top:5px">\u20ac'+d.rev.toFixed(0)+' rev</div>'
-      +'<div style="font-size:11px;color:#d97706;margin-top:2px">\u20ac'+d.comm.toFixed(0)+' commission</div>'
+      +'<div style="font-size:11px;font-weight:700;color:var(--ink);margin-top:5px">\u20ac'+fmtNum(d.rev)+' rev</div>'
+      +'<div style="font-size:11px;color:#d97706;margin-top:2px">\u20ac'+fmtNum(d.comm)+' commission</div>'
       +'<div style="margin-top:7px;background:var(--bg);border-radius:6px;height:5px"><div style="background:#b45309;height:5px;border-radius:6px;width:'+occ+'%"></div></div>'
       +'</div>';
   }).join('');
@@ -6957,7 +6958,7 @@ function renderMsStats(){
     +'<div style="font-size:26px;font-weight:700;color:#b45309;font-family:var(--serif)">'+totalSessions+'</div>'
     +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Sessions</div></div>'
     +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">'
-    +'<div style="font-size:26px;font-weight:700;color:#b45309;font-family:var(--serif)">\u20ac'+totalRev.toFixed(0)+'</div>'
+    +'<div style="font-size:26px;font-weight:700;color:#b45309;font-family:var(--serif)">\u20ac'+fmtNum(totalRev)+'</div>'
     +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:3px">Revenue</div></div>'
     +'<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">'
     +'<div style="font-size:26px;font-weight:700;color:'+(occRate>60?'#1a6644':occRate>30?'#d97706':'#c0392b')+';font-family:var(--serif)">'+occRate+'%</div>'
@@ -6966,7 +6967,7 @@ function renderMsStats(){
     +'</div>'
     +(!_hideRev&&totalComm>0?'<div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between">'
     +'<div style="display:flex;align-items:center;gap:8px"><i class="ti ti-coin" style="font-size:18px;color:#d97706"></i><div><div style="font-size:13px;font-weight:700;color:#92400e">Total Commission</div><div style="font-size:11px;color:var(--muted)">Hotel earnings from massage</div></div></div>'
-    +'<div style="font-size:28px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+totalComm.toFixed(0)+'</div>'
+    +'<div style="font-size:28px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+fmtNum(totalComm)+'</div>'
     +'</div>':'')
     +(monthCards&&msStatMonth==='all'?'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:18px">'+monthCards+'</div>':'')
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
@@ -7018,11 +7019,11 @@ function msSumRender(){
   const sortedMonths=Object.keys(months).sort();
   if(!sortedMonths.length){el.innerHTML='';return;}
   const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const revCards=sortedMonths.map(m=>{const[y,mo]=m.split('-');const mn=MN[parseInt(mo)-1]+' '+y;const d=months[m];return '<div style="background:#fff8f0;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;min-width:130px"><div style="font-size:10px;font-weight:700;color:#92400e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px">'+mn+'</div><div style="font-size:22px;font-weight:700;color:#b45309;font-family:var(--serif)">\u20ac'+d.rev.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted);margin-top:3px">'+d.sessions+' sessions'+(d.confirmed?' \u00b7 '+d.confirmed+' conf':'')+'</div></div>';}).join('');
-  const commCards=sortedMonths.filter(m=>months[m].comm>0).map(m=>{const[y,mo]=m.split('-');const mn=MN[parseInt(mo)-1]+' '+y;const d=months[m];return '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:12px 16px;min-width:130px"><div style="font-size:10px;font-weight:700;color:#92400e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px">'+mn+'</div><div style="font-size:22px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+d.comm.toFixed(0)+'</div><div style="font-size:10px;color:var(--muted);margin-top:3px">'+d.commSess+' sessions</div></div>';}).join('');
+  const revCards=sortedMonths.map(m=>{const[y,mo]=m.split('-');const mn=MN[parseInt(mo)-1]+' '+y;const d=months[m];return '<div style="background:#fff8f0;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;min-width:130px"><div style="font-size:10px;font-weight:700;color:#92400e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px">'+mn+'</div><div style="font-size:22px;font-weight:700;color:#b45309;font-family:var(--serif)">\u20ac'+fmtNum(d.rev)+'</div><div style="font-size:10px;color:var(--muted);margin-top:3px">'+d.sessions+' sessions'+(d.confirmed?' \u00b7 '+d.confirmed+' conf':'')+'</div></div>';}).join('');
+  const commCards=sortedMonths.filter(m=>months[m].comm>0).map(m=>{const[y,mo]=m.split('-');const mn=MN[parseInt(mo)-1]+' '+y;const d=months[m];return '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:12px 16px;min-width:130px"><div style="font-size:10px;font-weight:700;color:#92400e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px">'+mn+'</div><div style="font-size:22px;font-weight:700;color:#d97706;font-family:var(--serif)">\u20ac'+fmtNum(d.comm)+'</div><div style="font-size:10px;color:var(--muted);margin-top:3px">'+d.commSess+' sessions</div></div>';}).join('');
   let html='<div style="display:grid;grid-template-columns:1fr'+(commCards?' 1fr':'')+(';gap:16px;align-items:start">'
-    +'<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-chart-bar" style="font-size:14px;color:#b45309"></i> Monthly Revenue<span style="margin-left:auto;font-size:12px;font-weight:700;color:#b45309">\u20ac'+totalRev.toFixed(0)+' total \u00b7 '+totalSess+' sessions</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">'+revCards+'</div></div>');
-  if(commCards)html+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-coin" style="font-size:14px;color:#d97706"></i> Commission Summary<span style="margin-left:auto;font-size:12px;font-weight:700;color:#d97706">\u20ac'+totalComm.toFixed(0)+' total \u00b7 '+commSess+' sessions</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">'+commCards+'</div></div>';
+    +'<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-chart-bar" style="font-size:14px;color:#b45309"></i> Monthly Revenue<span style="margin-left:auto;font-size:12px;font-weight:700;color:#b45309">\u20ac'+fmtNum(totalRev)+' total \u00b7 '+totalSess+' sessions</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">'+revCards+'</div></div>');
+  if(commCards)html+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ti ti-coin" style="font-size:14px;color:#d97706"></i> Commission Summary<span style="margin-left:auto;font-size:12px;font-weight:700;color:#d97706">\u20ac'+fmtNum(totalComm)+' total \u00b7 '+commSess+' sessions</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">'+commCards+'</div></div>';
   html+='</div>';
   el.innerHTML=html;
 }
@@ -7118,7 +7119,7 @@ function renderMassage(){
       gridHtml+='<div onclick="msSelectDate(\''+dateKey+'\')" style="background:'+cellBg+';border:'+cellBorder+';padding:6px 7px;min-height:58px;cursor:pointer;box-sizing:border-box;transition:background .15s">'
         +'<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:'+(isToday?'#92400e':'#3c2a1e')+';font-weight:'+(isToday||isSelected?'700':'500')+'">'+dnum+'</span>'+(isToday?'<span style="font-size:8px;color:#92400e;font-weight:700">TODAY</span>':'')+'</div>'
         +(hasSlots?'<div style="font-size:10px;color:'+(info.bookedCount>0?'#a6391f':'#c4a584')+';margin-top:4px;font-weight:600">'+info.bookedCount+'/'+info.allSlots.length+'</div>':'<div style="height:14px"></div>')
-        +(info.totalRevenue>0?'<div style="font-size:10px;color:#92400e;margin-top:1px;font-weight:700">\u20ac'+info.totalRevenue.toFixed(0)+'</div>':'')
+        +(info.totalRevenue>0?'<div style="font-size:10px;color:#92400e;margin-top:1px;font-weight:700">\u20ac'+fmtNum(info.totalRevenue)+'</div>':'')
         +'</div>';
     }
     gridHtml+='</div>';
@@ -7155,7 +7156,7 @@ function renderMassage(){
       +'</div>'
       +'<div style="display:flex;align-items:center;gap:14px;font-size:13px">'
         +'<span style="color:#92400e;font-weight:600">'+info.bookedCount+(info.scheduledSlots.length?'/'+info.allSlots.length:'')+' booked</span>'
-        +(info.totalRevenue>0?'<span style="font-weight:700;color:#15803d">\u20ac'+info.totalRevenue.toFixed(0)+'</span>':'')
+        +(info.totalRevenue>0?'<span style="font-weight:700;color:#15803d">\u20ac'+fmtNum(info.totalRevenue)+'</span>':'')
       +'</div>'
     +'</div>'
     +bodyHtml
@@ -9106,7 +9107,7 @@ function renderBuffetStats(type){
   var kpis=kBox('Days',activeDays.length,'of '+filtered.length+' total')
     +kBox('Avg Occ',avgOcc+'%','of eligible rooms')
     +kBox('Peak Occ',maxOcc+'%',maxOccDay?maxOccDay.date:'')
-    +kBox('Total Guests',totalGuests.toLocaleString(),'served');
+    +kBox('Total Guests',totalGuests.toLocaleString('el-GR'),'served');
   if(!isBF){
     var rev=activeDays.reduce(function(s,d){return s+(d.summary.totalRevenue||0);},0);
     var bb=activeDays.reduce(function(s,d){return s+(d.summary.bbRooms||0);},0);
@@ -9114,7 +9115,7 @@ function renderBuffetStats(type){
     var da=activeDays.reduce(function(s,d){return s+(d.summary.daTotal||0);},0);
     var daP=activeDays.reduce(function(s,d){return s+(d.summary.daPaid||0);},0);
     var lm=activeDays.reduce(function(s,d){return s+(d.summary.lungomareRooms||0);},0);
-    kpis+=kBox('Revenue','\u20ac'+rev,'BB paid + DA')
+    kpis+=kBox('Revenue','\u20ac'+fmtNum(rev),'BB paid + DA')
       +kBox('BB Rooms',bb,bbP+' paid dinner')
       +kBox('Dine Around',da,daP+' paid')
       +kBox('Lungomare',lm,'nights');
@@ -9275,7 +9276,7 @@ function bfWeekly(days,isBF,col,colLight){
   var byD={},tDOW={};
   days.forEach(function(d){var nm=DN[new Date(d.date).getDay()];if(!byD[nm])byD[nm]={count:0,occ:0,guests:0,bb:0,da:0,lm:0,rev:0};byD[nm].count++;byD[nm].occ+=d.summary.occupancyPct||0;byD[nm].guests+=d.summary.guestsServed||0;if(!isBF){byD[nm].bb+=d.summary.bbRooms||0;byD[nm].da+=d.summary.daTotal||0;byD[nm].lm+=d.summary.lungomareRooms||0;byD[nm].rev+=d.summary.totalRevenue||0;}if(!tDOW[nm])tDOW[nm]={};var dh=(d.summary&&d.summary.hourCounts)||{};Object.keys(dh).forEach(function(h){tDOW[nm][h]=(tDOW[nm][h]||0)+dh[h];});});
   var rows=ORD.filter(function(n){return byD[n];}).map(function(name){var s=byD[name];var avg=Math.round(s.occ/s.count);var occCol=avg>=90?'#16a34a':avg>=75?col:'#dc2626';var ent=Object.entries(tDOW[name]||{}).sort(function(a,b){return b[1]-a[1];});var top=ent[0];var low=ent[ent.length-1];
-    return '<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;box-shadow:var(--sh)"><div style="min-width:90px"><div style="font-size:14px;font-weight:700;color:var(--ink)">'+name+'</div><div style="font-size:10px;color:var(--muted)">'+s.count+'x</div></div><div style="text-align:center"><div style="font-size:22px;font-weight:800;color:'+occCol+';font-family:var(--serif)">'+avg+'%</div><div style="font-size:10px;color:var(--muted)">Avg Occ</div></div><div style="text-align:center"><div style="font-size:20px;font-weight:800;color:'+col+';font-family:var(--serif)">'+Math.round(s.guests/s.count)+'</div><div style="font-size:10px;color:var(--muted)">Avg Guests</div></div>'+(top?'<div style="text-align:center"><div style="font-size:15px;font-weight:700">\uD83D\uDD25 '+top[0]+'</div><div style="font-size:10px;color:var(--muted)">Peak hr</div></div>':'')+(low&&low[0]!==(top&&top[0])?'<div style="text-align:center"><div style="font-size:15px;font-weight:700;color:#dc2626">\uD83D\uDD35 '+low[0]+'</div><div style="font-size:10px;color:var(--muted)">Lowest hr</div></div>':'')+(!isBF?'<div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#dc2626">BB '+Math.round(s.bb/s.count)+'</div><div style="font-size:10px;color:var(--muted)">avg</div></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#7c3aed">DA '+Math.round(s.da/s.count)+'</div><div style="font-size:10px;color:var(--muted)">avg</div></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#16a34a">\u20ac'+s.rev+'</div><div style="font-size:10px;color:var(--muted)">total</div></div>':'')+'<div style="flex:1;min-width:100px"><div style="background:var(--border2);border-radius:4px;height:8px;overflow:hidden"><div style="width:'+avg+'%;background:'+occCol+';height:100%;border-radius:4px"></div></div></div></div>';
+    return '<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;box-shadow:var(--sh)"><div style="min-width:90px"><div style="font-size:14px;font-weight:700;color:var(--ink)">'+name+'</div><div style="font-size:10px;color:var(--muted)">'+s.count+'x</div></div><div style="text-align:center"><div style="font-size:22px;font-weight:800;color:'+occCol+';font-family:var(--serif)">'+avg+'%</div><div style="font-size:10px;color:var(--muted)">Avg Occ</div></div><div style="text-align:center"><div style="font-size:20px;font-weight:800;color:'+col+';font-family:var(--serif)">'+Math.round(s.guests/s.count)+'</div><div style="font-size:10px;color:var(--muted)">Avg Guests</div></div>'+(top?'<div style="text-align:center"><div style="font-size:15px;font-weight:700">\uD83D\uDD25 '+top[0]+'</div><div style="font-size:10px;color:var(--muted)">Peak hr</div></div>':'')+(low&&low[0]!==(top&&top[0])?'<div style="text-align:center"><div style="font-size:15px;font-weight:700;color:#dc2626">\uD83D\uDD35 '+low[0]+'</div><div style="font-size:10px;color:var(--muted)">Lowest hr</div></div>':'')+(!isBF?'<div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#dc2626">BB '+Math.round(s.bb/s.count)+'</div><div style="font-size:10px;color:var(--muted)">avg</div></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#7c3aed">DA '+Math.round(s.da/s.count)+'</div><div style="font-size:10px;color:var(--muted)">avg</div></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#16a34a">\u20ac'+fmtNum(s.rev)+'</div><div style="font-size:10px;color:var(--muted)">total</div></div>':'')+'<div style="flex:1;min-width:100px"><div style="background:var(--border2);border-radius:4px;height:8px;overflow:hidden"><div style="width:'+avg+'%;background:'+occCol+';height:100%;border-radius:4px"></div></div></div></div>';
   }).join('');
   return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)"><div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-calendar-week" style="color:'+col+'"></i> Average by Day of Week</div>'+rows+'</div>'+bfByCalendarWeek(days,isBF,col,colLight)+bfHourChart(days,col,colLight);
 }
@@ -9317,7 +9318,7 @@ function bfMonthly(days,isBF,col,colLight){
   var MN={'05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct'};var byM={};
   days.forEach(function(d){var m=d.date.slice(5,7);if(!byM[m])byM[m]={count:0,occ:0,guests:0,maxOcc:0,minOcc:100,bb:0,bbP:0,da:0,daP:0,lm:0,rev:0};var s=d.summary;byM[m].count++;byM[m].occ+=s.occupancyPct||0;byM[m].guests+=s.guestsServed||0;byM[m].maxOcc=Math.max(byM[m].maxOcc,s.occupancyPct||0);byM[m].minOcc=Math.min(byM[m].minOcc,s.occupancyPct||100);if(!isBF){byM[m].bb+=s.bbRooms||0;byM[m].bbP+=s.bbPaidDinner||0;byM[m].da+=s.daTotal||0;byM[m].daP+=s.daPaid||0;byM[m].lm+=s.lungomareRooms||0;byM[m].rev+=s.totalRevenue||0;}});
   return Object.entries(byM).sort().map(function(e){var m=e[0],s=e[1];var avg=s.count?Math.round(s.occ/s.count):0;var occCol=avg>=90?'#16a34a':avg>=75?col:'#dc2626';
-    return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);margin-bottom:12px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="font-family:var(--serif);font-size:18px;font-weight:700;color:'+col+'">'+(MN[m]||m)+' 2026</div><div style="font-size:11px;color:var(--muted)">'+s.count+' days</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:12px"><div style="text-align:center;background:'+colLight+';border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:'+occCol+';font-family:var(--serif)">'+avg+'%</div><div style="font-size:10px;color:var(--muted)">Avg Occ</div></div><div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#16a34a;font-family:var(--serif)">'+s.maxOcc+'%</div><div style="font-size:10px;color:var(--muted)">Peak</div></div><div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#dc2626;font-family:var(--serif)">'+s.minOcc+'%</div><div style="font-size:10px;color:var(--muted)">Lowest</div></div><div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:var(--ink);font-family:var(--serif)">'+s.guests+'</div><div style="font-size:10px;color:var(--muted)">Total Guests</div></div><div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:'+col+';font-family:var(--serif)">'+Math.round(s.guests/s.count)+'</div><div style="font-size:10px;color:var(--muted)">Avg/Day</div></div>'+(!isBF?'<div style="text-align:center;background:#fce8e8;border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#dc2626;font-family:var(--serif)">'+s.bb+'</div><div style="font-size:10px;color:var(--muted)">BB ('+s.bbP+' paid)</div></div><div style="text-align:center;background:#ede9fe;border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#7c3aed;font-family:var(--serif)">'+s.da+'</div><div style="font-size:10px;color:var(--muted)">DA ('+s.daP+' paid)</div></div><div style="text-align:center;background:#e0f2fe;border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#0284c7;font-family:var(--serif)">'+s.lm+'</div><div style="font-size:10px;color:var(--muted)">Lungomare</div></div><div style="text-align:center;background:#f0fdf4;border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#16a34a;font-family:var(--serif)">\u20ac'+s.rev+'</div><div style="font-size:10px;color:var(--muted)">Revenue</div></div>':'')+'</div><div style="background:var(--border2);border-radius:6px;height:10px;overflow:hidden"><div style="width:'+avg+'%;background:'+occCol+';height:100%;border-radius:6px"></div></div></div>';
+    return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);margin-bottom:12px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="font-family:var(--serif);font-size:18px;font-weight:700;color:'+col+'">'+(MN[m]||m)+' 2026</div><div style="font-size:11px;color:var(--muted)">'+s.count+' days</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:12px"><div style="text-align:center;background:'+colLight+';border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:'+occCol+';font-family:var(--serif)">'+avg+'%</div><div style="font-size:10px;color:var(--muted)">Avg Occ</div></div><div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#16a34a;font-family:var(--serif)">'+s.maxOcc+'%</div><div style="font-size:10px;color:var(--muted)">Peak</div></div><div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#dc2626;font-family:var(--serif)">'+s.minOcc+'%</div><div style="font-size:10px;color:var(--muted)">Lowest</div></div><div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:var(--ink);font-family:var(--serif)">'+s.guests+'</div><div style="font-size:10px;color:var(--muted)">Total Guests</div></div><div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:'+col+';font-family:var(--serif)">'+Math.round(s.guests/s.count)+'</div><div style="font-size:10px;color:var(--muted)">Avg/Day</div></div>'+(!isBF?'<div style="text-align:center;background:#fce8e8;border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#dc2626;font-family:var(--serif)">'+s.bb+'</div><div style="font-size:10px;color:var(--muted)">BB ('+s.bbP+' paid)</div></div><div style="text-align:center;background:#ede9fe;border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#7c3aed;font-family:var(--serif)">'+s.da+'</div><div style="font-size:10px;color:var(--muted)">DA ('+s.daP+' paid)</div></div><div style="text-align:center;background:#e0f2fe;border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#0284c7;font-family:var(--serif)">'+s.lm+'</div><div style="font-size:10px;color:var(--muted)">Lungomare</div></div><div style="text-align:center;background:#f0fdf4;border-radius:9px;padding:10px"><div style="font-size:22px;font-weight:800;color:#16a34a;font-family:var(--serif)">\u20ac'+fmtNum(s.rev)+'</div><div style="font-size:10px;color:var(--muted)">Revenue</div></div>':'')+'</div><div style="background:var(--border2);border-radius:6px;height:10px;overflow:hidden"><div style="width:'+avg+'%;background:'+occCol+';height:100%;border-radius:6px"></div></div></div>';
   }).join('')+bfHourChart(days,col,colLight);
 }
 
