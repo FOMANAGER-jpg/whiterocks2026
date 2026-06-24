@@ -1955,9 +1955,9 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <input class="tr-inp" style="width:100%" id="cm-manual-cardesc" placeholder="e.g. Category B - Fiat 500 or similar"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:3px">Total Price (€)</label>
-          <input class="tr-inp" type="number" min="0" style="width:100%" id="cm-manual-price" placeholder="0" onchange="carModalUpdatePrice()"></div>
+          <input class="tr-inp" type="number" min="0" style="width:100%" id="cm-manual-price" placeholder="0" oninput="carModalUpdatePrice()"></div>
         <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:3px">Insurance / day (€)</label>
-          <input class="tr-inp" type="number" min="0" style="width:100%" id="cm-manual-ins" placeholder="0" onchange="carModalUpdatePrice()"></div>
+          <input class="tr-inp" type="number" min="0" style="width:100%" id="cm-manual-ins" placeholder="0" oninput="carModalUpdatePrice()"></div>
       </div>
     </div>
 
@@ -4466,15 +4466,14 @@ function carModalUpdatePrice(){
   const isManual=company==='Other';
   const days=parseInt(document.getElementById('cm-days').value)||1;
   if(isManual){
-    const ins=document.getElementById('cm-ins').checked;
     const mPrice=parseFloat(document.getElementById('cm-manual-price')?.value)||0;
     const mInsDay=parseFloat(document.getElementById('cm-manual-ins')?.value)||0;
-    const insAmt=ins?mInsDay*days:0;
+    const insAmt=mInsDay*days;
     const total=mPrice+insAmt;
     const el=document.getElementById('cm-pricebox');
     if(el)el.innerHTML='<div class="cpl">Manual Entry</div>'
       +'<div class="cpv">€'+mPrice+'</div>'
-      +(ins&&insAmt?'<div class="cpi">+ €'+insAmt+' insurance</div>':'')
+      +(insAmt?'<div class="cpi">+ €'+insAmt+' insurance ('+days+' day'+(days!==1?'s':'')+' \u00d7 €'+mInsDay+')</div>':'')
       +'<div class="cpt">Total: €'+total+'</div>';
     return;
   }
@@ -4510,14 +4509,14 @@ function carModalSave(){
   const bookedBy=(document.getElementById('cm-bookedby')?.value||'').trim();
   const extras={};ACE_EXTRAS.forEach(e=>{if(e.qty){const n=parseInt(document.getElementById('cm-extra-'+e.id+'-qty')?.value)||0;if(n>0)extras[e.id]=n;}else{const el=document.getElementById('cm-extra-'+e.id);if(el&&el.checked)extras[e.id]=true;}});
 
-  let type,base,insAmt,manualCompanyName='',manualCarDesc='';
+  let type,base,insAmt,manualCompanyName='',manualCarDesc='',manualInsDay=0;
   if(isManual){
     type='MANUAL';
     manualCompanyName=(document.getElementById('cm-manual-company')?.value||'').trim();
     manualCarDesc=(document.getElementById('cm-manual-cardesc')?.value||'').trim();
     base=parseFloat(document.getElementById('cm-manual-price')?.value)||0;
-    const mInsDay=parseFloat(document.getElementById('cm-manual-ins')?.value)||0;
-    insAmt=ins?mInsDay*days:0;
+    manualInsDay=parseFloat(document.getElementById('cm-manual-ins')?.value)||0;
+    insAmt=manualInsDay*days;
   } else {
     type=document.getElementById('cm-type').value;
     base=isKat?katBasePrice(type,days,rentalDate||bookDate):carBasePrice(type,days,rentalDate||bookDate);
@@ -4532,7 +4531,7 @@ function carModalSave(){
     room:document.getElementById('cm-room').value.trim(),
     bookDate,rentalDate,
     rentalTime:document.getElementById('cm-time').value,
-    carType:type,days,insurance:ins,company:isManual?(manualCompanyName||'Other'):company,
+    carType:type,days,insurance:isManual?(manualInsDay>0):ins,company:isManual?(manualCompanyName||'Other'):company,
     manualCarDesc,
     status:document.getElementById('cm-status').value,bookedBy:bookedBy,extras:extras,
     base,insAmt,total:base!=null?base+insAmt:null,
