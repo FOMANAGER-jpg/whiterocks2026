@@ -1938,12 +1938,27 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <select class="tr-inp" style="width:100%" id="cm-company" onchange="carModalUpdateCarList()">
         <option value="ACE">ACE Rent a Car</option>
         <option value="Katsouris">Katsouris Travel</option>
+        <option value="Other">Other (enter manually)</option>
       </select>
     </div>
 
-    <div style="margin-bottom:10px"><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Car Type</label>
+    <div style="margin-bottom:10px" id="cm-type-wrap"><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Car Type</label>
       <select class="tr-inp" style="width:100%" id="cm-type" onchange="carModalUpdatePrice()">
       </select>
+    </div>
+
+    <div id="cm-manual-wrap" style="display:none;margin-bottom:10px;padding:12px 14px;background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px">
+      <div style="font-size:10px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Manual entry \u2014 fill in everything yourself</div>
+      <div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:3px">Company Name</label>
+        <input class="tr-inp" style="width:100%" id="cm-manual-company" placeholder="e.g. Hertz, local rental..."></div>
+      <div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:3px">Car Description</label>
+        <input class="tr-inp" style="width:100%" id="cm-manual-cardesc" placeholder="e.g. Category B - Fiat 500 or similar"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:3px">Total Price (€)</label>
+          <input class="tr-inp" type="number" min="0" style="width:100%" id="cm-manual-price" placeholder="0" onchange="carModalUpdatePrice()"></div>
+        <div><label style="display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:3px">Insurance / day (€)</label>
+          <input class="tr-inp" type="number" min="0" style="width:100%" id="cm-manual-ins" placeholder="0" onchange="carModalUpdatePrice()"></div>
+      </div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;align-items:end">
@@ -2287,8 +2302,9 @@ function katBasePrice(id,days,d){
 function katInsPrice(id,days){return(KAT_INS[id]||0)*days;}
 function carCalc(c){
   const isKat=c.company==='Katsouris';
+  const isManual=c.carType==='MANUAL';
   const base=c.priceOverride!=null?c.priceOverride:(isKat?katBasePrice(c.carType,c.days,c.rentalDate||c.bookDate):carBasePrice(c.carType,c.days,c.rentalDate||c.bookDate));
-  const ins=c.insurance?(isKat?katInsPrice(c.carType,c.days):carInsPrice(c.carType,c.days)):0;
+  const ins=isManual?(c.insurance?(c.insAmt||0):0):(c.insurance?(isKat?katInsPrice(c.carType,c.days):carInsPrice(c.carType,c.days)):0);
   const extrasTotal=ACE_EXTRAS.reduce((s,e)=>{const v=c.extras&&c.extras[e.id];if(!v)return s;const qty=e.qty?(parseInt(v)||1):1;return s+e.price*qty*(c.days||1);},0);
   return{base,ins,extras:extrasTotal,total:base!=null?base+ins+extrasTotal:null};
 }
@@ -4170,8 +4186,14 @@ function carUpd(i,field,val){
 }
 function carUpdCompany(i,val){
   CARS[i].company=val;
-  CARS[i].carType=''; // reset car type since catalogs differ between companies
-  CARS[i].priceOverride=null;
+  if(val==='Other'){
+    CARS[i].carType='MANUAL';
+    CARS[i].manualCarDesc=CARS[i].manualCarDesc||'';
+    CARS[i].priceOverride=CARS[i].base||0;
+  } else {
+    CARS[i].carType=''; // reset car type since catalogs differ between companies
+    CARS[i].priceOverride=null;
+  }
   svCars();renderCars();
 }
 
@@ -4226,8 +4248,15 @@ function renderCars(){
     const i=CARS.indexOf(c);const isOpen=carOpenEP===i;
     const{base,ins,total}=carCalc(c);
     const isKat=c.company==='Katsouris';
+    const isManual=c.carType==='MANUAL';
     const carList=isKat?KAT_CARS:ACE_CARS;
     const selOpts=carList.map(a=>`<option value="${a.id}"${c.carType===a.id?' selected':''}>${a.s} — ${a.l}</option>`).join('');
+    const carTypeCell=isManual
+      ? `<input class="car-ci" style="font-size:11px;font-weight:600;color:#9a3412" value="${esc(c.manualCarDesc||'Manual entry')}" placeholder="Car description" onchange="CARS[${i}].manualCarDesc=this.value;svCars()">`
+      : `<select class="car-ci" style="font-size:11px;padding:5px 4px" onchange="carUpd(${i},'carType',this.value)">${selOpts}</select>`;
+    const companyCell=isManual
+      ? `<input class="car-ci" style="font-size:11px;font-weight:600;color:#9a3412" value="${esc(c.company||'Other')}" placeholder="Company name" onchange="CARS[${i}].company=this.value;svCars()">`
+      : `<select class="car-ci" style="font-size:11px;padding:5px 4px;font-weight:600;color:${isKat?'#0e4a6e':'#1a6644'}" onchange="carUpdCompany(${i},this.value)"><option value="ACE"${!isKat?' selected':''}>ACE</option><option value="Katsouris"${isKat?' selected':''}>Katsouris</option><option value="Other">Other</option></select>`;
 
     html+=`<tr class="${SRCLS[c.status]||'car-rw'}${isOpen?' car-ep-open':''}">
       <td style="padding:7px 9px;color:var(--muted2);font-size:11px;text-align:center">${n+1}</td>
@@ -4238,11 +4267,11 @@ function renderCars(){
       <td><input class="car-ci" type="date" value="${c.bookDate||''}" style="font-size:11px;padding:6px 7px" onchange="carUpd(${i},'bookDate',this.value)"></td>
       <td><input class="car-ci" type="date" value="${c.rentalDate||''}" style="font-size:11px;padding:6px 7px" onchange="carUpd(${i},'rentalDate',this.value)"></td>
       <td><input class="car-ci" type="time" value="${c.rentalTime||''}" style="font-size:11px;padding:6px 7px" onchange="CARS[${i}].rentalTime=this.value;svCars()"></td>
-      <td><select class="car-ci" style="font-size:11px;padding:5px 4px" onchange="carUpd(${i},'carType',this.value)">${selOpts}</select></td>
+      <td>${carTypeCell}</td>
       <td><input class="car-ci" type="number" min="1" max="60" value="${c.days||1}" style="text-align:center;font-weight:700;padding:5px 4px" onchange="CARS[${i}].days=Math.max(1,parseInt(this.value)||1);this.value=CARS[${i}].days;carUpd(${i},'days',CARS[${i}].days)"></td>
-      <td><select class="car-ci" style="font-size:11px;padding:5px 4px;font-weight:600;color:${isKat?'#0e4a6e':'#1a6644'}" onchange="carUpdCompany(${i},this.value)"><option value="ACE"${!isKat?' selected':''}>ACE</option><option value="Katsouris"${isKat?' selected':''}>Katsouris</option></select></td>
+      <td>${companyCell}</td>
       <td><input class="car-ci" value="${esc(c.bookedBy||'')}" placeholder="Staff" onchange="CARS[${i}].bookedBy=this.value;svCars()"></td>
-      <td style="padding:7px 9px;text-align:right;font-weight:700;color:${c.priceOverride!=null?'#b45309':'#1a6644'}">${base!=null?'€'+base+(c.priceOverride!=null?' ✎':''):c.carType==='T'?'On Req':'—'}</td>
+      <td style="padding:7px 9px;text-align:right;font-weight:700;color:${c.priceOverride!=null?'#b45309':'#1a6644'}">${base!=null?'€'+base+(c.priceOverride!=null&&!isManual?' ✎':''):c.carType==='T'?'On Req':'—'}</td>
       <td style="padding:4px 7px;text-align:center">
         <input type="checkbox"${c.insurance?' checked':''} style="width:15px;height:15px;cursor:pointer;accent-color:#1a6644" onchange="carUpd(${i},'insurance',this.checked)" title="Full Insurance">
         ${c.insurance&&ins?'<div style="font-size:9px;color:#1a6644;font-weight:700;margin-top:1px">€'+ins+'</div>':''}
@@ -4420,17 +4449,36 @@ function carAdd(){
 }
 function carModalUpdateCarList(){
   const company=document.getElementById('cm-company').value;
-  const sel=document.getElementById('cm-type');
-  const list=company==='Katsouris'?KAT_CARS:ACE_CARS;
-  sel.innerHTML=list.map(c=>'<option value="'+c.id+'">'+c.s+' — '+c.l+'</option>').join('');
+  const isManual=company==='Other';
+  document.getElementById('cm-type-wrap').style.display=isManual?'none':'block';
+  document.getElementById('cm-manual-wrap').style.display=isManual?'block':'none';
+  if(!isManual){
+    const sel=document.getElementById('cm-type');
+    const list=company==='Katsouris'?KAT_CARS:ACE_CARS;
+    sel.innerHTML=list.map(c=>'<option value="'+c.id+'">'+c.s+' — '+c.l+'</option>').join('');
+  }
   carModalUpdatePrice();
 }
 
 function carModalUpdatePrice(){
   const company=document.getElementById('cm-company')?.value||'ACE';
   const isKat=company==='Katsouris';
-  const type=document.getElementById('cm-type').value;
+  const isManual=company==='Other';
   const days=parseInt(document.getElementById('cm-days').value)||1;
+  if(isManual){
+    const ins=document.getElementById('cm-ins').checked;
+    const mPrice=parseFloat(document.getElementById('cm-manual-price')?.value)||0;
+    const mInsDay=parseFloat(document.getElementById('cm-manual-ins')?.value)||0;
+    const insAmt=ins?mInsDay*days:0;
+    const total=mPrice+insAmt;
+    const el=document.getElementById('cm-pricebox');
+    if(el)el.innerHTML='<div class="cpl">Manual Entry</div>'
+      +'<div class="cpv">€'+mPrice+'</div>'
+      +(ins&&insAmt?'<div class="cpi">+ €'+insAmt+' insurance</div>':'')
+      +'<div class="cpt">Total: €'+total+'</div>';
+    return;
+  }
+  const type=document.getElementById('cm-type').value;
   const rentalDate=document.getElementById('cm-rentaldate').value||document.getElementById('cm-bookdate').value;
   const ins=document.getElementById('cm-ins').checked;
   const bookedBy=(document.getElementById('cm-bookedby')?.value||'').trim();
@@ -4454,15 +4502,28 @@ function carModalUpdatePrice(){
 function carModalSave(){
   const company=document.getElementById('cm-company')?.value||'ACE';
   const isKat=company==='Katsouris';
-  const type=document.getElementById('cm-type').value;
+  const isManual=company==='Other';
   const days=Math.max(1,parseInt(document.getElementById('cm-days').value)||1);
   const rentalDate=document.getElementById('cm-rentaldate').value;
   const bookDate=document.getElementById('cm-bookdate').value;
   const ins=document.getElementById('cm-ins').checked;
   const bookedBy=(document.getElementById('cm-bookedby')?.value||'').trim();
   const extras={};ACE_EXTRAS.forEach(e=>{if(e.qty){const n=parseInt(document.getElementById('cm-extra-'+e.id+'-qty')?.value)||0;if(n>0)extras[e.id]=n;}else{const el=document.getElementById('cm-extra-'+e.id);if(el&&el.checked)extras[e.id]=true;}});
-  const base=isKat?katBasePrice(type,days,rentalDate||bookDate):carBasePrice(type,days,rentalDate||bookDate);
-  const insAmt=ins?(isKat?katInsPrice(type,days):carInsPrice(type,days)):0;
+
+  let type,base,insAmt,manualCompanyName='',manualCarDesc='';
+  if(isManual){
+    type='MANUAL';
+    manualCompanyName=(document.getElementById('cm-manual-company')?.value||'').trim();
+    manualCarDesc=(document.getElementById('cm-manual-cardesc')?.value||'').trim();
+    base=parseFloat(document.getElementById('cm-manual-price')?.value)||0;
+    const mInsDay=parseFloat(document.getElementById('cm-manual-ins')?.value)||0;
+    insAmt=ins?mInsDay*days:0;
+  } else {
+    type=document.getElementById('cm-type').value;
+    base=isKat?katBasePrice(type,days,rentalDate||bookDate):carBasePrice(type,days,rentalDate||bookDate);
+    insAmt=ins?(isKat?katInsPrice(type,days):carInsPrice(type,days)):0;
+  }
+
   CARS.unshift({
     id:Date.now()+'',
     ref:document.getElementById('cm-ref').value.trim(),
@@ -4471,9 +4532,11 @@ function carModalSave(){
     room:document.getElementById('cm-room').value.trim(),
     bookDate,rentalDate,
     rentalTime:document.getElementById('cm-time').value,
-    carType:type,days,insurance:ins,company,
+    carType:type,days,insurance:ins,company:isManual?(manualCompanyName||'Other'):company,
+    manualCarDesc,
     status:document.getElementById('cm-status').value,bookedBy:bookedBy,extras:extras,
-    base,insAmt,total:base!=null?base+insAmt:null
+    base,insAmt,total:base!=null?base+insAmt:null,
+    priceOverride:isManual?base:null
   });
   svCars();carOpenEP=null;
   document.getElementById('carModal').classList.remove('open');
