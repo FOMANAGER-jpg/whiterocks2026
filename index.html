@@ -6869,7 +6869,7 @@ const MASSAGE_SCHEDULE={
 };
 function timeToMins(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
 function minsToTime(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
-function getSlots(dateKey){const windows=MASSAGE_SCHEDULE[dateKey]||[];const slots=[];windows.forEach(w=>{let cur=Math.round(timeToMins(w.start)/30)*30;const end=Math.round(timeToMins(w.end)/30)*30;while(cur+60<=end){slots.push(minsToTime(cur));cur+=60;}});return slots;}
+function getSlots(dateKey){const windows=MASSAGE_SCHEDULE[dateKey]||[];const slots=[];windows.forEach(w=>{let cur=Math.round(timeToMins(w.start)/30)*30;const end=Math.round(timeToMins(w.end)/30)*30;while(cur+60<=end){slots.push(minsToTime(cur));cur+=60;}});return[...new Set(slots)];}
 let msMFilter='all'; // month filter: 'all' or '05','06',...
 let msSFilter='all'; // status filter: 'all','waiting','confirmed','commission','cancelled'
 
