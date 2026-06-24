@@ -702,7 +702,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <div class="dd-sec-lbl">Reviews</div>
         <div class="dd-item" id="ddi-ta" onclick="ddGo('ta','TripAdvisor')" style="color:#2d9c68"><i class="ti ti-brand-tripadvisor" style="color:#2d9c68"></i> TripAdvisor</div>
         <div class="dd-item" id="ddi-goo" onclick="ddGo('goo','Google Reviews')" style="color:#4285f4"><i class="ti ti-brand-google" style="color:#4285f4"></i> Google Reviews</div>
-        <div class="dd-item" id="ddi-exp" onclick="ddGo('exp','Expedia')" style="color:#0066cc"><i class="ti ti-plane" style="color:#0066cc"></i> Expedia</div>
+        <div class="dd-item" id="ddi-exp" onclick="ddGo('exp','Expedia')" style="color:#0066cc"><i class="ti ti-compass" style="color:#0066cc"></i> Expedia</div>
         <div class="dd-item amb" id="ddi-import" onclick="ddGo('import','Booking.com')"><i class="ti ti-brand-booking"></i> Booking.com Reviews</div>
         <div class="dd-item" id="ddi-analytics" onclick="ddGo('analytics','Analytics &amp; AI')"><i class="ti ti-chart-dots" style="color:#2563aa"></i> Analytics &amp; AI Responses</div>
         <div class="dd-item" id="ddi-breakfast" onclick="ddGo('breakfast','Breakfast Buffet')"><i class="ti ti-coffee" style="color:#d97706"></i> Breakfast Buffet</div>
@@ -719,9 +719,9 @@ canvas.an-chart{width:100%!important;height:220px!important}
       </div>
     </div>
   </div>
-  <button id="hdr-activitylog-btn" onclick="goTab('activitylog')" style="display:none;align-items:center;gap:6px;padding:8px 14px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:9px;cursor:pointer;color:#fff;font-size:13px;font-weight:600;font-family:var(--sans);margin-left:8px"><i class="ti ti-history" style="font-size:15px"></i> Activity Log</button>
   <div class="hdr-r">
     <div class="sync-pill"><span class="sdot"></span><span class="s-lbl">live</span></div>
+    <button id="hdr-activitylog-btn" onclick="goTab('activitylog')" title="Activity Log" style="display:none;align-items:center;justify-content:center;width:28px;height:28px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:50%;cursor:pointer;color:#fff;margin-left:6px;padding:0"><i class="ti ti-eye" style="font-size:14px"></i></button>
     <div id="userBadge" style="display:none;align-items:center;gap:7px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 6px 5px 5px">
       <div id="userBadgeInitial" style="width:22px;height:22px;border-radius:50%;background:#fff;color:var(--sea);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center"></div>
       <span id="userBadgeName" style="font-size:12px;color:#fff;font-weight:600"></span>
@@ -744,7 +744,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
   <div class="tab pur-tab" id="nt-grooms" onclick="goTab('grooms')"><i class="ti ti-luggage"></i> Grooms Daily List</div>
   <div class="tab" id="nt-ta" onclick="goTab('ta')" style="color:#2d9c68"><i class="ti ti-brand-tripadvisor"></i> TripAdvisor</div>
   <div class="tab" id="nt-goo" onclick="goTab('goo')" style="color:#4285f4"><i class="ti ti-brand-google"></i> Google Reviews</div>
-  <div class="tab" id="nt-exp" onclick="goTab('exp')" style="color:#0066cc"><i class="ti ti-plane"></i> Expedia</div>
+  <div class="tab" id="nt-exp" onclick="goTab('exp')" style="color:#0066cc"><i class="ti ti-compass"></i> Expedia</div>
   <div class="tab amb-tab" id="nt-import" onclick="goTab('import')"><i class="ti ti-brand-booking"></i> Booking.com</div>
   <div class="tab" id="nt-analytics" onclick="goTab('analytics')" style="color:#2563aa"><i class="ti ti-chart-dots"></i> Analytics</div>
   <div class="tab" id="nt-breakfast" onclick="goTab('breakfast')" style="color:#d97706"><i class="ti ti-coffee"></i> Breakfast</div>
@@ -1197,7 +1197,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
 <div id="tab-exp" class="hidden">
   <div class="rev-wrap">
     <div class="rev-hdr" style="background:linear-gradient(135deg,#003366,#0066cc);position:relative;overflow:hidden;min-height:110px;padding:20px 22px;">
-      <div class="rev-hdr-ico" style="position:relative;z-index:1"><i class="ti ti-plane"></i></div>
+      <div class="rev-hdr-ico" style="position:relative;z-index:1"><i class="ti ti-compass"></i></div>
       <div style="position:relative;z-index:1"><div class="rev-hdr-t">Expedia Reviews</div><div class="rev-hdr-s">Paste reviews &rarr; AI extracts score, highlights &amp; improvements</div></div>
     </div>
     <div class="sbar hidden" id="exp-stats-bar" style="border-radius:12px;margin-bottom:14px;border:1px solid var(--border);box-shadow:var(--sh)"></div>
@@ -1257,7 +1257,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div id="exp-summary-box" style="display:none"></div>
     <div class="rev-history" id="exp-history-wrap">
       <h3 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px"><span><i class="ti ti-history" style="color:var(--sea)"></i> Review History</span><button class="print-rev-btn" onclick="printRevHistory('exp')"><i class="ti ti-printer"></i> Print</button></h3>
-      <div id="exp-history-list"><div class="rev-empty"><i class="ti ti-plane"></i>No saved reviews yet</div></div>
+      <div id="exp-history-list"><div class="rev-empty"><i class="ti ti-compass"></i>No saved reviews yet</div></div>
     </div>
   </div>
 </div>
@@ -1405,6 +1405,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div class="an-stat-card"><div class="an-stat-lbl">Expedia Periods</div><div class="an-stat-val" id="an-expe-periods" style="color:#fcb900">-</div><div class="an-stat-sub" id="an-expe-reviews">saved</div></div>
       <div class="an-stat-card"><div class="an-stat-lbl">Expedia Overall Avg</div><div class="an-stat-val" id="an-expe-avg" style="color:#fcb900">-</div><div class="an-stat-sub">/ 5.0</div></div>
       <div class="an-stat-card" style="border-top:3px solid #1a6ca8"><div class="an-stat-lbl">Experiences Revenue</div><div class="an-stat-val" id="an-exp-rev" style="color:#1a6ca8">€-</div><div class="an-stat-sub" id="an-exp-rev-sub">excl. cancelled</div></div>
+      <div class="an-stat-card" style="border-top:3px solid #d97706"><div class="an-stat-lbl">Experiences Commission</div><div class="an-stat-val" id="an-exp-comm" style="color:#d97706">€-</div><div class="an-stat-sub" id="an-exp-comm-sub">commission status</div></div>
       <div class="an-stat-card" style="border-top:3px solid #b45309"><div class="an-stat-lbl">Massage Revenue</div><div class="an-stat-val" id="an-ms-rev" style="color:#b45309">€-</div><div class="an-stat-sub" id="an-ms-rev-sub">excl. no-cost</div></div>
       <div class="an-stat-card" style="border-top:3px solid #be185d"><div class="an-stat-lbl">Flowers Revenue</div><div class="an-stat-val" id="an-fl-rev" style="color:#be185d">€-</div><div class="an-stat-sub" id="an-fl-rev-sub">excl. cancelled</div></div>
     </div>
@@ -1435,7 +1436,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <div class="ai-src-tabs" style="margin-bottom:8px">
           <button class="ai-src-tab on" id="ai-tab-ta" onclick="setAISrc('ta')"><i class="ti ti-brand-tripadvisor"></i> TripAdvisor</button>
           <button class="ai-src-tab" id="ai-tab-goo" onclick="setAISrc('goo')"><i class="ti ti-brand-google"></i> Google</button>
-          <button class="ai-src-tab" id="ai-tab-exp" onclick="setAISrc('exp')"><i class="ti ti-plane"></i> Expedia</button>
+          <button class="ai-src-tab" id="ai-tab-exp" onclick="setAISrc('exp')"><i class="ti ti-compass"></i> Expedia</button>
         </div>
         <div class="ai-rev-list" id="ai-rev-list"></div>
       </div>
@@ -3185,6 +3186,7 @@ const GEN_FIELDS={
     {id:'pax',label:'Pax',type:'number',ph:'2'},
     {id:'tourType',label:'Type',type:'vantour_type'},
     {id:'cost',label:'Cost € (auto)',type:'number',ph:'0'},
+    {id:'bookedBy',label:'Booked By',type:'text',ph:'Staff name'},
     {id:'status',label:'Status',type:'status'}
   ]
 };
@@ -5146,7 +5148,7 @@ function renderDay1(){
   document.getElementById('d1list').innerHTML=arr.length?arr.map(r=>{
     const idx=RES.indexOf(r);
     return '<div class="tr-item"><div class="trico k"><i class="ti ti-key"></i></div>'+
-      '<div style="flex:1;min-width:0"><div class="triname">'+esc(r.name)+'</div>'+
+      '<div style="flex:1;min-width:0"><div class="triname">'+esc(r.name)+(r.groupId?' <i class="ti ti-link" style="font-size:11px;color:var(--sea);cursor:help" title="Linked booking"></i>':'')+'</div>'+
       '<div class="trimeta">'+r.type+' · Rm '+(r.room||'TBA')+' · '+fd(r.arr)+' → '+fd(r.dep)+'</div></div>'+
       '<div style="display:flex;align-items:center;gap:4px"><input class="tr-note-inp" placeholder="Day 1 note..." value="'+esc(r.day1||'')+'" onchange="day1UpdAndLog('+idx+',this.value)">'+(r.day1?'<button onclick="event.stopPropagation();showFullText(this,RES['+idx+'].day1)" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;flex-shrink:0" title="View full note"><i class="ti ti-eye" style="font-size:14px"></i></button>':'')+'</div></div>';
   }).join(''):'<div class="tr-empty">No arrivals for this date</div>';
@@ -5162,7 +5164,7 @@ function renderDay3(){
     if(depD){depD.setHours(0,0,0,0);isDepartingToday=depD.getTime()===date.getTime();}
     const depBadge=isDepartingToday?'<div style="display:flex;align-items:center;gap:5px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:700;margin-top:4px;width:fit-content"><i class="ti ti-door-exit" style="font-size:13px"></i> Departing today \u2014 ensure smooth late check-out</div>':'';
     return '<div class="tr-item" style="align-items:flex-start"><div class="trico p"><i class="ti ti-phone"></i></div>'+
-      '<div style="flex:1;min-width:0"><div class="triname">'+esc(r.name)+(isDepartingToday?' <span style="font-size:10px;font-weight:700;color:#b91c1c">\u2022 LEAVING TODAY</span>':'')+'</div>'+
+      '<div style="flex:1;min-width:0"><div class="triname">'+esc(r.name)+(r.groupId?' <i class="ti ti-link" style="font-size:11px;color:var(--sea);cursor:help" title="Linked booking"></i>':'')+(isDepartingToday?' <span style="font-size:10px;font-weight:700;color:#b91c1c">\u2022 LEAVING TODAY</span>':'')+'</div>'+
       '<div class="trimeta">'+r.type+' · Rm '+(r.room||'TBA')+' · '+fd(r.arr)+' → '+fd(r.dep)+'</div>'+depBadge+'</div>'+
       '<div style="display:flex;align-items:center;gap:4px"><input class="tr-note-inp" placeholder="Follow-up note..." value="'+esc(r.day3||'')+'" onchange="day3UpdAndLog('+idx+',this.value)">'+(r.day3?'<button onclick="event.stopPropagation();showFullText(this,RES['+idx+'].day3)" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;flex-shrink:0" title="View full note"><i class="ti ti-eye" style="font-size:14px"></i></button>':'')+'</div></div>';
   }).join(''):'<div class="tr-empty">No follow-ups for this date</div>';
@@ -6147,8 +6149,18 @@ function renderAnalytics(){
   const bkRevEl=document.getElementById('an-bk-reviews');if(bkRevEl)bkRevEl.textContent=bkTotal>0?bkTotal+' reviews total':'saved';
   const expeRevEl=document.getElementById('an-expe-reviews');if(expeRevEl)expeRevEl.textContent=expeTotal>0?expeTotal+' reviews total':'saved';
   // Experiences revenue
-  let expRev=0,expCount=0,flowersRev=0,flowersCount=0;
+  let expRev=0,expCount=0,flowersRev=0,flowersCount=0,expComm=0;
   const SEASON_MONTHS=['05','06','07','08','09','10'];
+  // Cars live in a separate CARS array, not inside GEN_DATA — must be included explicitly
+  (CARS||[]).forEach(c=>{
+    if(c.status==='cancelled')return;
+    const m=carGetMonth(c);
+    if(anMonthFilter==='all'&&!SEASON_MONTHS.includes(m))return;
+    if(anMonthFilter!=='all'&&m!==anMonthFilter)return;
+    const{total}=carCalc(c);
+    if(total>0){expRev+=total;expCount++;}
+    expComm+=getCommForRow('cars',c);
+  });
   Object.keys(GEN_DATA).forEach(tab=>{
     (GEN_DATA[tab]||[]).forEach(r=>{
       if(r.status==='cancelled')return;
@@ -6157,11 +6169,16 @@ function renderAnalytics(){
       if(anMonthFilter!=='all'&&m!==anMonthFilter)return;
       const cost=parseFloat(r.cost||r.totalCost||r.grossPrice||0);
       if(tab==='flowers'){const bc=parseFloat(r.bosoniPrice||r.cost||0);if(bc>0){flowersRev+=bc;flowersCount++;}}
-      else if(cost>0){expRev+=cost;expCount++;}
+      else if(cost>0){
+        expRev+=cost;expCount++;
+        expComm+=getCommForRow(tab,r);
+      }
     });
   });
   const expEl=document.getElementById('an-exp-rev');if(expEl)expEl.textContent='€'+expRev.toFixed(0);
   const expSub=document.getElementById('an-exp-rev-sub');if(expSub)expSub.textContent=expCount+' bookings';
+  const expCommEl=document.getElementById('an-exp-comm');if(expCommEl)expCommEl.textContent='€'+expComm.toFixed(0);
+  const expCommSub=document.getElementById('an-exp-comm-sub');if(expCommSub)expCommSub.textContent='from '+expCount+' booking'+(expCount!==1?'s':'');
   const flEl=document.getElementById('an-fl-rev');if(flEl)flEl.textContent='€'+flowersRev.toFixed(0);
   const flSub=document.getElementById('an-fl-rev-sub');if(flSub)flSub.textContent=flowersCount+' orders';
   // Massage revenue
@@ -6966,7 +6983,7 @@ function renderMassage(){
   msRenderFilterBars();
   const DAY_GR=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const MON_GR=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const colHdr='<tr style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#a67c52"><td style="padding:6px 4px;width:64px">Time</td><td style="width:70px">Room</td><td>Guest</td><td style="width:90px">Duration</td><td style="width:60px;text-align:center">Cost</td><td>Notes</td><td style="width:140px">Status</td><td style="width:32px"></td></tr>';
+  const colHdr='<tr style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#a67c52;border-bottom:2px solid #d97706"><td style="padding:6px 4px;width:64px">Time</td><td style="width:70px">Room</td><td>Guest</td><td style="width:90px">Duration</td><td style="width:60px;text-align:center">Cost</td><td>Notes</td><td style="width:140px">Status</td><td style="width:32px"></td></tr>';
   function slotRow(dateKey,slotTime,bookings){
     const b=bookings[slotTime]||{};
     const isBooked=!!(b.name||b.room);
@@ -6986,15 +7003,15 @@ function renderMassage(){
     const rowBg=isBooked?(stBg[st]||stBg.waiting):'#fffdf8';
     const txtCol=isConfirmed?'#15803d':'var(--ink)';
     const mutedCol=isConfirmed?'#15803d':'var(--muted)';
-    return '<tr style="border-top:1px solid var(--border2);background:'+rowBg+'">'
-      +'<td style="padding:7px 4px;font-size:13px;font-weight:700;color:'+(isBooked?stColor:'#15803d')+'">'+slotTime+(isBooked?'':' <span style="font-size:10px;font-weight:700;background:#dcfce7;color:#15803d;padding:1px 6px;border-radius:5px;margin-left:4px">AVAILABLE</span>')+'</td>'
-      +'<td style="opacity:'+(isBooked?'1':'.6')+'"><input value="'+esc(b.room||'')+'" placeholder="-" style="width:100%;border:none;background:transparent;font-size:13px;font-weight:'+(isConfirmed?'700':'400')+';color:'+txtCol+';padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'room\',this.value)"></td>'
-      +'<td style="opacity:'+(isBooked?'1':'.6')+'"><input value="'+esc(b.name||'')+'" placeholder="-" style="width:100%;border:none;background:transparent;font-size:13px;font-weight:'+(isConfirmed?'700':'400')+';color:'+txtCol+';padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'name\',this.value)"></td>'
-      +'<td style="opacity:'+(isBooked?'1':'.6')+'"><select style="border:none;background:transparent;font-size:12px;color:'+mutedCol+';outline:none;cursor:pointer" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'dur\',this.value)"><option value="60" '+((b.dur||60)==60?'selected':'')+'>60 min</option><option value="90" '+(b.dur==90?'selected':'')+'>90 min</option></select></td>'
-      +'<td style="text-align:center;opacity:'+(isBooked?'1':'.6')+'"><input type="number" min="0" value="'+esc(b.cost||'')+'" placeholder="0" style="width:48px;text-align:center;border:none;background:transparent;font-size:13px;font-weight:700;color:'+txtCol+';padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'cost\',this.value)"></td>'
-      +'<td style="opacity:'+(isBooked?'1':'.6')+'"><input value="'+esc(b.notes||'')+'" placeholder="-" style="width:100%;border:none;background:transparent;font-size:12px;color:'+mutedCol+';font-style:italic;padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'notes\',this.value)"></td>'
-      +'<td>'+statusSel+'</td>'
-      +'<td style="text-align:right">'+(isBooked?'<button onclick="msEmailDraft(\''+dateKey+'\',\''+slotTime+'\')" style="width:24px;height:24px;background:transparent;border:none;cursor:pointer;color:var(--muted);display:inline-flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:13px"></i></button>':'')
+    return '<tr style="border-top:1.5px solid #e8d5bc;background:'+rowBg+'">'
+      +'<td style="padding:9px 4px;font-size:13px;font-weight:700;color:'+(isBooked?stColor:'#15803d')+'">'+slotTime+(isBooked?'':' <span style="font-size:10px;font-weight:700;background:#dcfce7;color:#15803d;padding:1px 6px;border-radius:5px;margin-left:4px">AVAILABLE</span>')+'</td>'
+      +'<td style="padding:9px 4px;opacity:'+(isBooked?'1':'.6')+'"><input value="'+esc(b.room||'')+'" placeholder="-" style="width:100%;border:none;background:transparent;font-size:13px;font-weight:'+(isConfirmed?'700':'400')+';color:'+txtCol+';padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'room\',this.value)"></td>'
+      +'<td style="padding:9px 4px;opacity:'+(isBooked?'1':'.6')+'"><input value="'+esc(b.name||'')+'" placeholder="-" style="width:100%;border:none;background:transparent;font-size:13px;font-weight:'+(isConfirmed?'700':'400')+';color:'+txtCol+';padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'name\',this.value)"></td>'
+      +'<td style="padding:9px 4px;opacity:'+(isBooked?'1':'.6')+'"><select style="border:none;background:transparent;font-size:12px;color:'+mutedCol+';outline:none;cursor:pointer" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'dur\',this.value)"><option value="60" '+((b.dur||60)==60?'selected':'')+'>60 min</option><option value="90" '+(b.dur==90?'selected':'')+'>90 min</option></select></td>'
+      +'<td style="padding:9px 4px;text-align:center;opacity:'+(isBooked?'1':'.6')+'"><input type="number" min="0" value="'+esc(b.cost||'')+'" placeholder="0" style="width:48px;text-align:center;border:none;background:transparent;font-size:13px;font-weight:700;color:'+txtCol+';padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'cost\',this.value)"></td>'
+      +'<td style="padding:9px 4px;opacity:'+(isBooked?'1':'.6')+'"><input value="'+esc(b.notes||'')+'" placeholder="-" style="width:100%;border:none;background:transparent;font-size:12px;color:'+mutedCol+';font-style:italic;padding:2px;outline:none;font-family:var(--sans)" onchange="msUpdate(\''+dateKey+'\',\''+slotTime+'\',\'notes\',this.value)"></td>'
+      +'<td style="padding:9px 4px">'+statusSel+'</td>'
+      +'<td style="padding:9px 4px;text-align:right">'+(isBooked?'<button onclick="msEmailDraft(\''+dateKey+'\',\''+slotTime+'\')" style="width:24px;height:24px;background:transparent;border:none;cursor:pointer;color:var(--muted);display:inline-flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:13px"></i></button>':'')
       +'<button onclick="msClear(\''+dateKey+'\',\''+slotTime+'\')" style="width:24px;height:24px;background:transparent;border:none;cursor:pointer;color:var(--muted2);display:inline-flex;align-items:center;justify-content:center" title="Clear"><i class="ti ti-x" style="font-size:13px"></i></button></td>'
       +'</tr>';
   }
@@ -8174,7 +8191,7 @@ const TAB_DEFS = [
   {id:'grooms',label:'Grooms Daily List',icon:'ti-luggage',      color:'var(--pur)',    visible:true,  order:4,  group:''},
   {id:'ta',    label:'TripAdvisor',     icon:'ti-brand-tripadvisor',color:'#2d9c68',    visible:true,  order:5,  group:''},
   {id:'goo',   label:'Google Reviews',  icon:'ti-brand-google',  color:'#4285f4',       visible:true,  order:6,  group:''},
-  {id:'exp',   label:'Expedia',         icon:'ti-plane',         color:'#0066cc',       visible:true,  order:7,  group:''},
+  {id:'exp',   label:'Expedia',         icon:'ti-compass',         color:'#0066cc',       visible:true,  order:7,  group:''},
   {id:'import',label:'Booking.com',     icon:'ti-brand-booking', color:'var(--amber)',  visible:true,  order:8,  group:''},
   {id:'analytics',label:'Analytics',   icon:'ti-chart-dots',    color:'#2563aa',       visible:true,  order:9,  group:''},
   {id:'gym',   label:'Gym',             icon:'ti-barbell',       color:'#2563aa',       visible:true,  order:10, group:''},
