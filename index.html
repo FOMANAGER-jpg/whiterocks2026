@@ -1554,10 +1554,11 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <h3><i class="ti ti-plus" style="color:#dc2626"></i> Add Task</h3>
       <div class="al-form-row">
         <div class="al-form-group"><label>Date</label><input type="date" id="al-add-date" class="al-inp"></div>
-        <div class="al-form-group"><label>Time</label><input type="time" id="al-add-time" class="al-inp" style="width:110px"></div>
+        <div class="al-form-group"><label>Time <span id="al-time-optional-lbl" style="display:none;opacity:.6;font-weight:400">(optional)</span></label><input type="time" id="al-add-time" class="al-inp" style="width:110px"></div>
         <div class="al-form-group"><label>Room <span style="opacity:.6;font-weight:400">(optional)</span></label><input id="al-add-room" class="al-inp" placeholder="e.g. 407" style="width:80px"></div>
         <div class="al-form-group" style="flex:1;min-width:200px;position:relative"><label>Task Description</label><input id="al-add-desc" class="al-inp" placeholder="e.g. SMITH/407 late checkout... or type / for templates" oninput="alDescInput(this)" autocomplete="off"><div id="al-tpl-suggest" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1.5px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:100;max-height:200px;overflow-y:auto;margin-top:2px"></div></div>
         <div class="al-form-group"><label>Priority</label><select id="al-add-pri" class="al-pri-sel"><option value="high">&#128308; Urgent</option><option value="mid" selected>&#128993; Normal</option><option value="low">&#128994; Low</option></select></div>
+        <div class="al-form-group"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap"><input type="checkbox" id="al-add-followup" onchange="alToggleFollowUpField()" style="cursor:pointer;width:16px;height:16px"> Follow Up</label></div>
         <button class="al-save-btn" onclick="addAlert()"><i class="ti ti-bell-plus"></i> Add</button>
       </div>
     </div>
@@ -7317,13 +7318,17 @@ function roomLabel(room){
   return room;
 }
 function addAlert(){
-  const date=document.getElementById('al-add-date').value;const time=document.getElementById('al-add-time').value;const desc=document.getElementById('al-add-desc').value.trim();const pri=document.getElementById('al-add-pri').value;const room=document.getElementById('al-add-room').value.trim();
-  if(!date||!time||!desc){showToast('Fill in all fields','w');return;}
+  const date=document.getElementById('al-add-date').value;const time=document.getElementById('al-add-time').value;const desc=document.getElementById('al-add-desc').value.trim();const pri=document.getElementById('al-add-pri').value;const room=document.getElementById('al-add-room').value.trim();const isFollowUp=document.getElementById('al-add-followup').checked;
+  if(!date||!desc||(!isFollowUp&&!time)){showToast('Fill in all fields','w');return;}
   if(!alertsData[date])alertsData[date]=[];
-  alertsData[date].push({id:Date.now().toString(),time,desc,room,pri,done:false,doneBy:'',doneAt:'',createdAt:new Date().toISOString()});
-  alertsData[date].sort((a,b)=>a.time.localeCompare(b.time));
-  svAlerts();alCurrentDate=date;renderAlerts();document.getElementById('al-add-desc').value='';document.getElementById('al-add-room').value='';showToast('Task added!','s');checkOverdueTasks();
-  logActivity('Alerts','added task','"'+desc+'"'+(room?' (Rm '+room+')':'')+' for '+date+' '+time);
+  alertsData[date].push({id:Date.now().toString(),time:time||'',desc,room,pri,isFollowUp,done:false,doneBy:'',doneAt:'',createdAt:new Date().toISOString()});
+  alertsData[date].sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+  svAlerts();alCurrentDate=date;renderAlerts();document.getElementById('al-add-desc').value='';document.getElementById('al-add-room').value='';document.getElementById('al-add-followup').checked=false;alToggleFollowUpField();showToast('Task added!','s');checkOverdueTasks();
+  logActivity('Alerts','added '+(isFollowUp?'follow-up task':'task'),'"'+desc+'"'+(room?' (Rm '+room+')':'')+' for '+date+(time?' '+time:''));
+}
+function alToggleFollowUpField(){
+  const isChecked=document.getElementById('al-add-followup').checked;
+  document.getElementById('al-time-optional-lbl').style.display=isChecked?'inline':'none';
 }
 function alToggleEP(id){
   window._alOpenEP=window._alOpenEP||{};
@@ -7344,6 +7349,31 @@ function alertEditDesc(dateKey,id,val){
   if(task){task.desc=val;svAlerts();}
 }
 function toggleAlert(dateKey,id){const tasks=alertsData[dateKey]||[];const task=tasks.find(t=>t.id===id);if(!task)return;task.done=!task.done;task.doneAt=task.done?new Date().toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'}):'';task.doneBy=task.done?WR_USER:'';svAlerts();renderAlerts();checkOverdueTasks();if(task.done)showToast('\u2713 Task completed!','s');logActivity('Alerts',task.done?'completed task':'reopened task','"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':''));}
+function alFollowUpNote(dateKey,id,val){
+  const tasks=alertsData[dateKey]||[];const task=tasks.find(t=>t.id===id);if(!task)return;
+  task.note=val;svAlerts();
+  if(val.trim())logActivity('Alerts','added follow-up note','"'+(task.desc||'')+'" \u2014 "'+val.trim()+'"');
+}
+function toggleFollowUpTask(dateKey,id){
+  const tasks=alertsData[dateKey]||[];const task=tasks.find(t=>t.id===id);if(!task)return;
+  const wasDone=task.done;
+  task.done=!task.done;
+  task.doneAt=task.done?new Date().toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'}):'';
+  task.doneBy=task.done?WR_USER:'';
+  svAlerts();renderAlerts();checkOverdueTasks();
+  logActivity('Alerts',task.done?'completed follow-up':'reopened follow-up','"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':''));
+  if(!wasDone&&task.done){
+    if(confirm('\u2713 Marked as done.\n\nDo you need a follow up tomorrow?\n\n"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':''))){
+      const tomorrow=new Date(dateKey);tomorrow.setDate(tomorrow.getDate()+1);
+      const tKey=tomorrow.toISOString().split('T')[0];
+      if(!alertsData[tKey])alertsData[tKey]=[];
+      alertsData[tKey].push({id:Date.now().toString(),time:'',desc:task.desc,room:task.room,pri:task.pri,isFollowUp:true,done:false,doneBy:'',doneAt:'',note:'',prevNote:task.note||'',createdAt:new Date().toISOString()});
+      svAlerts();
+      showToast('Follow up added for tomorrow','s');
+      logActivity('Alerts','added follow-up task','"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':'')+' for '+tKey);
+    }
+  }
+}
 function deleteAlert(dateKey,id){if(!confirm('Delete this task?'))return;const list=alertsData[dateKey]||[];const idx=list.findIndex(t=>t.id===id);const saved=idx>=0?list[idx]:null;alertsData[dateKey]=list.filter(t=>t.id!==id);svAlerts();renderAlerts();checkOverdueTasks();showToast('Deleted','w',function(){if(saved){if(!alertsData[dateKey])alertsData[dateKey]=[];alertsData[dateKey].splice(idx,0,saved);svAlerts();renderAlerts();checkOverdueTasks();}});if(saved)logActivity('Alerts','deleted task','"'+(saved.desc||'')+'"'+(saved.room?' (Rm '+saved.room+')':''));}
 function renderAlerts(){
   const DAY_GR=['\u039a\u03c5\u03c1','\u0394\u03b5\u03c5\u03c4','\u03a4\u03c1','\u03a4\u03b5\u03c4','\u03a0\u03ad\u03bc','\u03a0\u03b1\u03c1','\u03a3\u03b1\u03b2'];
@@ -7357,28 +7387,34 @@ function renderAlerts(){
   else if(isYesterday)dayLbl='\u2b05\ufe0f Yesterday \u2014 '+dayLbl;
   document.getElementById('al-date-lbl').textContent=dayLbl;
   const addDateEl=document.getElementById('al-add-date');if(addDateEl&&!addDateEl.value){const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);addDateEl.value=tomorrow.toISOString().split('T')[0];}
-  const tasks=alertsData[alCurrentDate]||[];const now=new Date();const nowMins=now.getHours()*60+now.getMinutes();
-  const total=tasks.length,done=tasks.filter(t=>t.done).length;const overdue=tasks.filter(t=>{if(t.done||!isToday)return false;const[h,m]=t.time.split(':').map(Number);return(h*60+m)<nowMins;}).length;
+  const allTasks=alertsData[alCurrentDate]||[];const now=new Date();const nowMins=now.getHours()*60+now.getMinutes();
+  const total=allTasks.length,done=allTasks.filter(t=>t.done).length;const overdue=allTasks.filter(t=>{if(t.done||!isToday||!t.time)return false;const[h,m]=t.time.split(':').map(Number);return(h*60+m)<nowMins;}).length;
   document.getElementById('al-stats').innerHTML=total?'<div class="al-stat-pill"><i class="ti ti-list" style="color:var(--sea)"></i> Total: <strong>'+total+'</strong></div><div class="al-stat-pill"><i class="ti ti-check" style="color:#16a34a"></i> Done: <strong style="color:#16a34a">'+done+'</strong></div><div class="al-stat-pill"><i class="ti ti-clock" style="color:#f5a623"></i> Pending: <strong style="color:#f5a623">'+(total-done)+'</strong></div>'+(overdue?'<div class="al-stat-pill" style="background:#fef2f2;border-color:#fecaca"><i class="ti ti-alert-triangle" style="color:#dc2626"></i> Overdue: <strong style="color:#dc2626">'+overdue+'</strong></div>':''):'';
   const el=document.getElementById('al-list');
-  if(!tasks.length){el.innerHTML='<div class="al-empty"><i class="ti ti-bell-off"></i><div style="font-size:14px;font-weight:600;color:var(--muted)">No tasks for this day</div></div>';return;}
+  if(!allTasks.length){el.innerHTML='<div class="al-empty"><i class="ti ti-bell-off"></i><div style="font-size:14px;font-weight:600;color:var(--muted)">No tasks for this day</div></div>';}else{
   const alOpenEP=window._alOpenEP||{};
-  el.innerHTML=tasks.map(task=>{
-    const[h,m]=task.time.split(':').map(Number);
-    const taskMins=h*60+m;
-    const isOverdue=isToday&&!task.done&&taskMins<nowMins;
+  const sortedTasks=[...allTasks].sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+  el.innerHTML=sortedTasks.map(task=>{
+    const isFU=!!task.isFollowUp;
+    const taskMins=task.time?(()=>{const[h,m]=task.time.split(':').map(Number);return h*60+m;})():null;
+    const isOverdue=isToday&&!task.done&&taskMins!==null&&taskMins<nowMins;
     const priLbl={high:'\ud83d\udd34 Urgent',mid:'\ud83d\udfe1 Normal',low:'\ud83d\udfe2 Low'}[task.pri]||'\ud83d\udfe1 Normal';
     const isOpen=!!alOpenEP[task.id];
-    let html='<div class="al-task pri-'+task.pri+(task.done?' done':'')+(isOverdue?' overdue':'')+'\">';
-    html+='<input type="checkbox" class="al-chk" '+(task.done?'checked':'')+' onchange="toggleAlert(\''+alCurrentDate+'\',\''+task.id+'\')">';
-    html+='<div class="al-task-time'+(isOverdue?' overdue':'')+'">'+task.time+'</div>';
-    html+='<div class="al-task-desc'+(task.done?' done':'')+'">'+(task.room?'<span style="background:var(--sea-light);color:var(--sea);font-weight:700;font-size:11px;padding:2px 7px;border-radius:6px;margin-right:6px">'+esc(roomLabel(task.room))+'</span>':'')+esc(task.desc||'')+'</div>';
+    const toggleFn=isFU?'toggleFollowUpTask':'toggleAlert';
+    let html='<div class="al-task pri-'+task.pri+(task.done?' done':'')+(isOverdue?' overdue':'')+(isFU?' followup':'')+'" style="flex-wrap:wrap'+(isFU?';border-left:3px solid #0e7490':'')+'">';
+    html+='<input type="checkbox" class="al-chk" '+(task.done?'checked':'')+' onchange="'+toggleFn+'(\''+alCurrentDate+'\',\''+task.id+'\')">';
+    html+='<div class="al-task-time'+(isOverdue?' overdue':'')+'" style="'+(isFU?'color:#0e7490':'')+'">'+(isFU?'<i class="ti ti-repeat" style="font-size:13px"></i>':task.time)+'</div>';
+    html+='<div class="al-task-desc'+(task.done?' done':'')+'">'+(isFU?'<span style="background:#e0f7fa;color:#0e7490;font-weight:700;font-size:10px;padding:2px 6px;border-radius:6px;margin-right:6px">FOLLOW UP</span>':'')+(task.room?'<span style="background:var(--sea-light);color:var(--sea);font-weight:700;font-size:11px;padding:2px 7px;border-radius:6px;margin-right:6px">'+esc(roomLabel(task.room))+'</span>':'')+esc(task.desc||'')+'</div>';
     html+='<span class="al-pri-badge '+(task.pri||'mid')+'">'+priLbl+'</span>';
     if(task.done&&task.doneAt)html+='<span class="al-task-who">\u2713 '+task.doneAt+'</span>';
-    html+='<button onclick="alToggleEP(\''+task.id+'\')" style="width:28px;height:28px;background:'+(isOpen?'var(--sea)':'var(--sea-light)')+';border:none;border-radius:7px;cursor:pointer;color:'+(isOpen?'#fff':'var(--sea)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-pencil" style="font-size:13px"></i></button>';
+    if(!isFU)html+='<button onclick="alToggleEP(\''+task.id+'\')" style="width:28px;height:28px;background:'+(isOpen?'var(--sea)':'var(--sea-light)')+';border:none;border-radius:7px;cursor:pointer;color:'+(isOpen?'#fff':'var(--sea)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-pencil" style="font-size:13px"></i></button>';
     html+='<button class="al-task-del" onclick="deleteAlert(\''+alCurrentDate+'\',\''+task.id+'\')"><i class="ti ti-trash" style="font-size:13px"></i></button>';
+    if(isFU){
+      if(task.prevNote)html+='<div style="width:100%;margin-top:5px;margin-left:38px;font-size:11px;color:var(--muted);font-style:italic">Previous note: "'+esc(task.prevNote)+'"</div>';
+      html+='<input value="'+esc(task.note||'')+'" placeholder="Write a note when following up..." style="width:100%;margin-top:6px;margin-left:38px;padding:6px 10px;border:1px solid var(--border2);border-radius:7px;font-size:12px;font-family:var(--sans);background:#f8fdfe;color:var(--ink)" onchange="alFollowUpNote(\''+alCurrentDate+'\',\''+task.id+'\',this.value)">';
+    }
     html+='</div>';
-    if(isOpen){
+    if(isOpen&&!isFU){
       html+='<div style="background:#f0f7ff;border:1px solid var(--sea-mid);border-radius:10px;padding:12px 16px;margin-top:4px;display:grid;grid-template-columns:1fr auto auto auto auto;gap:10px;align-items:end">';
       html+='<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px">Description</label>';
       html+='<input value="'+esc(task.desc||'')+'" style="width:100%;padding:7px 10px;border:1.5px solid var(--sea-mid);border-radius:8px;font-family:var(--sans);font-size:13px;color:var(--ink);outline:none" onchange="alertUpd(\''+alCurrentDate+'\',\''+task.id+'\',\'desc\',this.value)"></div>';
@@ -7397,6 +7433,7 @@ function renderAlerts(){
     }
     return html;
   }).join('');
+  }
 }
 /* ── ALERT TEMPLATES & ADMIN PANEL (FOM only) ── */
 let alTemplates=JSON.parse(localStorage.getItem('al_templates')||'[]');
@@ -7578,7 +7615,7 @@ function alMarkLogRead(){
   renderActivityLog();
   showToast('Marked as read','s');
 }
-function checkOverdueTasks(){const today=new Date().toISOString().split('T')[0];const tasks=alertsData[today]||[];const now=new Date();const nowMins=now.getHours()*60+now.getMinutes();const hasOverdue=tasks.some(t=>{if(t.done)return false;const[h,m]=t.time.split(':').map(Number);return(h*60+m)<nowMins;});const tabEl=document.getElementById('nt-alerts');if(tabEl){if(hasOverdue){tabEl.classList.add('tab-alert-pulse');tabEl.style.color='#dc2626';}else{tabEl.classList.remove('tab-alert-pulse');tabEl.style.color='';}}}
+function checkOverdueTasks(){const today=new Date().toISOString().split('T')[0];const tasks=alertsData[today]||[];const now=new Date();const nowMins=now.getHours()*60+now.getMinutes();const hasOverdue=tasks.some(t=>{if(t.done||!t.time)return false;const[h,m]=t.time.split(':').map(Number);return(h*60+m)<nowMins;});const tabEl=document.getElementById('nt-alerts');if(tabEl){if(hasOverdue){tabEl.classList.add('tab-alert-pulse');tabEl.style.color='#dc2626';}else{tabEl.classList.remove('tab-alert-pulse');tabEl.style.color='';}}}
 setInterval(()=>{checkOverdueTasks();const alertTab=document.getElementById('tab-alerts');if(alertTab&&!alertTab.classList.contains('hidden'))renderAlerts();},60000);
 setTimeout(checkOverdueTasks,2000);
 
