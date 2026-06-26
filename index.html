@@ -8990,12 +8990,13 @@ function buffetLoadIDB(type,cb){
     }catch(e){cb(null);}
   });
 }
-function buffetSlim(data){
+function buffetSlim(data,type){
   // Strip rooms array — keep only summary per day, but preserve arrival-hour histogram
   return {days:(data.days||[]).map(function(d){
     var summary=d.summary||{};
-    // Compute hourCounts if not already present and rooms data exists
-    if(!summary.hourCounts&&d.rooms&&d.rooms.length){
+    // Compute hourCounts if not already present (or empty) and rooms data exists
+    var hasHourCounts=summary.hourCounts&&Object.keys(summary.hourCounts).length>0;
+    if(!hasHourCounts&&d.rooms&&d.rooms.length){
       var hm={};
       d.rooms.filter(function(r){return r.arrived&&r.arrivalTime;}).forEach(function(r){
         var h=parseInt(r.arrivalTime.split(':')[0])+':00';
@@ -9003,9 +9004,12 @@ function buffetSlim(data){
       });
       summary=Object.assign({},summary,{hourCounts:hm});
     }
-    // Compute totalAdults (expected guests) if not already present and rooms data exists
+    // Compute totalAdults (expected guests) if not already present and rooms data exists.
+    // Breakfast: count every in-house room (everyone gets breakfast).
+    // Dinner: exclude BB-only rooms (they don't have dinner included).
     if(summary.totalAdults==null&&d.rooms&&d.rooms.length){
-      var totalAdults=d.rooms.reduce(function(s,r){return s+(Number(r.adults)||0);},0);
+      var roomsForTotal=type==='dinner'?d.rooms.filter(function(r){return r.pkg!=='BB';}):d.rooms;
+      var totalAdults=roomsForTotal.reduce(function(s,r){return s+(Number(r.adults)||0);},0);
       summary=Object.assign({},summary,{totalAdults:totalAdults});
     }
     return{date:d.date,savedAt:d.savedAt||'',manual:d.manual||false,summary:summary};
@@ -9013,7 +9017,7 @@ function buffetSlim(data){
 }
 function buffetSetData(type,data,cb){
   if(type==='breakfast'){BUFFET_DB_BK=data;}else{BUFFET_DB_DN=data;}
-  var slim=buffetSlim(data);
+  var slim=buffetSlim(data,type);
   // localStorage as primary guaranteed-sync backup (slim data is tiny, always fits)
   try{localStorage.setItem('wr_buffet_'+type,JSON.stringify(slim));}catch(e){console.warn('localStorage buffet save failed:',e);}
   buffetSaveIDB(type,slim,function(ok){if(cb)cb(ok);});
