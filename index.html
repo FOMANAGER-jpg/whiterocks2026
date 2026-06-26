@@ -2067,6 +2067,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div style="display:flex;align-items:center;gap:6px">
       <div style="display:flex;align-items:center;gap:6px">
         <button onclick="goTab('wine')" style="display:flex;align-items:center;gap:5px;padding:6px 13px;background:linear-gradient(135deg,#6b21a8,#9333ea);color:#fff;border:none;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">🍷 Wine</button>
+        <button onclick="goTab('tennis')" style="display:flex;align-items:center;gap:5px;padding:6px 13px;background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;border:none;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">🎾 Tennis</button>
         <select id="sug-sort" onchange="renderSuggestions()" style="display:none"><option value="rating">rating</option></select>
       </div>
       </div>
@@ -5013,7 +5014,7 @@ function ddGo(tab,lbl){
   goTab(tab);
 }
 function goTab(t){
-  ['res','day3','report','grooms','ac','comp','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','alerts','experiences','suggestions','breakfast','dinner','wine','activitylog'].forEach(x=>{
+  ['res','day3','report','grooms','ac','comp','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','alerts','experiences','suggestions','breakfast','dinner','wine','tennis','activitylog'].forEach(x=>{
     const el=document.getElementById('tab-'+x);
     const nt=document.getElementById('nt-'+x);
     if(el)el.classList.toggle('hidden',x!==t);
@@ -7675,7 +7676,7 @@ function fomSetColor(hex){
 }
 // Apply saved color on load
 (function(){const saved=localStorage.getItem('fom_theme_color');if(saved)fomSetColor(saved);})();
-const ALL_RESTRICTABLE_TABS=['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','experiences','suggestions','breakfast','dinner','wine'];
+const ALL_RESTRICTABLE_TABS=['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','experiences','suggestions','breakfast','dinner','wine','tennis'];
 function resetRoleRestrictions(){
   // Show every nav tab + dropdown item again
   ALL_RESTRICTABLE_TABS.forEach(t=>{
@@ -7718,7 +7719,7 @@ function applyRoleRestrictions(){
     // Reservations role: only res, gym, yoga, pilates, massage(no stats), experiences(no stats)
     const SHOW_TABS=['res','gym','yoga','pilates','massage','experiences'];
     // Hide all tabs except the allowed ones
-    ['alerts','day3','report','comp','ac','grooms','import','ta','goo','exp','analytics','suggestions','breakfast','dinner','wine'].forEach(t=>{
+    ['alerts','day3','report','comp','ac','grooms','import','ta','goo','exp','analytics','suggestions','breakfast','dinner','wine','tennis'].forEach(t=>{
       const el=document.getElementById('nt-'+t);if(el)el.style.display='none';
       const dd=document.getElementById('ddi-'+t);if(dd)dd.style.display='none';
     });
@@ -8418,7 +8419,7 @@ function reapplyRoleHiding(){
   var hide=WR_ROLE==='backoffice'
     ?['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','gym','yoga','pilates','suggestions','breakfast','dinner']
     :WR_ROLE==='reservations'
-    ?['alerts','day3','report','comp','ac','grooms','import','ta','goo','analytics','suggestions','breakfast','dinner','wine']
+    ?['alerts','day3','report','comp','ac','grooms','import','ta','goo','analytics','suggestions','breakfast','dinner','wine','tennis']
     :['analytics','breakfast','dinner'];
   hide.forEach(function(t){
     var el=document.getElementById('nt-'+t);if(el)el.style.display='none';
@@ -9495,6 +9496,62 @@ function bfMonthly(days,isBF,col,colLight){
           <div style="background:#fefce8;border-radius:9px;padding:12px 14px;border-left:3px solid #f59e0b"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">Combine with</div><div style="font-size:12px;color:var(--ink2)">Agios Gerasimos Monastery (5 min) + Drogarati + Melissani</div></div>
           <div style="background:#fefce8;border-radius:9px;padding:12px 14px;border-left:3px solid #f59e0b"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">Shop prices</div><div style="font-size:12px;color:var(--ink2)">Robola Classic EUR 12&ndash;15 &middot; Fume EUR 18&ndash;22</div></div>
           <div style="background:#fefce8;border-radius:9px;padding:12px 14px;border-left:3px solid #f59e0b"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">GPS Directions</div><div style="font-size:12px;color:var(--ink2)">"Gentilini Winery Kefalonia" &middot; Lassi to Argostoli to Minies</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-tennis" class="hidden">
+  <div style="padding:16px 20px 40px">
+    <div style="background:linear-gradient(135deg,#14532d,#22c55e);border-radius:var(--r);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)">
+      <div style="width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px">🎾</div>
+      <div><div style="font-family:var(--serif);font-size:19px;font-weight:600;color:#fff">Tennis Club Argostoli Lassi</div><div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:3px">Tennis Lessons &middot; Court Rental &middot; Lassi, Kefalonia</div></div>
+      <button onclick="goTab('suggestions')" style="margin-left:auto;display:flex;align-items:center;gap:7px;padding:8px 16px;background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-arrow-left" style="font-size:15px"></i> Back to Suggestions</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);grid-column:1/-1">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><i class="ti ti-info-circle" style="font-size:18px;color:#16a34a"></i><div style="font-size:14px;font-weight:700;color:var(--ink)">About Tennis Club Argostoli Lassi</div></div>
+        <p style="font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:10px">The <strong>Tennis Club Argostoli Lassi</strong> offers guests the chance to book their own court or take a lesson, right in the Lassi area. Highly rated by visitors on Google. Rackets and balls are included with court rental &mdash; no need to bring your own gear.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span style="background:#dcfce7;color:#16a34a;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700">&#11088; 4.8/5 Google</span>
+          <span style="background:#dcfce7;color:#16a34a;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700">Rackets &amp; Balls Included</span>
+          <span style="background:#dcfce7;color:#16a34a;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700">Lessons Available</span>
+          <span style="background:#dcfce7;color:#16a34a;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700">Open Daily 07:00&ndash;23:00</span>
+        </div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh)">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-map-pin" style="color:#16a34a"></i> Location &amp; Hours</div>
+        <div style="font-size:13px;color:var(--ink2);line-height:2.1">
+          <div>Argostoli &ndash; Lassi area, Kefalonia</div>
+          <div><strong>Daily 07:00&ndash;23:00</strong></div>
+          <div>Close to White Rocks Hotel</div>
+          <div><a href="tel:+306938151944" style="color:#16a34a;font-weight:700;text-decoration:none">+30 693 815 1944</a></div>
+        </div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh)">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-stars" style="color:#16a34a"></i> What's Offered</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:#dcfce7;border-radius:9px;padding:10px 14px"><div style="font-weight:700;color:#15803d">Tennis Lessons</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Coaching available &middot; call to book</div></div>
+          <div style="background:#dcfce7;border-radius:9px;padding:10px 14px"><div style="font-weight:700;color:#15803d">Court Rental</div><div style="font-size:11px;color:var(--muted);margin-top:2px">EUR 20 &middot; rackets &amp; balls included</div></div>
+        </div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh)">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-ticket" style="color:#16a34a"></i> Booking Info</div>
+        <div style="font-size:13px;color:var(--ink2);line-height:2.1">
+          <div><strong>EUR 20</strong> per court session</div>
+          <div>Rackets &amp; balls included</div>
+          <div>Call ahead to reserve a spot</div>
+          <div style="margin-top:8px;padding:10px;background:#dcfce7;border-radius:8px;font-size:12px;color:#15803d;font-weight:600">Tip: Reservation recommended, especially evenings</div>
+        </div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);grid-column:1/-1">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="ti ti-bulb" style="color:#f59e0b"></i> Staff Tips for Guests</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
+          <div style="background:#fefce8;border-radius:9px;padding:12px 14px;border-left:3px solid #f59e0b"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">Call to reserve</div><div style="font-size:12px;color:var(--ink2)">+30 693 815 1944 &middot; courts can fill up in the evening</div></div>
+          <div style="background:#fefce8;border-radius:9px;padding:12px 14px;border-left:3px solid #f59e0b"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">Equipment</div><div style="font-size:12px;color:var(--ink2)">Rackets &amp; balls included &mdash; guests don't need to bring anything</div></div>
+          <div style="background:#fefce8;border-radius:9px;padding:12px 14px;border-left:3px solid #f59e0b"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">Best time to visit</div><div style="font-size:12px;color:var(--ink2)">Early morning or evening to avoid midday heat</div></div>
+          <div style="background:#fefce8;border-radius:9px;padding:12px 14px;border-left:3px solid #f59e0b"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">Good for</div><div style="font-size:12px;color:var(--ink2)">Both lessons (with coach) and casual court rental</div></div>
         </div>
       </div>
     </div>
