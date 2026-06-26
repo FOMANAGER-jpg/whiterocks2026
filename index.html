@@ -2637,7 +2637,7 @@ function renderGenTab(tab){
     const baseFields='<td style="padding:7px 9px;color:var(--muted2);font-size:11px;text-align:center">'+n+'</td><td>'+inp(i,'ref',r.ref,'Ref#')+'</td><td>'+inp(i,'name',r.name,'FULL NAME','font-weight:600')+'</td><td>'+inp(i,'room',r.room,'309','text-align:center;font-weight:700;color:'+col)+'</td><td>'+inpDate(i,'bookDate',r.bookDate)+'</td>';
     if(tab==='excursions'){
       const isOpen_excursions=genIsOpen('excursions',i);
-      const excSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #93c5fd;border-radius:8px;font-size:12px;outline:none;font-family:var(--sans)" onchange="excOnSelect(\'excursions\','+i+',this.value)"><option value="">-- Select --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'"'+(r.excursion===e.name?' selected':'')+'>'+e.name+'</option>').join('')+'</select>';
+      const excSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #93c5fd;border-radius:8px;font-size:12px;outline:none;font-family:var(--sans)" onchange="excOnSelect(\'excursions\','+i+',this.value)"><option value="">-- Select --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'"'+(r.excursion===e.name?' selected':'')+'>'+e.name+'</option>').join('')+'<option value="__custom__">✏️ Custom (type your own)</option></select>';
       const ep_ex=EXC_CATALOG.find(e=>e.name===r.excursion);
       html+='<tr class="'+rc+(isOpen_excursions?' car-ep-open':'')+'" onclick="genToggleRow(\'excursions\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td onclick="event.stopPropagation()">'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'excursion',r.excursion,'Excursion name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td>'+inpNum(i,'childPax',r.childPax||0,'50px')+'</td><td style="padding:7px 9px;text-align:right;font-weight:700;color:'+col+'">'+(r.cost?'€'+r.cost:'')+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+genExpandBtn('excursions',i,'#1a6ca8')+'<button onclick="event.stopPropagation();excEmailDraft('+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+'<button onclick="event.stopPropagation();genDel(\'excursions\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
       if(isOpen_excursions){const pi=ep_ex?'<div style="font-size:10px;color:#1a6ca8;font-weight:600;margin-top:4px">Adult: €'+(ep_ex.priceAdult||'?')+' · Child: €'+(ep_ex.priceChild||'?')+' · Pickup WR: '+(ep_ex.pickupWR||'--')+'</div>':'';html+='<tr class="car-ep" style="background:#ebf5ff"><td colspan="20" onclick="event.stopPropagation()">'+epBaseFields('excursions',i,r,'#1a6ca8')+'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-top:10px">'+epField('Excursion','#1a6ca8',excSel+pi)+epField('Tour Date','#1a6ca8',epDate('excursions',i,'date',r.date))+epField('Pickup Time WR','#1a6ca8',epTime('excursions',i,'time',r.time))+epField('Adults','#1a6ca8',epNum('excursions',i,'pax',r.pax,'2','1',null))+epField('Children','#1a6ca8',epNum('excursions',i,'childPax',r.childPax||0,'0','0',null))+epField('Cost €','#1a6ca8',epNum('excursions',i,'cost',r.cost,'0','0',null))+epField('Notes','#1a6ca8',epInp('excursions',i,'notes',r.notes,'Special requests...'))+epStatus('excursions',i,r.status,4)+'</div></td></tr>';}
@@ -3336,6 +3336,14 @@ function gmTransferBothWaysToggle(){
 }
 function gmExcUpdateInfo(){
   const name=document.getElementById('gm-excursion')?.value;
+  const customEl=document.getElementById('gm-excursion-custom');
+  if(customEl)customEl.style.display=name==='__custom__'?'block':'none';
+  if(name==='__custom__'){
+    if(customEl)setTimeout(()=>customEl.focus(),50);
+    const el=document.getElementById('gm-exc-info');
+    if(el)el.textContent='';
+    return;
+  }
   const exc=EXC_CATALOG.find(e=>e.name===name);
   const el=document.getElementById('gm-exc-info');
   if(el&&exc)el.textContent='Adult €'+(exc.priceAdult||'?')+' · Child €'+(exc.priceChild||'?')+' · Days: '+exc.dayNames.join(', ')+' · Pickup WR: '+exc.pickupWR;
@@ -3412,7 +3420,7 @@ function genAdd(tab){
     } else if(f.type==='status'){
       html+='<div style="grid-column:1/-1">'+lbl2+'<select class="tr-inp" style="width:100%" id="gm-'+f.id+'"><option value="waiting">⏳ Waiting</option><option value="confirmed">✓ Confirmed</option><option value="commission">💰 Commission</option><option value="cancelled">✗ Cancelled</option></select></div>';
     } else if(f.type==='exc_select'){
-      html+='<div style="grid-column:1/3">'+lbl2+'<select style="'+selStyle+'" id="gm-excursion" onchange="gmExcUpdateInfo()"><option value="">-- Select excursion --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'">'+e.name+'</option>').join('')+'</select><div id="gm-exc-info" style="'+infoStyle+'"></div></div>';
+      html+='<div style="grid-column:1/3">'+lbl2+'<select style="'+selStyle+'" id="gm-excursion" onchange="gmExcUpdateInfo()"><option value="">-- Select excursion --</option>'+EXC_CATALOG.map(e=>'<option value="'+e.name+'">'+e.name+'</option>').join('')+'<option value="__custom__">✏️ Custom (type your own)</option></select><div id="gm-exc-info" style="'+infoStyle+'"></div><input class="tr-inp" style="width:100%;margin-top:8px;display:none" id="gm-excursion-custom" type="text" placeholder="Type custom excursion name..."></div>';
     } else if(f.type==='moto_company'){
       html+='<div>'+lbl2+'<select style="'+selStyle+'" id="gm-company" onchange="gmMotoUpdateVehicles()"><option value="">-- Company --</option><option value="Motoround">Motoround Kefalonia</option><option value="Ezy Bike">Ezy Bike Rental</option></select></div>';
     } else if(f.type==='moto_select'){
@@ -3506,6 +3514,12 @@ function genModalSave(){
       row.time2=document.getElementById('gm-time2')?.value||'';
       row.cost2=parseFloat(document.getElementById('gm-cost2')?.value)||0;
     }
+  }
+  // Excursions: use custom typed name if "Custom" was selected
+  if(tab==='excursions'&&row.excursion==='__custom__'){
+    const customName=document.getElementById('gm-excursion-custom')?.value?.trim();
+    if(!customName){showToast('Please type a custom excursion name','w');return;}
+    row.excursion=customName;
   }
   if(!row.name&&!row.ref){showToast('Please fill in at least Name or Ref','w');return;}
   GEN_DATA[tab].unshift(row);svGen(tab);genModalClose();renderGenTab(tab);showToast('Booking added!','s');
@@ -4601,6 +4615,13 @@ function excAutoPrice(n,pax,childPax){const e=excGetByName(n);if(!e||!e.priceAdu
 function excIsAvailable(n,dateStr){const e=excGetByName(n);if(!e||!dateStr)return{ok:true};const d=new Date(dateStr);if(isNaN(d))return{ok:true};const dow=d.getDay();if(e.days.includes(dow))return{ok:true,pickup:e.pickupWR,exc:e};return{ok:false,exc:e,dow};}
 function excOnSelect(tab,i,excName){
   const r=GEN_DATA[tab][i];if(!r)return;
+  if(excName==='__custom__'){
+    const customName=prompt('Type custom excursion name:',r.excursion&&!excGetByName(r.excursion)?r.excursion:'');
+    if(customName===null)return; // user cancelled, leave unchanged
+    r.excursion=customName.trim();
+    svGen(tab);renderGenTab(tab);
+    return;
+  }
   r.excursion=excName;
   const e=excGetByName(excName);
   if(e){
