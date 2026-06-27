@@ -2717,7 +2717,7 @@ function renderGenTab(tab){
     }
     else if(tab==='vantours'){
       const isOpen_vt=genIsOpen('vantours',i);
-      const vtSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #e2c97e;border-radius:8px;font-size:12px;outline:none" onchange="const vt=VAN_TOURS.find(t=>t.name===this.value);GEN_DATA[\'vantours\']['+i+'].tour=this.value;if(vt&&r.pax){const pk=r.pax<=2?2:r.pax<=4?4:6;const tier=(r.tourType===\'exclusive\'&&vt.prices.exclusive)?vt.prices.exclusive:vt.prices.standard;if(tier&&tier[pk])GEN_DATA[\'vantours\']['+i+'].cost=tier[pk];}svGen(\'vantours\')"><option value="">-- Select tour --</option>'+VAN_TOURS.map(t=>'<option value="'+t.name+'"'+(r.tour===t.name?' selected':'')+'>'+t.name+' ('+t.duration+')</option>').join('')+'</select>';
+      const vtSel='<select style="width:100%;padding:6px 8px;border:1.5px solid #e2c97e;border-radius:8px;font-size:12px;outline:none" onchange="vtOnSelect('+i+',this.value)"><option value="">-- Select tour --</option>'+VAN_TOURS.map(t=>'<option value="'+t.name+'"'+(r.tour===t.name?' selected':'')+'>'+t.name+' ('+t.duration+')</option>').join('')+'<option value="__custom__">✏️ Custom (type your own)</option></select>';
       const vtPrice=()=>{const vt=VAN_TOURS.find(t=>t.name===r.tour);if(!vt)return null;const pk=r.pax<=2?2:r.pax<=4?4:6;const tier=(r.tourType==='exclusive'&&vt.prices.exclusive)?vt.prices.exclusive:vt.prices.standard;return tier?tier[pk]||null:null;};
       const vtP=vtPrice();
       html+='<tr class="'+rc+(isOpen_vt?' car-ep-open':'')+'" onclick="genToggleRow(\'vantours\','+i+')">'+baseFields+'<td>'+inpDate(i,'date',r.date)+'</td><td>'+inpTime(i,'time',r.time)+'</td><td>'+inp(i,'tour',r.tour,'Tour name')+'</td><td>'+inpNum(i,'pax',r.pax,'50px')+'</td><td style="padding:5px 7px"><select class="car-ci" style="font-size:11px;width:90px" onchange="GEN_DATA[\'vantours\']['+i+'].tourType=this.value;svGen(\'vantours\')"><option value="standard"'+((!r.tourType||r.tourType==='standard')?' selected':'')+'>Standard</option><option value="exclusive"'+(r.tourType==='exclusive'?' selected':'')+'>Exclusive</option></select></td><td style="padding:7px 9px;font-weight:700;color:#7c5e2e">'+(r.cost?'€'+r.cost:(vtP?'€'+vtP:''))+'</td><td onclick="event.stopPropagation()">'+inp(i,'company',r.company,'Company')+'</td><td onclick="event.stopPropagation()">'+inp(i,'bookedBy',r.bookedBy,'Staff')+'</td><td style="padding:4px 7px">'+sb(r,i)+'</td><td style="padding:4px 7px"><div style="display:flex;gap:3px">'+'<button onclick="event.stopPropagation();genEmailDraft(\'vantours\','+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+genExpandBtn('vantours',i,'#7c5e2e')+'<button onclick="event.stopPropagation();genDel(\'vantours\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td></tr>';
@@ -3370,6 +3370,14 @@ function gmFlowersUpdatePrice(){
 }
 function gmVanUpdatePrice(){
   const name=document.getElementById('gm-tour')?.value;
+  const customEl=document.getElementById('gm-tour-custom');
+  if(customEl)customEl.style.display=name==='__custom__'?'block':'none';
+  if(name==='__custom__'){
+    if(customEl)setTimeout(()=>customEl.focus(),50);
+    const el=document.getElementById('gm-van-info');
+    if(el)el.textContent='';
+    return;
+  }
   const pax=parseInt(document.getElementById('gm-pax')?.value)||2;
   const type=document.getElementById('gm-tourType')?.value||'standard';
   const price=vanTourAutoPrice(name,pax,type);
@@ -3435,7 +3443,7 @@ function genAdd(tab){
     } else if(f.type==='boats_notes'){
       html+='<div id="gm-notes-wrap" style="grid-column:1/3;display:none">'+lbl2+'<input class="tr-inp" style="width:100%" id="gm-notes" type="text" placeholder="Custom MAK trip description, vessel, special request..."></div>';
     } else if(f.type==='vantour_select'){
-      html+='<div style="grid-column:1/3">'+lbl2+'<select style="'+selStyle+'" id="gm-tour" onchange="gmVanUpdatePrice()"><option value="">-- Select tour --</option>'+VAN_TOURS.map(t=>'<option value="'+t.name+'">'+t.name+' ('+t.duration+')</option>').join('')+'</select><div id="gm-van-info" style="'+infoStyle+'"></div></div>';
+      html+='<div style="grid-column:1/3">'+lbl2+'<select style="'+selStyle+'" id="gm-tour" onchange="gmVanUpdatePrice()"><option value="">-- Select tour --</option>'+VAN_TOURS.map(t=>'<option value="'+t.name+'">'+t.name+' ('+t.duration+')</option>').join('')+'<option value="__custom__">✏️ Custom (type your own)</option></select><div id="gm-van-info" style="'+infoStyle+'"></div><input class="tr-inp" style="width:100%;margin-top:8px;display:none" id="gm-tour-custom" type="text" placeholder="Type custom tour name..."></div>';
     } else if(f.type==='vantour_type'){
       html+='<div>'+lbl2+'<select style="'+selStyle+'" id="gm-tourType" onchange="gmVanUpdatePrice()"><option value="standard">Standard</option><option value="exclusive">Exclusive</option></select></div>';
     } else {
@@ -3521,6 +3529,12 @@ function genModalSave(){
     const customName=document.getElementById('gm-excursion-custom')?.value?.trim();
     if(!customName){showToast('Please type a custom excursion name','w');return;}
     row.excursion=customName;
+  }
+  // Van Tours: use custom typed name if "Custom" was selected
+  if(tab==='vantours'&&row.tour==='__custom__'){
+    const customTourName=document.getElementById('gm-tour-custom')?.value?.trim();
+    if(!customTourName){showToast('Please type a custom tour name','w');return;}
+    row.tour=customTourName;
   }
   if(!row.name&&!row.ref){showToast('Please fill in at least Name or Ref','w');return;}
   GEN_DATA[tab].unshift(row);svGen(tab);genModalClose();renderGenTab(tab);showToast('Booking added!','s');
@@ -4633,6 +4647,24 @@ function excOnSelect(tab,i,excName){
     if(!r.cost&&autoPrice)r.cost=autoPrice;
   }
   svGen(tab);renderGenTab(tab);
+}
+function vtOnSelect(i,tourName){
+  const r=GEN_DATA['vantours'][i];if(!r)return;
+  if(tourName==='__custom__'){
+    const customName=prompt('Type custom tour name:',r.tour&&!VAN_TOURS.find(t=>t.name===r.tour)?r.tour:'');
+    if(customName===null)return; // user cancelled, leave unchanged
+    r.tour=customName.trim();
+    svGen('vantours');renderGenTab('vantours');
+    return;
+  }
+  r.tour=tourName;
+  const vt=VAN_TOURS.find(t=>t.name===tourName);
+  if(vt&&r.pax){
+    const pk=r.pax<=2?2:r.pax<=4?4:6;
+    const tier=(r.tourType==='exclusive'&&vt.prices.exclusive)?vt.prices.exclusive:vt.prices.standard;
+    if(tier&&tier[pk])r.cost=tier[pk];
+  }
+  svGen('vantours');renderGenTab('vantours');
 }
 
 /* ── FLOWERS_CATALOG ── */
@@ -5830,19 +5862,20 @@ function showRevResults(src,result){
   document.getElementById(src+'-pos').innerHTML=(result.positives||[]).map(p=>`<li><i class="ti ti-check" style="color:var(--olive)"></i>${p}</li>`).join('');
   document.getElementById(src+'-neg').innerHTML=(result.improvements||[]).map(p=>`<li><i class="ti ti-arrow-up" style="color:var(--coral)"></i>${p}</li>`).join('');
   document.getElementById(src+'-results').classList.remove('hidden');
-  // Find the most recent review (by review_date) to surface in the trend list
+  // Find the most recent review (by review_date or date) to surface in the trend list
   let latestReview=null;
   if(Array.isArray(result.reviews)&&result.reviews.length){
-    const withDates=result.reviews.filter(r=>r.review_date);
+    const getDate=r=>r.review_date||r.date||'';
+    const withDates=result.reviews.filter(r=>getDate(r));
     const sorted=(withDates.length?withDates:result.reviews).slice().sort((a,b)=>{
-      const da=a.review_date?new Date(a.review_date):new Date(0);
-      const db=b.review_date?new Date(b.review_date):new Date(0);
+      const da=getDate(a)?new Date(getDate(a)):new Date(0);
+      const db=getDate(b)?new Date(getDate(b)):new Date(0);
       return db-da;
     });
     const withText=sorted.find(r=>r.text&&r.text.trim());
     latestReview=withText||sorted[0]||null;
   }
-  window[src+'_pending']={period,score:result.score,count:result.count,summary:result.summary,positives:result.positives,improvements:result.improvements,date:new Date().toISOString(),latestReview:latestReview?{reviewer:latestReview.reviewer||'',text:(latestReview.text||'').trim(),rating:latestReview.rating,date:latestReview.review_date||''}:null};
+  window[src+'_pending']={period,score:result.score,count:result.count,summary:result.summary,positives:result.positives,improvements:result.improvements,date:new Date().toISOString(),latestReview:latestReview?{reviewer:latestReview.reviewer||'',text:(latestReview.text||'').trim(),rating:latestReview.rating,date:latestReview.review_date||latestReview.date||''}:null};
 }
 function saveReview(src){
   const pending=window[src+'_pending'];if(!pending){showToast('Nothing to save','w');return;}
