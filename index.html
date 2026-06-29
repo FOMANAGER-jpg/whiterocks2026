@@ -748,6 +748,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
   <div class="tab" id="nt-report" onclick="goTab('report')"><i class="ti ti-chart-bar"></i> Report</div>
   <div class="tab" id="nt-comp" onclick="goTab('comp')" style="color:#be185d"><i class="ti ti-mood-sad"></i> Complaints</div>
   <div class="tab" id="nt-ac" onclick="goTab('ac')" style="color:#0e7490"><i class="ti ti-air-conditioning"></i> A/C Issues</div>
+  <div class="tab" id="nt-whatsapp" onclick="goTab('whatsapp')" style="color:#25D366"><i class="ti ti-brand-whatsapp"></i> WhatsApp Templates</div>
   <div class="tab pur-tab" id="nt-grooms" onclick="goTab('grooms')"><i class="ti ti-luggage"></i> Grooms Daily List</div>
   <div class="tab" id="nt-ta" onclick="goTab('ta')" style="color:#2d9c68"><i class="ti ti-brand-tripadvisor"></i> TripAdvisor</div>
   <div class="tab" id="nt-goo" onclick="goTab('goo')" style="color:#4285f4"><i class="ti ti-brand-google"></i> Google Reviews</div>
@@ -953,6 +954,16 @@ canvas.an-chart{width:100%!important;height:220px!important}
     <div class="ac-add-card"><h3><i class="ti ti-plus"></i> Report A/C Issue</h3><div class="ac-form-row"><div class="ac-form-group"><label>Room / Unit</label><input class="ac-inp" id="ac-room" placeholder="205, Bungalow 12" style="width:150px"></div><div class="ac-form-group" style="flex:1;min-width:180px"><label>Issue Description</label><input class="ac-inp" id="ac-issue" placeholder="Not cooling, strange noise..."></div><div class="ac-form-group"><label>Priority</label><select class="ac-inp" id="ac-pri" style="width:120px"><option value="urgent">🔴 Urgent</option><option value="normal" selected>🟡 Normal</option><option value="low">🟢 Low</option></select></div><div class="ac-form-group"><label>Reported By</label><input class="ac-inp" id="ac-reportedby" placeholder="Staff name" style="width:130px"></div><div class="ac-form-group"><label>Date Reported</label><input class="ac-inp" type="date" id="ac-date" style="width:140px"></div><button class="ac-save-btn" onclick="acAdd()"><i class="ti ti-device-floppy"></i> Add Issue</button></div></div>
     <div class="ac-filters"><span style="font-size:11px;color:var(--muted);font-weight:600">Status:</span><button class="ac-filter-btn on" id="acf-all" onclick="acSetFilter('all',this)">All</button><button class="ac-filter-btn" id="acf-open" onclick="acSetFilter('open',this)">🔴 Open</button><button class="ac-filter-btn" id="acf-inprogress" onclick="acSetFilter('inprogress',this)">🟡 In Progress</button><button class="ac-filter-btn" id="acf-resolved" onclick="acSetFilter('resolved',this)">✅ Resolved</button><div style="width:1px;height:20px;background:var(--border2);margin:0 4px"></div><span style="font-size:11px;color:var(--muted);font-weight:600">Month:</span><button class="ac-filter-btn on" id="acfm-all" onclick="acSetMonthFilter('all',this)">All</button><button class="ac-filter-btn" onclick="acSetMonthFilter('05',this)">May</button><button class="ac-filter-btn" onclick="acSetMonthFilter('06',this)">Jun</button><button class="ac-filter-btn" onclick="acSetMonthFilter('07',this)">Jul</button><button class="ac-filter-btn" onclick="acSetMonthFilter('08',this)">Aug</button><button class="ac-filter-btn" onclick="acSetMonthFilter('09',this)">Sep</button><button class="ac-filter-btn" onclick="acSetMonthFilter('10',this)">Oct</button></div>
     <div class="ac-tbl-wrap"><table class="ac-tbl"><thead><tr><th style="width:28px">#</th><th style="width:110px">Room / Unit</th><th style="min-width:200px">Issue</th><th style="width:80px">Priority</th><th style="min-width:150px">Action Taken</th><th style="width:100px">Technician</th><th style="width:105px">Date Reported</th><th style="width:105px">Resolved Date</th><th style="width:110px">Status</th><th style="width:34px"></th></tr></thead><tbody id="acTbody"></tbody></table></div>
+  </div>
+</div>
+
+<div id="tab-whatsapp" class="hidden">
+  <div style="padding:16px 20px 40px">
+    <div style="background:linear-gradient(135deg,#1faa55,#25D366);border-radius:var(--r);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh)">
+      <div style="width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-brand-whatsapp" style="font-size:22px;color:#fff"></i></div>
+      <div><div style="font-family:var(--serif);font-size:19px;font-weight:600;color:#fff">WhatsApp Templates</div><div style="font-size:12px;color:rgba(255,255,255,.85);margin-top:3px">Ready-made guest messages &middot; Tap to open in WhatsApp</div></div>
+    </div>
+    <div id="wa-templates-list"></div>
   </div>
 </div>
 
@@ -4046,6 +4057,90 @@ function carSaveLastTo(){try{localStorage.setItem('wr_last_email_to',JSON.string
 function carEmailRenderTos(){const el=document.getElementById('car-email-to-tags');if(!el)return;el.innerHTML=carEmailTos.map((e,i)=>'<span style="display:inline-flex;align-items:center;gap:4px;background:var(--sea-light);color:var(--sea-dark);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600">'+e+'<button onclick="carEmailTos.splice('+i+',1);carSaveLastTo();carEmailRenderTos()" style="background:none;border:none;cursor:pointer;color:var(--sea-dark);font-size:13px;line-height:1;padding:0">×</button></span>').join('');}
 function carEmailSuggest(v){const el=document.getElementById('car-email-to-suggest');if(!el)return;if(!v){el.style.display='none';return;}const matches=CAR_EMAIL_CONTACTS.filter(c=>c.name.toLowerCase().includes(v.toLowerCase())||c.email.toLowerCase().includes(v.toLowerCase())||c.email.toLowerCase().startsWith(v.toLowerCase()));if(!matches.length){el.style.display='none';return;}el.style.display='block';el.innerHTML=matches.map(m=>'<div onclick="carEmailTos.push(\''+m.email+'\');document.getElementById(\'car-email-to\').value=\'\';carEmailRenderTos();document.getElementById(\'car-email-to-suggest\').style.display=\'none\'" style="padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border2)" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'"><span style="font-weight:600">'+m.name+'</span><br><span style="color:var(--muted);font-size:11px">'+m.email+'</span></div>').join('');}
 function carCopyField(id,label){const el=document.getElementById(id);if(!el)return;const val=el.tagName==='TEXTAREA'?el.value:el.value;navigator.clipboard.writeText(val).then(()=>showToast(label+' copied!','s'));}
+const WA_TEMPLATES=[
+  {cat:'Greeting',icon:'ti-hand-stop',color:'#16a34a',items:[
+    {id:'welcome',title:'Welcome Message',body:'Dear {NAME}\n\nWelcome to White Rocks Hotel and to Kefalonia!\n\nOur Digital Concierge is available via WhatsApp throughout your stay for inquiries, recommendations, reservations and special requests.\n\nSimply send us a message and we will be pleased to assist you.\n\nWe wish you a wonderful stay in Kefalonia.\n\nWhite Rocks Hotel\nGuest Services'},
+    {id:'generic',title:'Generic Response (auto-reply)',body:'Thank you for your message.\n\nWe have received your request and will get back to you shortly with an update.\n\nWhite Rocks Hotel\nGuest Services'},
+  ]},
+  {cat:'General Templates',icon:'ti-list-details',color:'#1a6ca8',items:[
+    {id:'car',title:'Car Rental',body:'Thank you for your request.\n\nWe would be pleased to arrange a rental for you. Kindly let us know your preferred rental dates and vehicle type (small, hatchback, crossover/suv) and we will provide you with the available options.\n\n{STAFF}\nGuest Services'},
+    {id:'restaurant',title:'Restaurant Reservation',body:'Thank you for contacting us.\n\nYour dinner reservation at restaurant name for pax number persons at time is confirmed.\n\n{STAFF}\nGuest Services'},
+    {id:'boat',title:'Boat Rental Request',body:'Thank you for your interest.\n\nWe would be delighted to assist with a boat rental. Please let us know your preferred date, number of guests and whether you would like a self-drive or skippered boat.\n\n{STAFF}\nGuest Services'},
+    {id:'massage',title:'Massage Request',body:'Thank you for your message.\n\nWe would be pleased to arrange a massage treatment for you. Please note that the cost for the massage service is 90 euros per hour (cash payments only directly to the therapist).\nKindly share your preferred date and time and we will check availability.\n\n{STAFF}\nGuest Services'},
+    {id:'attractions',title:'Top Attractions Kefalonia',body:'Thank you for your message.\n\nWe highly recommend the following highlights of Kefalonia:\n\nMyrtos Beach \u2013 one of Greece\u2019s most iconic beaches\nMelissani Lake & Cave \u2013 a unique underground lake\nDrogarati Cave \u2013 impressive natural formations\nAssos Village \u2013 picturesque harbor and Venetian charm\nFiskardo \u2013 elegant seaside village with waterfront dining\nLocal Wine Tasting \u2013 discover Kefalonia\u2019s renowned Robola wines\n\nShould you require directions, transportation or reservations, we will be happy to assist.\n\n{STAFF}\nGuest Services'},
+  ]},
+  {cat:'Service Recovery',icon:'ti-tool',color:'#d97706',items:[
+    {id:'housekeeping',title:'Housekeeping Request Response',body:'Thank you for your message.\n\nWe have informed our Housekeeping Team and your request will be attended to as soon as possible. We are sorry for any inconvenience caused by this.\n\n{STAFF}\nGuest Services'},
+    {id:'maintenance',title:'Maintenance Request Response',body:'Thank you for informing us.\n\nOur Maintenance Team has been notified and will attend to the matter as soon as possible. Thank you for your understanding.\n\n{STAFF}\nGuest Services'},
+    {id:'complaint_slow',title:'Complaint \u2014 Slow Response',body:'We are really sorry for the delay and appreciate your patience. We are actively following up on your request and will update you shortly.\n\n{STAFF}\nGuest Services'},
+    {id:'complaint_ack',title:'Complaint \u2014 Acknowledgement',body:'Thank you for bringing this matter to our attention. We are really sorry for the inconvenience and are looking into it immediately.\n\n{STAFF}\nGuest Services'},
+    {id:'complaint_followup',title:'Complaint \u2014 Follow-Up',body:'We trust the matter has been resolved to your satisfaction. Please accept our apologies once again and do not hesitate to contact us should you require any further assistance.\n\n{STAFF}\nGuest Services'},
+  ]},
+  {cat:'Closing',icon:'ti-circle-check',color:'#6b7280',items:[
+    {id:'closing',title:'Closing Message',body:'You are most welcome. Please do not hesitate to contact us if we may assist you further.\n\n{STAFF}\nGuest Services'},
+  ]},
+];
+function renderWATemplates(){
+  const el=document.getElementById('wa-templates-list');
+  if(!el)return;
+  el.innerHTML=WA_TEMPLATES.map(group=>
+    '<div style="margin-bottom:18px">'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><i class="ti '+group.icon+'" style="color:'+group.color+';font-size:16px"></i><span style="font-size:13px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.5px">'+esc(group.cat)+'</span></div>'
+    +'<div style="display:flex;flex-direction:column;gap:8px">'
+    +group.items.map(t=>
+      '<div style="display:flex;align-items:center;gap:12px;background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;box-shadow:var(--sh)">'
+      +'<div style="flex:1;font-size:13px;font-weight:600;color:var(--ink)">'+esc(t.title)+'</div>'
+      +'<button onclick="waOpenModal(\''+t.id+'\')" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap"><i class="ti ti-brand-whatsapp"></i> Open in WhatsApp</button>'
+      +'</div>'
+    ).join('')
+    +'</div></div>'
+  ).join('');
+}
+function waFindTemplate(id){for(const g of WA_TEMPLATES){const t=g.items.find(x=>x.id===id);if(t)return t;}return null;}
+function waOpenModal(templateId){
+  const t=waFindTemplate(templateId);if(!t)return;
+  const savedStaff=localStorage.getItem('wa_staff_name')||'';
+  let ov=document.getElementById('wa-ov');
+  if(!ov){ov=document.createElement('div');ov.id='wa-ov';ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';document.body.appendChild(ov);}
+  ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:22px;width:100%;max-width:600px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+    +'<div style="font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px"><i class="ti ti-brand-whatsapp" style="color:#25D366"></i> '+esc(t.title)+'</div>'
+    +'<button onclick="document.getElementById(\'wa-ov\').remove()" style="width:30px;height:30px;background:var(--bg);border:none;border-radius:8px;cursor:pointer;font-size:16px;color:var(--muted)">\u2715</button></div>'
+    +(t.body.includes('{NAME}')?'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px">Guest Name</div>'
+      +'<input id="wa-guest-name" placeholder="e.g. John Smith" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;margin-bottom:12px;box-sizing:border-box" oninput="waUpdatePreview()">':'')
+    +(t.body.includes('{STAFF}')?'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px">Your Name</div>'
+      +'<input id="wa-staff-name" value="'+esc(savedStaff)+'" placeholder="e.g. Marian" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;margin-bottom:12px;box-sizing:border-box" oninput="waUpdatePreview()">':'')
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px">Guest Phone Number</div>'
+    +'<input id="wa-phone" placeholder="e.g. 306912345678 (country code, no +)" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;margin-bottom:12px;box-sizing:border-box">'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;justify-content:space-between">Message <button onclick="carCopyField(\'wa-body\',\'Message\')" style="padding:2px 10px;background:#25D366;color:#fff;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans)">Copy</button></div>'
+    +'<textarea id="wa-body" style="width:100%;height:280px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace;color:var(--ink);outline:none;resize:vertical;box-sizing:border-box;line-height:1.6"></textarea>'
+    +'<div style="display:flex;gap:8px;margin-top:12px">'
+    +'<button onclick="waSendToWhatsApp()" style="flex:1;padding:10px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-brand-whatsapp"></i> Open in WhatsApp</button>'
+    +'</div></div>';
+  window._curWATemplate=t;
+  waUpdatePreview();
+}
+function waUpdatePreview(){
+  const t=window._curWATemplate;if(!t)return;
+  const nameEl=document.getElementById('wa-guest-name');
+  const staffEl=document.getElementById('wa-staff-name');
+  let body=t.body;
+  if(nameEl)body=body.replaceAll('{NAME}',nameEl.value.trim()||'{NAME}');
+  if(staffEl){
+    body=body.replaceAll('{STAFF}',staffEl.value.trim()||'{STAFF}');
+    if(staffEl.value.trim())localStorage.setItem('wa_staff_name',staffEl.value.trim());
+  }
+  const bodyEl=document.getElementById('wa-body');
+  if(bodyEl)bodyEl.value=body;
+}
+function waSendToWhatsApp(){
+  waUpdatePreview();
+  const phoneRaw=(document.getElementById('wa-phone')?.value||'').trim();
+  const phone=phoneRaw.replace(/[^0-9]/g,'');
+  if(!phone){showToast('Please enter the guest\u2019s phone number','w');return;}
+  const text=document.getElementById('wa-body')?.value||'';
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(text),'_blank');
+}
 function genEmailDraft(tab,i){
   window._curDraftTab=tab;
   const r=GEN_DATA[tab][i];if(!r)return;
@@ -5170,7 +5265,7 @@ function ddGo(tab,lbl){
   goTab(tab);
 }
 function goTab(t){
-  ['res','day3','report','grooms','ac','comp','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','alerts','experiences','suggestions','breakfast','dinner','wine','tennis','activitylog'].forEach(x=>{
+  ['res','day3','report','grooms','ac','whatsapp','comp','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','alerts','experiences','suggestions','breakfast','dinner','wine','tennis','activitylog'].forEach(x=>{
     const el=document.getElementById('tab-'+x);
     const nt=document.getElementById('nt-'+x);
     if(el)el.classList.toggle('hidden',x!==t);
@@ -5191,6 +5286,7 @@ function goTab(t){
   if(t==='massage'){msRenderFilterBars();renderMassage();setTimeout(function(){var td=new Date().toISOString().split('T')[0];var el=document.querySelector('[data-msdate="'+td+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},200);}
   if(t==='alerts')renderAlerts();
   if(t==='comp'){renderComp();const cd=document.getElementById('comp-date');if(cd&&!cd.value)cd.value=new Date().toISOString().split('T')[0];}
+  if(t==='whatsapp')renderWATemplates();
   if(t==='ac'){
     const hasOpen=AC_DATA.some(r=>r.status==='open');
     const stBtn=document.getElementById(hasOpen?'acf-open':'acf-all');
@@ -7885,7 +7981,7 @@ function fomSetColor(hex){
 }
 // Apply saved color on load
 (function(){const saved=localStorage.getItem('fom_theme_color');if(saved)fomSetColor(saved);})();
-const ALL_RESTRICTABLE_TABS=['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','experiences','suggestions','breakfast','dinner','wine','tennis'];
+const ALL_RESTRICTABLE_TABS=['res','alerts','day3','report','comp','ac','whatsapp','grooms','import','ta','goo','exp','analytics','gym','yoga','pilates','massage','experiences','suggestions','breakfast','dinner','wine','tennis'];
 function resetRoleRestrictions(){
   // Show every nav tab + dropdown item again
   ALL_RESTRICTABLE_TABS.forEach(t=>{
@@ -7928,7 +8024,7 @@ function applyRoleRestrictions(){
     // Reservations role: only res, gym, yoga, pilates, massage(no stats), experiences(no stats)
     const SHOW_TABS=['res','gym','yoga','pilates','massage','experiences'];
     // Hide all tabs except the allowed ones
-    ['alerts','day3','report','comp','ac','grooms','import','ta','goo','exp','analytics','suggestions','breakfast','dinner','wine','tennis'].forEach(t=>{
+    ['alerts','day3','report','comp','ac','whatsapp','grooms','import','ta','goo','exp','analytics','suggestions','breakfast','dinner','wine','tennis'].forEach(t=>{
       const el=document.getElementById('nt-'+t);if(el)el.style.display='none';
       const dd=document.getElementById('ddi-'+t);if(dd)dd.style.display='none';
     });
@@ -8516,9 +8612,10 @@ const TAB_DEFS = [
   {id:'experiences',label:'Experiences',icon:'ti-map-pin',       color:'#1a6644',       visible:true,  order:14, group:''},
   {id:'suggestions',label:'Suggestions',icon:'ti-map-2',         color:'#0e7490',       visible:true,  order:15, group:''},
   {id:'ac',label:'A/C Issues',icon:'ti-air-conditioning',color:'#0e7490',visible:true,order:16,group:''},
-  {id:'comp',label:'Complaints',icon:'ti-mood-sad',color:'#be185d',visible:true,order:17,group:''},
-  {id:'breakfast',label:'Breakfast Buffet',icon:'ti-coffee',color:'#d97706',visible:true,order:18,group:''},
-  {id:'dinner',label:'Dinner Buffet',icon:'ti-tools-kitchen-2',color:'#7c3aed',visible:true,order:19,group:''},
+  {id:'whatsapp',label:'WhatsApp Templates',icon:'ti-brand-whatsapp',color:'#25D366',visible:true,order:17,group:''},
+  {id:'comp',label:'Complaints',icon:'ti-mood-sad',color:'#be185d',visible:true,order:18,group:''},
+  {id:'breakfast',label:'Breakfast Buffet',icon:'ti-coffee',color:'#d97706',visible:true,order:19,group:''},
+  {id:'dinner',label:'Dinner Buffet',icon:'ti-tools-kitchen-2',color:'#7c3aed',visible:true,order:20,group:''},
 ];
 let tsmTabs = null;
 let tsmGroups = [];
@@ -8527,7 +8624,22 @@ let tsmDragSrc = null;
 function tsmLoad() {
   try {
     const saved = JSON.parse(localStorage.getItem('tsm_tabs') || 'null');
-    if (saved && Array.isArray(saved) && saved.length >= TAB_DEFS.length) {
+    if (saved && Array.isArray(saved) && saved.length > 0) {
+      // Merge: keep the user's saved order/customizations, but add any new tabs from TAB_DEFS that aren't in saved yet
+      const savedIds = new Set(saved.map(t => t.id));
+      const missing = TAB_DEFS.filter(t => !savedIds.has(t.id));
+      if (missing.length) {
+        missing.forEach(t => {
+          // Insert right after its neighbor in TAB_DEFS order if possible, else append
+          const defIdx = TAB_DEFS.findIndex(d => d.id === t.id);
+          const prevDef = TAB_DEFS[defIdx - 1];
+          const afterIdx = prevDef ? saved.findIndex(s => s.id === prevDef.id) : -1;
+          const insertAt = afterIdx >= 0 ? afterIdx + 1 : saved.length;
+          saved.splice(insertAt, 0, JSON.parse(JSON.stringify(t)));
+        });
+        saved.forEach((t, idx) => { t.order = idx; });
+        try { localStorage.setItem('tsm_tabs', JSON.stringify(saved)); } catch(e) {}
+      }
       tsmTabs = saved;
     } else {
       tsmTabs = JSON.parse(JSON.stringify(TAB_DEFS));
@@ -8541,8 +8653,21 @@ function tsmLoad() {
 }
 function tsmApplyFirebaseData(d) {
   if (!d) return;
-  if (d.tabs && Array.isArray(d.tabs) && d.tabs.length >= TAB_DEFS.length) {
-    tsmTabs = d.tabs;
+  if (d.tabs && Array.isArray(d.tabs) && d.tabs.length > 0) {
+    const fbTabs = JSON.parse(JSON.stringify(d.tabs));
+    const fbIds = new Set(fbTabs.map(t => t.id));
+    const missing = TAB_DEFS.filter(t => !fbIds.has(t.id));
+    if (missing.length) {
+      missing.forEach(t => {
+        const defIdx = TAB_DEFS.findIndex(x => x.id === t.id);
+        const prevDef = TAB_DEFS[defIdx - 1];
+        const afterIdx = prevDef ? fbTabs.findIndex(x => x.id === prevDef.id) : -1;
+        const insertAt = afterIdx >= 0 ? afterIdx + 1 : fbTabs.length;
+        fbTabs.splice(insertAt, 0, JSON.parse(JSON.stringify(t)));
+      });
+      fbTabs.forEach((t, idx) => { t.order = idx; });
+    }
+    tsmTabs = fbTabs;
     try { localStorage.setItem('tsm_tabs', JSON.stringify(tsmTabs)); } catch(e) {}
   }
   if (d.groups && Array.isArray(d.groups)) {
@@ -8628,7 +8753,7 @@ function reapplyRoleHiding(){
   var hide=WR_ROLE==='backoffice'
     ?['res','alerts','day3','report','comp','ac','grooms','import','ta','goo','gym','yoga','pilates','suggestions','breakfast','dinner']
     :WR_ROLE==='reservations'
-    ?['alerts','day3','report','comp','ac','grooms','import','ta','goo','analytics','suggestions','breakfast','dinner','wine','tennis']
+    ?['alerts','day3','report','comp','ac','whatsapp','grooms','import','ta','goo','analytics','suggestions','breakfast','dinner','wine','tennis']
     :['analytics','breakfast','dinner'];
   hide.forEach(function(t){
     var el=document.getElementById('nt-'+t);if(el)el.style.display='none';
