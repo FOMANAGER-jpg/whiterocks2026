@@ -1642,6 +1642,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div class="car-toolbar">
         <button class="car-add-btn" onclick="carAdd()"><i class="ti ti-plus"></i> Add Car Booking</button>
         <button class="car-print-btn" onclick="expPrintTable('cars')"><i class="ti ti-printer"></i> Print</button>
+        <button class="car-print-btn" onclick="expExportExcel('cars')"><i class="ti ti-file-spreadsheet"></i> Export to Excel</button>
         <div style="display:flex;gap:4px;flex-wrap:wrap">
           <button class="car-mpill on" onclick="setCarM('all',this)">All</button>
           <button class="car-mpill" onclick="setCarM('05',this)">May</button>
@@ -1702,6 +1703,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <button class="car-add-btn" style="background:#1a6ca8" onclick="genAdd('excursions')">
         <i class="ti ti-plus"></i> Add Excursion Booking</button>
         <button class="car-print-btn" onclick="expPrintTable('excursions')"><i class="ti ti-printer"></i> Print</button>
+        <button class="car-print-btn" onclick="expExportExcel('excursions')"><i class="ti ti-file-spreadsheet"></i> Export to Excel</button>
         <div style="display:flex;gap:4px;flex-wrap:wrap" id="excursions-mfilter"></div>
         <span id="excursions-cnt" style="font-size:12px;color:var(--muted);margin-left:auto"></span>
         <div class="exp-search-wrap"><i class="ti ti-search" style="color:var(--muted);font-size:14px"></i><input class="exp-search" id="search-excursions" placeholder="Search name, ref, room..." oninput="renderGenTab('excursions')"></div>
@@ -1730,6 +1732,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <button class="car-add-btn" style="background:#5c3d8f" onclick="genAdd('moto')">
         <i class="ti ti-plus"></i> Add Moto/Bike Booking</button>
         <button class="car-print-btn" style="color:#5c3d8f;border-color:#c5aee8" onclick="expPrintTable('moto')"><i class="ti ti-printer"></i> Print</button>
+        <button class="car-print-btn" style="color:#5c3d8f;border-color:#c5aee8" onclick="expExportExcel('moto')"><i class="ti ti-file-spreadsheet"></i> Export to Excel</button>
         <div style="display:flex;gap:4px;flex-wrap:wrap" id="moto-mfilter"></div>
         <span id="moto-cnt" style="font-size:12px;color:var(--muted);margin-left:auto"></span>
         <div class="exp-search-wrap"><i class="ti ti-search" style="color:var(--muted);font-size:14px"></i><input class="exp-search" id="search-moto" placeholder="Search name, ref, room..." oninput="renderGenTab('moto')"></div>
@@ -1758,6 +1761,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <button class="car-add-btn" style="background:#be185d" onclick="genAdd('flowers')">
         <i class="ti ti-plus"></i> Add Flower Order</button>
         <button class="car-print-btn" style="color:#be185d;border-color:#fbcfe8" onclick="expPrintTable('flowers')"><i class="ti ti-printer"></i> Print</button>
+        <button class="car-print-btn" style="color:#be185d;border-color:#fbcfe8" onclick="expExportExcel('flowers')"><i class="ti ti-file-spreadsheet"></i> Export to Excel</button>
         <div style="display:flex;gap:4px;flex-wrap:wrap" id="flowers-mfilter"></div>
         <span id="flowers-cnt" style="font-size:12px;color:var(--muted);margin-left:auto"></span>
         <div class="exp-search-wrap"><i class="ti ti-search" style="color:var(--muted);font-size:14px"></i><input class="exp-search" id="search-flowers" placeholder="Search name, ref, room..." oninput="renderGenTab('flowers')"></div>
@@ -1787,6 +1791,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <button class="car-add-btn" style="background:#0e7490" onclick="genAdd('boats')">
         <i class="ti ti-plus"></i> Add Boat/Cruise Booking</button>
         <button class="car-print-btn" style="color:#0e7490;border-color:#a5f3fc" onclick="expPrintTable('boats')"><i class="ti ti-printer"></i> Print</button>
+        <button class="car-print-btn" style="color:#0e7490;border-color:#a5f3fc" onclick="expExportExcel('boats')"><i class="ti ti-file-spreadsheet"></i> Export to Excel</button>
         <div style="display:flex;gap:4px;flex-wrap:wrap" id="boats-mfilter"></div>
         <span id="boats-cnt" style="font-size:12px;color:var(--muted);margin-left:auto"></span>
         <div class="exp-search-wrap"><i class="ti ti-search" style="color:var(--muted);font-size:14px"></i><input class="exp-search" id="search-boats" placeholder="Search name, ref, room..." oninput="renderGenTab('boats')"></div>
@@ -1815,6 +1820,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <button class="car-add-btn" style="background:#92400e" onclick="genAdd('transfers')">
         <i class="ti ti-plus"></i> Add Transfer</button>
         <button class="car-print-btn" style="color:#92400e;border-color:#fcd34d" onclick="expPrintTable('transfers')"><i class="ti ti-printer"></i> Print</button>
+        <button class="car-print-btn" style="color:#92400e;border-color:#fcd34d" onclick="expExportExcel('transfers')"><i class="ti ti-file-spreadsheet"></i> Export to Excel</button>
         <div style="display:flex;gap:4px;flex-wrap:wrap" id="transfers-mfilter"></div>
         <span id="transfers-cnt" style="font-size:12px;color:var(--muted);margin-left:auto"></span>
         <div class="exp-search-wrap"><i class="ti ti-search" style="color:var(--muted);font-size:14px"></i><input class="exp-search" id="search-transfers" placeholder="Search name, ref, room..." oninput="renderGenTab('transfers')"></div>
@@ -1843,6 +1849,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <button class="car-add-btn" style="background:#7c5e2e" onclick="genAdd('vantours')">
         <i class="ti ti-plus"></i> Add Van Tour</button>
         <button class="car-print-btn" style="color:#7c5e2e;border-color:#e2c97e" onclick="expPrintTable('vantours')"><i class="ti ti-printer"></i> Print</button>
+        <button class="car-print-btn" style="color:#7c5e2e;border-color:#e2c97e" onclick="expExportExcel('vantours')"><i class="ti ti-file-spreadsheet"></i> Export to Excel</button>
         <div style="display:flex;gap:4px;flex-wrap:wrap" id="vantours-mfilter"></div>
         <span id="vantours-cnt" style="font-size:12px;color:var(--muted);margin-left:auto"></span>
         <div class="exp-search-wrap"><i class="ti ti-search" style="color:var(--muted);font-size:14px"></i><input class="exp-search" id="search-vantours" placeholder="Search name, ref, room..." oninput="renderGenTab('vantours')"></div>
@@ -3837,6 +3844,56 @@ function plmPrint(){
   win.document.close();
 }
 
+function downloadCSV(filename,headers,rows){
+  const esc2=v=>{
+    const s=v==null?'':String(v);
+    return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+  };
+  const csv='\uFEFF'+[headers.map(esc2).join(','),...rows.map(r=>r.map(esc2).join(','))].join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+function expExportExcel(tab){
+  const statusMap={confirmed:'Confirmed',waiting:'Waiting',cancelled:'Cancelled',commission:'Commission'};
+  if(tab==='cars'){
+    if(!CARS.length){showToast('No bookings to export','w');return;}
+    const headers=['#','Ref','Name','Room','Booking Date','Rental Date','Time','Car Type','Days','Booked By','Company','Base €','Insurance €','Extras','Total €','Status'];
+    const rows=CARS.map((c,idx)=>{
+      const{base,ins,total}=carCalc(c);
+      const extras=ACE_EXTRAS.filter(e=>c.extras&&c.extras[e.id]).map(e=>e.label+(e.qty&&c.extras[e.id]>1?' x'+c.extras[e.id]:'')).join('; ');
+      return [idx+1,c.ref||'',c.name||'',c.room||'',c.bookDate||'',c.rentalDate||'',c.rentalTime||'',c.carType||'',c.days||1,c.bookedBy||'',c.company||'',base!=null?base:'',c.insurance&&ins?ins:'',extras,total!=null?total:'',statusMap[c.status]||c.status||''];
+    });
+    downloadCSV('car-rentals-'+new Date().toISOString().split('T')[0]+'.csv',headers,rows);
+    return;
+  }
+  const rows=GEN_DATA[tab]||[];
+  if(!rows.length){showToast('No bookings to export','w');return;}
+  const label=EXP_LABELS[tab];
+  let headers=[],dataRows=[];
+  if(tab==='excursions'){
+    headers=['#','Ref','Name','Room','Booking Date','Date','Time','Excursion','Pax','Cost €','Status'];
+    dataRows=rows.map((r,i)=>[i+1,r.ref||'',r.name||'',r.room||'',r.bookDate||'',r.date||'',r.time||'',r.excursion||'',r.pax||'',r.cost||'',statusMap[r.status]||r.status||'']);
+  } else if(tab==='moto'){
+    headers=['#','Ref','Name','Room','Booking Date','Rental Date','Time','Vehicle','Days','Cost €','Status'];
+    dataRows=rows.map((r,i)=>[i+1,r.ref||'',r.name||'',r.room||'',r.bookDate||'',r.rentalDate||'',r.time||'',r.vehicle||'',r.days||'',r.cost||'',statusMap[r.status]||r.status||'']);
+  } else if(tab==='flowers'){
+    headers=['#','Ref','Name','Room','Booking Date','Delivery Date','Time','Arrangement','Bosoni €','Gross €','Status'];
+    dataRows=rows.map((r,i)=>[i+1,r.ref||'',r.name||'',r.room||'',r.bookDate||'',r.delivDate||'',r.delivTime||'',r.arrangement||'',r.bosoniPrice||'',r.grossPrice||'',statusMap[r.status]||r.status||'']);
+  } else if(tab==='boats'){
+    headers=['#','Ref','Name','Room','Booking Date','Date','Time','Trip','Pax','Cost €','Company','Status'];
+    dataRows=rows.map((r,i)=>[i+1,r.ref||'',r.name||'',r.room||'',r.bookDate||'',r.date||'',r.time||'',r.trip||'',r.pax||'',r.cost||'',r.company||'',statusMap[r.status]||r.status||'']);
+  } else if(tab==='transfers'){
+    headers=['#','Ref','Name','Room','Booking Date','Date','Time','Route','Cost €','Status'];
+    dataRows=rows.map((r,i)=>[i+1,r.ref||'',r.name||'',r.room||'',r.bookDate||'',r.date||'',r.time||'',r.route||'',r.cost||'',statusMap[r.status]||r.status||'']);
+  } else if(tab==='vantours'){
+    headers=['#','Ref','Name','Room','Booking Date','Date','Time','Tour','Pax','Type','Cost €','Booked By','Status'];
+    dataRows=rows.map((r,i)=>[i+1,r.ref||'',r.name||'',r.room||'',r.bookDate||'',r.date||'',r.time||'',r.tour||'',r.pax||'',r.tourType||'standard',r.cost||'',r.bookedBy||'',statusMap[r.status]||r.status||'']);
+  }
+  downloadCSV((label||tab).toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+new Date().toISOString().split('T')[0]+'.csv',headers,dataRows);
+}
 function expPrintTable(tab){
   if(tab==='cars'){
     if(!CARS.length){showToast('No bookings to print','w');return;}
@@ -8608,16 +8665,18 @@ function renderPresEditors(){
   if(!sorted.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">Επίλεξε ένα ή περισσότερα tabs από πάνω για να γράψεις το περιεχόμενο της παρουσίασης.</div>';return;}
   el.innerHTML=sorted.map(t=>{
     const c=presContent[t.id]||{heading:t.label,body:''};
-    const isBuffet=t.id==='breakfast'||t.id==='dinner';
-    const autoFillBlock=isBuffet?
+    const provider=PRES_AUTOFILL[t.id];
+    const autoFillBlock=provider?
       '<div style="display:flex;gap:6px;align-items:center;margin-bottom:8px;padding:8px 10px;background:#fef3c7;border-radius:8px;border:1px solid #fde68a">'
       +'<i class="ti ti-wand" style="font-size:14px;color:#92400e;flex-shrink:0"></i>'
-      +'<select id="pres-period-'+t.id+'" style="flex:1;padding:5px 7px;border:1.5px solid #fde68a;border-radius:6px;font-size:11px;font-family:var(--sans);outline:none;background:var(--white)">'
+      +(provider.needsPeriod?
+        '<select id="pres-period-'+t.id+'" style="flex:1;padding:5px 7px;border:1.5px solid #fde68a;border-radius:6px;font-size:11px;font-family:var(--sans);outline:none;background:var(--white)">'
         +'<option value="all">All Season</option>'
         +'<option value="05">May</option><option value="06">June</option><option value="07">July</option>'
         +'<option value="08">August</option><option value="09">September</option><option value="10">October</option>'
-      +'</select>'
-      +'<button onclick="presAutoFillBuffet(\''+t.id+'\')" style="padding:6px 12px;background:#92400e;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap">\u2728 Auto-fill from data</button>'
+        +'</select>'
+        :'<div style="flex:1;font-size:11px;color:#92400e">Live snapshot \u2014 current data</div>')
+      +'<button onclick="presAutoFill(\''+t.id+'\')" style="padding:6px 12px;background:#92400e;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap">\u2728 Auto-fill from data</button>'
       +'</div>':'';
     return '<div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;background:var(--white)">'
       +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><i class="ti '+t.icon+'" style="color:'+t.color+';font-size:16px"></i><span style="font-size:13px;font-weight:700;color:var(--ink)">'+t.label+'</span></div>'
@@ -8627,54 +8686,157 @@ function renderPresEditors(){
       +'</div>';
   }).join('');
 }
-function presAutoFillBuffet(tabId){
-  const db=buffetGetData(tabId);
-  if(db&&db.days&&db.days.length){
-    presAutoFillBuffetWithData(tabId,db);
-    return;
-  }
-  showToast('Loading '+tabId+' data...','s');
-  buffetLoadIDB(tabId,function(d){
-    if(d&&d.days&&d.days.length>0){
-      if(tabId==='breakfast')BUFFET_DB_BK=d;else BUFFET_DB_DN=d;
-      presAutoFillBuffetWithData(tabId,d);
-    } else {
-      showToast('No saved '+tabId+' data found. Open the '+tabId+' tab and import data first.','w');
-    }
-  });
+function presApplyAutoFillResult(tabId,lines,label){
+  if(!lines||!lines.length){showToast('No data available for '+label,'w');return;}
+  const body=lines.join('\n');
+  const bodyEl=document.getElementById('pres-body-'+tabId);
+  if(bodyEl)bodyEl.value=body;
+  presSetContent(tabId,'body',body);
+  showToast(label+' stats filled in','s');
 }
-function presAutoFillBuffetWithData(tabId,db){
+function presPeriodFilter(tabId){
   const periodSel=document.getElementById('pres-period-'+tabId);
-  const mFilter=periodSel?periodSel.value:'all';
-  const days=db.days.filter(d=>{
-    if(mFilter==='all')return true;
-    return (d.date||'').split('-')[1]===mFilter;
-  });
-  if(!days.length){showToast('No data for that period','w');return;}
-  const MNAMES={'05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','all':'Apr\u2013Nov Season'};
-  let totalRooms=0,arrivedRooms=0,guestsServed=0,totalAdults=0,extRev=0,occSum=0,occCount=0;
+  return periodSel?periodSel.value:'all';
+}
+const PRES_MNAMES={'05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','all':'Apr\u2013Nov Season'};
+function presFilterByMonth(dateStr,mFilter){
+  if(mFilter==='all')return true;
+  if(!dateStr)return false;
+  // Supports both 'YYYY-MM-DD' and 'D/M/YY' style dates
+  if(dateStr.includes('-'))return dateStr.split('-')[1]===mFilter;
+  const parts=dateStr.split('/');
+  if(parts.length>=2)return String(parts[1]).padStart(2,'0')===mFilter;
+  return false;
+}
+const PRES_AUTOFILL={
+  breakfast:{needsPeriod:true,generate(mFilter){
+    const db=buffetGetData('breakfast');
+    return presBuffetStats(db,mFilter);
+  }},
+  dinner:{needsPeriod:true,generate(mFilter){
+    const db=buffetGetData('dinner');
+    return presBuffetStats(db,mFilter);
+  }},
+  res:{needsPeriod:true,generate(mFilter){
+    const rows=RES.filter(r=>presFilterByMonth(r.arr,mFilter));
+    if(!rows.length)return null;
+    const totalGuests=rows.reduce((s,r)=>s+(Number(r.ad)||0),0);
+    const rated=rows.filter(r=>r.rating&&r.rating>0);
+    const avgRating=rated.length?(rated.reduce((s,r)=>s+r.rating,0)/rated.length).toFixed(1):null;
+    const lines=[];
+    lines.push(PRES_MNAMES[mFilter]+' \u2014 '+rows.length+' reservation'+(rows.length>1?'s':'')+' recorded');
+    lines.push('Total guests: '+totalGuests);
+    lines.push('Avg party size: '+(rows.length?(totalGuests/rows.length).toFixed(1):'0'));
+    if(avgRating)lines.push('Avg guest rating: '+avgRating+'/10 ('+rated.length+' rated)');
+    return lines;
+  }},
+  alerts:{needsPeriod:false,generate(){
+    const all=Object.values(alertsData).flat();
+    if(!all.length)return null;
+    const open=all.filter(t=>!t.done).length;
+    const done=all.filter(t=>t.done).length;
+    const high=all.filter(t=>!t.done&&t.pri==='high').length;
+    const lines=[];
+    lines.push('Current snapshot \u2014 '+all.length+' total alert'+(all.length>1?'s':'')+' logged');
+    lines.push('Open tasks: '+open);
+    lines.push('Completed tasks: '+done);
+    if(high>0)lines.push('High priority open: '+high);
+    return lines;
+  }},
+  ac:{needsPeriod:false,generate(){
+    if(!AC_DATA.length)return null;
+    const open=AC_DATA.filter(r=>r.status==='open').length;
+    const resolved=AC_DATA.filter(r=>r.status==='resolved').length;
+    const lines=[];
+    lines.push('Current snapshot \u2014 '+AC_DATA.length+' A/C issue'+(AC_DATA.length>1?'s':'')+' logged');
+    lines.push('Open issues: '+open);
+    lines.push('Resolved issues: '+resolved);
+    return lines;
+  }},
+  comp:{needsPeriod:false,generate(){
+    if(!COMP_DATA.length)return null;
+    const open=COMP_DATA.filter(r=>r.status!=='resolved').length;
+    const resolved=COMP_DATA.filter(r=>r.status==='resolved').length;
+    const lines=[];
+    lines.push('Current snapshot \u2014 '+COMP_DATA.length+' complaint'+(COMP_DATA.length>1?'s':'')+' logged');
+    lines.push('Open: '+open);
+    lines.push('Resolved: '+resolved);
+    return lines;
+  }},
+  ta:{needsPeriod:false,generate(){return presReviewStats('ta');}},
+  goo:{needsPeriod:false,generate(){return presReviewStats('goo');}},
+  exp:{needsPeriod:false,generate(){return presReviewStats('exp');}},
+  import:{needsPeriod:false,generate(){
+    if(!bkHistory.length)return null;
+    const latest=bkHistory[0];
+    const avgAll=(bkHistory.reduce((s,h)=>s+(h.score||0),0)/bkHistory.length).toFixed(1);
+    const totalCount=bkHistory.reduce((s,h)=>s+(h.count||0),0);
+    const lines=[];
+    lines.push('Latest period: '+latest.period);
+    lines.push('Latest score: '+latest.score+'/10');
+    lines.push('Season average: '+avgAll+'/10');
+    lines.push('Total ratings: '+totalCount);
+    return lines;
+  }},
+};
+function presBuffetStats(db,mFilter){
+  if(!db||!db.days||!db.days.length)return null;
+  const days=db.days.filter(d=>presFilterByMonth(d.date,mFilter));
+  if(!days.length)return null;
+  let totalRooms=0,guestsServed=0,totalAdults=0,extRev=0,occSum=0,occCount=0;
   days.forEach(d=>{
     const s=d.summary||{};
     totalRooms+=s.totalRooms||0;
-    arrivedRooms+=s.arrivedRooms||0;
     guestsServed+=s.guestsServed||0;
     totalAdults+=s.totalAdults||0;
     extRev+=s.externalRevenue||0;
     if(s.occupancyPct!=null){occSum+=s.occupancyPct;occCount++;}
   });
   const avgOcc=occCount?Math.round(occSum/occCount):0;
-  const label=tabId==='breakfast'?'Breakfast':'Dinner';
   const lines=[];
-  lines.push(MNAMES[mFilter]+' \u2014 '+days.length+' day'+(days.length>1?'s':'')+' recorded');
+  lines.push(PRES_MNAMES[mFilter]+' \u2014 '+days.length+' day'+(days.length>1?'s':'')+' recorded');
   lines.push('Average occupancy: '+avgOcc+'%');
   lines.push('Total rooms tracked: '+totalRooms);
   lines.push('Guests served: '+guestsServed+(totalAdults?' / '+totalAdults+' expected':''));
   if(extRev>0)lines.push('External revenue: \u20ac'+extRev);
-  const body=lines.join('\n');
-  const bodyEl=document.getElementById('pres-body-'+tabId);
-  if(bodyEl)bodyEl.value=body;
-  presSetContent(tabId,'body',body);
-  showToast(label+' stats filled in','s');
+  return lines;
+}
+function presReviewStats(src){
+  const history=revHistoryOf(src);
+  if(!history||!history.length)return null;
+  const latest=history[0];
+  const avgAll=(history.reduce((s,h)=>s+(h.score||0),0)/history.length).toFixed(1);
+  const totalCount=history.reduce((s,h)=>s+(h.count||0),0);
+  const lines=[];
+  lines.push('Latest period: '+latest.period);
+  lines.push('Latest score: '+latest.score+'/5');
+  lines.push('Season average: '+avgAll+'/5');
+  lines.push('Total reviews: '+totalCount);
+  return lines;
+}
+function presAutoFill(tabId){
+  const provider=PRES_AUTOFILL[tabId];
+  if(!provider){showToast('Auto-fill not available for this tab yet \u2014 write content manually','w');return;}
+  if(tabId==='breakfast'||tabId==='dinner'){
+    const db=buffetGetData(tabId);
+    if(!db||!db.days||!db.days.length){
+      showToast('Loading '+tabId+' data...','s');
+      buffetLoadIDB(tabId,function(d){
+        if(d&&d.days&&d.days.length>0){
+          if(tabId==='breakfast')BUFFET_DB_BK=d;else BUFFET_DB_DN=d;
+          const lines=provider.generate(presPeriodFilter(tabId));
+          presApplyAutoFillResult(tabId,lines,tabId==='breakfast'?'Breakfast':'Dinner');
+        } else {
+          showToast('No saved '+tabId+' data found. Open the '+tabId+' tab and import data first.','w');
+        }
+      });
+      return;
+    }
+  }
+  const mFilter=provider.needsPeriod?presPeriodFilter(tabId):null;
+  const lines=provider.generate(mFilter);
+  const tabDef=tsmTabs.find(t=>t.id===tabId);
+  presApplyAutoFillResult(tabId,lines,tabDef?tabDef.label:tabId);
 }
 function presSetContent(id,field,val){
   if(!presContent[id])presContent[id]={heading:'',body:''};
