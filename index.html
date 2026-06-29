@@ -10,7 +10,14 @@
 .print-rev-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--white);color:var(--olive);border:1.5px solid var(--olive);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)}
 .print-rev-btn:hover{background:#f0fdf4}
 #rev-print-area{display:none}
-@media print{body>*:not(#rev-print-area){display:none!important}#rev-print-area{display:block!important;font-family:'Outfit',Arial,sans-serif;padding:20px;color:#1a2535}}
+@media print{body>*:not(#rev-print-area):not(#pres-print-area){display:none!important}#rev-print-area{display:block!important;font-family:'Outfit',Arial,sans-serif;padding:20px;color:#1a2535}}
+#pres-print-area{display:none}
+@media print{
+  @page{size:A4;margin:0}
+  #pres-print-area{display:block!important;font-family:'Outfit',Arial,sans-serif;color:#1a2535}
+  .pres-page{page-break-after:always;padding:36px 42px;width:210mm;min-height:297mm;box-sizing:border-box}
+  .pres-page:last-child{page-break-after:auto}
+}
 /* ═══ EXPERIENCES ═══ */
 .tab.exp-tab{color:#1a6644}.tab.exp-tab.on{color:#1a6644;border-bottom-color:#1a6644}
 .dd-item.exp i{color:#1a6644}.dd-item.exp:hover,.dd-item.exp.on{background:#e8f5ee;color:#1a6644}
@@ -1036,8 +1043,10 @@ canvas.an-chart{width:100%!important;height:220px!important}
         <label>Month:</label>
         <select id="bk-period-m" onchange="renderBKStats()">
           <option value="all">All season</option>
+          <option value="04">April</option>
           <option value="05">May</option><option value="06">June</option><option value="07">July</option>
           <option value="08">August</option><option value="09">September</option><option value="10">October</option>
+          <option value="11">November</option>
         </select>
         <button class="rev-parse-btn" style="background:#0069ff;margin-top:0;padding:8px 18px" onclick="saveBKReview()">
           <i class="ti ti-device-floppy"></i> Save to history
@@ -2198,7 +2207,8 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-shrink:0;padding-bottom:12px;border-bottom:1px solid var(--border)">
         <div style="width:38px;height:38px;background:var(--sea-light);border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="ti ti-settings" style="color:var(--sea);font-size:18px"></i></div>
         <div><div style="font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink)">Tab Settings</div><div style="font-size:11px;color:var(--muted)">Σύρε για αναδιάταξη · Ομαδοποίηση σε φάκελο · Απόκρυψη</div></div>
-        <button onclick="document.getElementById('tabSettingsModal').classList.remove('open');tsmReLock()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;display:flex;align-items:center"><i class="ti ti-x"></i></button>
+        <button onclick="document.getElementById('tabSettingsModal').classList.remove('open');openPresentationBuilder()" style="margin-left:auto;padding:8px 14px;background:#5c3d8f;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px"><i class="ti ti-presentation"></i> Generate Presentation</button>
+        <button onclick="document.getElementById('tabSettingsModal').classList.remove('open');tsmReLock()" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;display:flex;align-items:center"><i class="ti ti-x"></i></button>
       </div>
       <!-- Group creation -->
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-shrink:0">
@@ -2217,8 +2227,24 @@ canvas.an-chart{width:100%!important;height:220px!important}
   </div>
 </div>
 
+<!-- PRESENTATION BUILDER MODAL -->
+<div class="modal-bg" id="presBuilderModal">
+  <div class="modal" style="width:640px;max-width:96vw;max-height:88vh;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-shrink:0;padding-bottom:12px;border-bottom:1px solid var(--border)">
+      <div style="width:38px;height:38px;background:#f0eaff;border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="ti ti-presentation" style="color:#5c3d8f;font-size:18px"></i></div>
+      <div><div style="font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink)">Generate Presentation</div><div style="font-size:11px;color:var(--muted)">Επίλεξε tabs · Γράψε τι θέλεις να φαίνεται · Δημιούργησε PDF (1 σελίδα ανά tab)</div></div>
+      <button onclick="document.getElementById('presBuilderModal').classList.remove('open')" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;display:flex;align-items:center"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="pres-tab-checklist" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;flex-shrink:0;max-height:90px;overflow-y:auto;padding:10px;background:var(--bg);border-radius:9px"></div>
+    <div id="pres-content-editors" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-shrink:0;padding-top:12px;border-top:1px solid var(--border)">
+      <button onclick="document.getElementById('presBuilderModal').classList.remove('open')" style="padding:8px 14px;background:var(--bg);color:var(--muted);border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)">Cancel</button>
+      <button onclick="presGeneratePDF()" style="padding:8px 18px;background:#5c3d8f;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px"><i class="ti ti-printer"></i> Generate PDF</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
-<div id="rev-print-area"></div>
 
 <script>
 /* ═══════════════════════════════
@@ -2672,7 +2698,7 @@ function renderGenTab(tab){
     }
     else if(tab==='transfers'){
       const isOpen_transfers=genIsOpen('transfers',i);
-      const bwBadge=r.bothWays?'<span style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">⇔ Both Ways</span>':'';const extraCost=(r.bothWays?parseFloat(r.returnCost)||0:0);const totalAll=(parseFloat(r.cost)||0)+extraCost;const displayCost=totalAll>parseFloat(r.cost||0)?'€'+totalAll+' total':r.cost?'€'+r.cost:'';html+='<tr class="'+rc+(isOpen_transfers?' car-ep-open':'')+' " onclick="genToggleRow(\'transfers\','+i+')">'  +baseFields+'<td>'+inpDate(i,'date',r.date)+'</td>'+'<td>'+inpTime(i,'time',r.time)+'</td>'+'<td style="padding:5px 7px">'+'<div style="display:flex;align-items:center;gap:3px">'+inp(i,'route',r.route,'Hotel → Airport')+bwBadge+'</div>'+(r.bothWays?(r.returnRoute||r.returnDate?'<div style="font-size:10px;color:#92400e;padding:2px 9px">↩ '+(r.returnRoute||'')+(r.returnDate?' '+r.returnDate:'')+(r.returnTime?' '+r.returnTime:'')+(r.returnCost?' €'+r.returnCost:'')+'</div>':''):'')+(r.transfer2?(r.route2||r.date2?'<div style="font-size:10px;color:#7c3aed;padding:2px 9px">➕ '+(r.route2||'')+(r.date2?' '+r.date2:'')+(r.time2?' '+r.time2:'')+'</div>':''):'')+(r.notes?'<div style="font-size:10px;color:var(--muted);padding:1px 9px;font-style:italic">ℹ '+esc(r.notes)+'</div>':'')+'</td>'+'<td style="padding:7px 9px;font-weight:700;color:'+col+'">'+displayCost+'</td>'+'<td>'+inp(i,'bookedBy',r.bookedBy,'Staff name')+'</td>'+'<td>'+inp(i,'company',r.company,'Company...')+'</td>'+'<td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+'<button onclick="event.stopPropagation();genEmailDraft(\'transfers\','+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+genExpandBtn('transfers',i,'#92400e')+'<button onclick="event.stopPropagation();genDel(\'transfers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td>'+'</tr>';
+      const bwBadge=r.bothWays?'<span style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">⇔ Both Ways</span>':'';const extraCost=(r.bothWays?parseFloat(r.returnCost)||0:0);const totalAll=(parseFloat(r.cost)||0)+extraCost;const displayCost=totalAll>parseFloat(r.cost||0)?'€'+totalAll+' total':r.cost?'€'+r.cost:'';html+='<tr class="'+rc+(isOpen_transfers?' car-ep-open':'')+' " onclick="genToggleRow(\'transfers\','+i+')">'  +baseFields+'<td>'+inpDate(i,'date',r.date)+'</td>'+'<td>'+inpTime(i,'time',r.time)+'</td>'+'<td style="padding:5px 7px">'+'<div style="display:flex;align-items:center;gap:3px">'+inp(i,'route',r.route,'Hotel → Airport')+bwBadge+'</div>'+(r.bothWays?(r.returnRoute||r.returnDate?'<div style="font-size:10px;color:#92400e;padding:2px 9px">↩ '+(r.returnRoute||'')+(r.returnDate?' '+r.returnDate:'')+(r.returnTime?' '+r.returnTime:'')+(r.returnCost?' €'+r.returnCost:'')+'</div>':''):'')+(r.transfer2?(r.route2||r.date2?'<div style="font-size:10px;color:#7c3aed;padding:2px 9px">➕ '+(r.route2||'')+(r.date2?' '+r.date2:'')+(r.time2?' '+r.time2:'')+'</div>':''):'')+(r.notes?'<div style="font-size:10px;color:var(--muted);padding:1px 9px;font-style:italic">ℹ '+esc(r.notes)+'</div>':'')+(r.remarks?'<div style="font-size:10px;color:#7c5e2e;padding:1px 9px;font-style:italic">📝 '+esc(r.remarks)+'</div>':'')+'</td>'+'<td style="padding:7px 9px;font-weight:700;color:'+col+'">'+displayCost+'</td>'+'<td>'+inp(i,'bookedBy',r.bookedBy,'Staff name')+'</td>'+'<td>'+inp(i,'company',r.company,'Company...')+'</td>'+'<td style="padding:5px 7px">'+sb(r,i)+'</td>'+'<td style="padding:4px 7px"><div style="display:flex;gap:3px">'+'<button onclick="event.stopPropagation();genEmailDraft(\'transfers\','+i+')" style="width:26px;height:26px;background:#e8f3fb;border:none;border-radius:6px;cursor:pointer;color:var(--sea);display:flex;align-items:center;justify-content:center" title="Email Draft"><i class="ti ti-mail" style="font-size:12px"></i></button>'+genExpandBtn('transfers',i,'#92400e')+'<button onclick="event.stopPropagation();genDel(\'transfers\','+i+')" style="width:26px;height:26px;background:#fce8e8;border:none;border-radius:6px;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button></div></td>'+'</tr>';
       if(isOpen_transfers){
         const bwChkd=r.bothWays?'checked':'';
         const bwReturnFields=r.bothWays?
@@ -2694,6 +2720,7 @@ function renderGenTab(tab){
           +epField('Company / Car','#92400e',epInp('transfers',i,'company',r.company,'Company name'))
           +epField('Outbound Cost €','#92400e',epNum('transfers',i,'cost',r.cost,'0','0',null))
           +epField('Flight #','#92400e',epInp('transfers',i,'notes',r.notes,'Flight number...'))
+          +epField('Notes','#92400e',epInp('transfers',i,'remarks',r.remarks,'Additional notes...'))
           +'<div style="grid-column:1/-1"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 12px;background:#fef3c7;border-radius:8px;border:1px solid #fcd34d">'
           +'<input type="checkbox" '+bwChkd+' style="width:16px;height:16px;accent-color:#92400e;cursor:pointer" onchange="trToggleBothWays('+i+',this.checked)">'
           +'<span style="font-size:13px;font-weight:600;color:#92400e">↔ Both Ways (Return Transfer)</span>'
@@ -2756,12 +2783,13 @@ function renderGenSum(tab){
       if(tab==='boats'||tab==='moto'||tab==='transfers'||tab==='vantours'){
         const rate=tab==='transfers'?0.07:0.10;
         const c=Math.round(cost*rate);
-        comm+=c;byCompany[coKey].comm+=c;
         if(tab==='boats'){
           const co=coKey.toLowerCase();
           const rateB=co.includes('ego')?0.20:0.10;
           const cB=Math.round(cost*rateB);
-          byCompany[coKey].comm=cB;comm=comm-c+cB;
+          comm+=cB;byCompany[coKey].comm+=cB;
+        } else {
+          comm+=c;byCompany[coKey].comm+=c;
         }
       } else if(tab==='excursions'){
         const co=coKey.toLowerCase();
@@ -3774,7 +3802,7 @@ function renderPLMBody(tab){
       html+='<td style="padding:7px 8px;text-align:center;font-size:11px;color:var(--muted);border-right:1px solid var(--border2)">'+esc(tour.duration)+'</td>';
       if(isCustom){html+='<td colspan="3" style="padding:7px 11px;text-align:center;font-size:12px;color:var(--muted);border-right:1px solid var(--border2)">Upon request</td>';}
       else{[2,4,6].forEach(pax=>{html+='<td style="padding:5px 8px;text-align:center;border-right:1px solid var(--border2)"><input type="number" min="0" value="'+(p[pax]||'')+'" style="'+inpV+'" onchange="VAN_TOURS['+i+'].prices.standard['+pax+']=parseFloat(this.value)||0" title="Standard '+pax+' pax">';if(tour.hasExclusive){const ep=tour.prices.exclusive;html+='<div style="font-size:9px;color:#92400e;margin-top:2px">Excl: <input type="number" min="0" value="'+(ep?ep[pax]||'':'')+'" style="width:55px;padding:2px 5px;border:1px solid #fcd34d;border-radius:5px;font-size:11px;font-weight:700;color:#92400e;text-align:center;outline:none;background:transparent" onchange="VAN_TOURS['+i+'].prices.exclusive=VAN_TOURS['+i+'].prices.exclusive||{};VAN_TOURS['+i+'].prices.exclusive['+pax+']=parseFloat(this.value)||0"></div>';}html+='</td>';});}
-      html+='<td style="padding:7px 11px;font-size:10px;color:var(--muted2)">'+tour.route.slice(0,3).map(s=>esc(s)).join(' \u2192 ')+(tour.route.length>3?' +'+( tour.route.length-3)+' more':'')+'</td></tr>';
+      html+='<td style="padding:7px 11px;font-size:10px;color:var(--muted2)"><div style="display:flex;align-items:center;gap:8px"><span>'+tour.route.slice(0,3).map(s=>esc(s)).join(' \u2192 ')+(tour.route.length>3?' +'+( tour.route.length-3)+' more':'')+'</span><button onclick="event.stopPropagation();vtShowFullRoute('+i+')" style="flex-shrink:0;display:flex;align-items:center;gap:4px;padding:4px 9px;background:#fef3c7;border:1px solid #e2c97e;border-radius:7px;font-size:10px;font-weight:700;color:#7c5e2e;cursor:pointer;white-space:nowrap"><i class="ti ti-route" style="font-size:12px"></i> View Route</button></div></td></tr>';
     });
     html+='</tbody></table></div><div style="font-size:11px;color:var(--muted);margin-top:10px">All prices VAT included. Click to edit.</div>';
 
@@ -4733,6 +4761,23 @@ const VAN_TOURS = [
   {id:'t10',name:'TOUR_10 Tour It Your Way!',duration:'Custom',route:['Custom itinerary'],prices:{standard:{2:0,4:0,6:0}},hasExclusive:false,notes:'Price upon request'},
 ];
 function vanTourGetByName(n){return VAN_TOURS.find(t=>t.name===n)||null;}
+function vtShowFullRoute(i){
+  const tour=VAN_TOURS[i];if(!tour)return;
+  const stops=tour.route.map((s,idx)=>'<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;'+(idx<tour.route.length-1?'border-bottom:1px solid var(--border2)':'')+'">'
+    +'<div style="width:26px;height:26px;border-radius:50%;background:#fef3c7;border:1.5px solid #e2c97e;color:#7c5e2e;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(idx+1)+'</div>'
+    +'<div style="font-size:13px;color:var(--ink);font-weight:500;padding-top:3px">'+esc(s)+'</div></div>').join('');
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:26px;width:420px;max-width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><i class="ti ti-route" style="font-size:18px;color:#7c5e2e"></i><div style="font-size:16px;font-weight:700;color:var(--ink)">'+esc(tour.name)+'</div></div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:16px">'+esc(tour.duration)+' \u00b7 '+tour.route.length+' stops'+(tour.hasExclusive?' \u00b7 Exclusive option available':'')+'</div>'
+    +'<div style="display:flex;flex-direction:column">'+stops+'</div>'
+    +(tour.notes?'<div style="margin-top:14px;padding:10px 12px;background:#fef3c7;border-radius:8px;font-size:12px;color:#7c5e2e">'+esc(tour.notes)+'</div>':'')
+    +'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="width:100%;padding:10px;background:#7c5e2e;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);margin-top:18px">Close</button>'
+    +'</div>';
+  document.body.appendChild(ov);
+  ov.onclick=function(e){if(e.target===ov)ov.remove();};
+}
 function vanTourAutoPrice(name,pax,type){const t=vanTourGetByName(name);if(!t)return null;const pk=pax<=2?2:pax<=4?4:6;const tier=(type==='exclusive'&&t.prices.exclusive)?t.prices.exclusive:t.prices.standard;return tier?tier[pk]||null:null;}
 
 /* ── BOAT COMPANIES ── */
@@ -6079,9 +6124,9 @@ function bkDeleteEntry(i){
 }
 
 function bkSaveAllMonths(){
-  const months=['05','06','07','08','09','10'];
-  const mNames={'05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'September 2026','10':'October 2026'};
-  const order={'May 2026':5,'June 2026':6,'July 2026':7,'August 2026':8,'September 2026':9,'October 2026':10};
+  const months=['04','05','06','07','08','09','10','11'];
+  const mNames={'04':'April 2026','05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'September 2026','10':'October 2026','11':'November 2026'};
+  const order={'April 2026':4,'May 2026':5,'June 2026':6,'July 2026':7,'August 2026':8,'September 2026':9,'October 2026':10,'November 2026':11};
   let saved=0;
   months.forEach(m=>{
     const rated=getBKRated(m);if(!rated.length)return;
@@ -6094,12 +6139,34 @@ function bkSaveAllMonths(){
   svBK();renderBKHistory();showToast(saved+' months saved!','s');
 }
 
+const BK_SUGGESTION_RULES=[
+  {kw:['breakfast','buffet','fruit','omelette','omelete','egg'],icon:'ti-coffee',text:'Expand breakfast options (e.g. made-to-order omelettes, better fruit selection) \u2014 breakfast quality is one of the most-cited factors in Booking.com scores.'},
+  {kw:['ac','ac ','a/c','air con','hot','temperature','cold'],icon:'ti-temperature',text:'Review A/C units in guest rooms \u2014 offer guests the option to adjust temperature further, or service/upgrade units that can\'t reach a lower setting.'},
+  {kw:['noise','loud','music','quiet'],icon:'ti-volume-3',text:'Set a clear cut-off time for evening music/entertainment near guest rooms, and remind housekeeping to avoid loud activity early in the morning.'},
+  {kw:['bed','mattress','pillow'],icon:'ti-bed',text:'Survey guests about mattress/pillow firmness preferences at check-in, or offer a choice of pillow types to reduce comfort complaints.'},
+  {kw:['price','value','expensive','cost','money'],icon:'ti-currency-euro',text:'Review pricing perception \u2014 consider small added-value touches (welcome drink, late checkout) to improve perceived value for money.'},
+  {kw:['private','privacy','terrace','balcony'],icon:'ti-eye-off',text:'Add privacy screens or window film to terraces/balconies flagged as overlooked by other rooms.'},
+  {kw:['beach','access','path','walk'],icon:'ti-walk',text:'Improve signage or provide a shuttle/golf cart option for guests with mobility concerns regarding beach access or steep paths.'},
+  {kw:['pool','sunlounger','sun bed','sunbed'],icon:'ti-pool',text:'Review pool area capacity and sunlounger availability at peak times \u2014 consider a reservation system or additional loungers.'},
+  {kw:['housekeeping','clean','room service'],icon:'ti-sparkles',text:'Adjust housekeeping schedule timing based on guest feedback to avoid early-morning disruption.'},
+  {kw:['staff','reception','pretentious','rude'],icon:'ti-users',text:'Share this feedback with front-of-house staff in a coaching conversation \u2014 warmth and approachability are consistently the highest-impact factor on guest ratings.'},
+];
+function bkSuggestionsFromNotes(negativeNotes){
+  const lower=negativeNotes.map(n=>(n.note||'').toLowerCase());
+  const matched=[];
+  BK_SUGGESTION_RULES.forEach(rule=>{
+    const hits=lower.filter(n=>rule.kw.some(k=>n.includes(k))).length;
+    if(hits>0)matched.push({...rule,hits});
+  });
+  matched.sort((a,b)=>b.hits-a.hits);
+  return matched;
+}
 function bkGenerateSummary(){
   const mFilter=document.getElementById('bk-period-m')?.value||'all';
   const rated=getBKRated(mFilter);
   if(!rated.length){showToast('No ratings for this period','w');return;}
-  const mNames={'05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'September 2026','10':'October 2026','all':'Season 2026'};
-  const period=mNames[mFilter]||'Season 2026';
+  const mNames={'04':'April 2026','05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'September 2026','10':'October 2026','11':'November 2026','all':'Season 2026 (Apr\u2013Nov)'};
+  const period=mNames[mFilter]||'Season 2026 (Apr\u2013Nov)';
   const avg=(rated.reduce((s,r)=>s+r.rating,0)/rated.length).toFixed(1);
   const withNotes=rated.filter(r=>r.notes&&r.notes.trim());
   const positiveNotes=[];
@@ -6133,6 +6200,18 @@ function bkGenerateSummary(){
     if(posHtml)html+='<div><div style="font-size:10px;font-weight:700;color:#16a34a;margin-bottom:6px">✓ WHAT GUESTS LOVED</div>'+posHtml+'</div>';
     if(negHtml)html+='<div><div style="font-size:10px;font-weight:700;color:#d97706;margin-bottom:6px">△ POINTS TO IMPROVE</div>'+negHtml+'</div>';
     html+='</div>';
+    const suggestions=bkSuggestionsFromNotes(negativeNotes);
+    if(suggestions.length){
+      html+='<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:8px">\u{1F4A1} SUGGESTIONS TO IMPROVE YOUR RATING</div>';
+      html+='<div style="display:flex;flex-direction:column;gap:7px">';
+      suggestions.forEach(s=>{
+        html+='<div style="display:flex;align-items:flex-start;gap:10px;border-left:3px solid #a5b4fc;padding:8px 10px;background:#eef2ff;border-radius:0 7px 7px 0">'
+          +'<i class="ti '+s.icon+'" style="font-size:15px;color:#6366f1;flex-shrink:0;margin-top:1px"></i>'
+          +'<div style="font-size:12px;color:var(--ink)"><span style="font-weight:700;color:#4338ca">'+s.hits+(s.hits===1?' mention':' mentions')+':</span> '+esc(s.text)+'</div>'
+          +'</div>';
+      });
+      html+='</div></div>';
+    }
   } else {
     html+='<div style="padding:12px;background:#f8f9fa;border-radius:8px;font-size:13px;color:var(--muted)">No guest notes found. Add + (positive) or - (negative) prefix in Reservations tab notes.</div>';
   }
@@ -6184,8 +6263,8 @@ function bkShowSavedSummary(i){
 function saveBKReview(){
   const mFilter=document.getElementById('bk-period-m')?.value||'all';const rated=getBKRated(mFilter);if(!rated.length){showToast('No ratings','w');return;}
   const avg=(rated.reduce((s,r)=>s+r.rating,0)/rated.length);
-  const mNames={'05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'September 2026','10':'October 2026','all':'Season 2026'};
-  const period=mNames[mFilter]||'Season 2026';
+  const mNames={'04':'April 2026','05':'May 2026','06':'June 2026','07':'July 2026','08':'August 2026','09':'September 2026','10':'October 2026','11':'November 2026','all':'Season 2026 (Apr\u2013Nov)'};
+  const period=mNames[mFilter]||'Season 2026 (Apr\u2013Nov)';
   const entry={period,score:parseFloat(avg.toFixed(2)),count:rated.length,date:new Date().toISOString(),topGuests:rated.sort((a,b)=>b.rating-a.rating).slice(0,3).map(r=>({name:r.name,room:r.room,rating:r.rating}))};
   bkHistory=bkHistory.filter(r=>r.period!==period);bkHistory.unshift(entry);svBK();renderBKHistory();showToast('Saved!','s');
 }
@@ -7419,16 +7498,34 @@ function toggleFollowUpTask(dateKey,id){
   svAlerts();renderAlerts();checkOverdueTasks();
   logActivity('Alerts',task.done?'completed follow-up':'reopened follow-up','"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':''));
   if(!wasDone&&task.done){
-    if(confirm('\u2713 Marked as done.\n\nDo you need a follow up tomorrow?\n\n"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':''))){
-      const tomorrow=new Date(dateKey);tomorrow.setDate(tomorrow.getDate()+1);
-      const tKey=tomorrow.toISOString().split('T')[0];
-      if(!alertsData[tKey])alertsData[tKey]=[];
-      alertsData[tKey].push({id:Date.now().toString(),time:'',desc:task.desc,room:task.room,pri:task.pri,isFollowUp:true,done:false,doneBy:'',doneAt:'',note:'',prevNote:task.note||'',createdAt:new Date().toISOString()});
-      svAlerts();
-      showToast('Follow up added for tomorrow','s');
-      logActivity('Alerts','added follow-up task','"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':'')+' for '+tKey);
-    }
+    document.getElementById('followup-modal-desc').textContent='"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':'');
+    document.getElementById('followup-modal').classList.add('open');
+    _followUpModalCtx={dateKey,id};
   }
+}
+let _followUpModalCtx=null;
+function followUpModalResolve(choice){
+  document.getElementById('followup-modal').classList.remove('open');
+  const ctx=_followUpModalCtx;_followUpModalCtx=null;
+  if(!ctx)return;
+  const {dateKey,id}=ctx;
+  const tasks=alertsData[dateKey]||[];const task=tasks.find(t=>t.id===id);if(!task)return;
+  if(choice==='cancel'){
+    // Revert: task goes back to not-done, as if it was never checked
+    task.done=false;task.doneAt='';task.doneBy='';
+    svAlerts();renderAlerts();checkOverdueTasks();
+    return;
+  }
+  if(choice==='yes'){
+    const tomorrow=new Date(dateKey);tomorrow.setDate(tomorrow.getDate()+1);
+    const tKey=tomorrow.toISOString().split('T')[0];
+    if(!alertsData[tKey])alertsData[tKey]=[];
+    alertsData[tKey].push({id:Date.now().toString(),time:'',desc:task.desc,room:task.room,pri:task.pri,isFollowUp:true,done:false,doneBy:'',doneAt:'',note:'',prevNote:task.note||'',createdAt:new Date().toISOString()});
+    svAlerts();
+    showToast('Follow up added for tomorrow','s');
+    logActivity('Alerts','added follow-up task','"'+(task.desc||'')+'"'+(task.room?' (Rm '+task.room+')':'')+' for '+tKey);
+  }
+  // choice==='no': task stays done, nothing added to tomorrow
 }
 function deleteAlert(dateKey,id){if(!confirm('Delete this task?'))return;const list=alertsData[dateKey]||[];const idx=list.findIndex(t=>t.id===id);const saved=idx>=0?list[idx]:null;alertsData[dateKey]=list.filter(t=>t.id!==id);svAlerts();renderAlerts();checkOverdueTasks();showToast('Deleted','w',function(){if(saved){if(!alertsData[dateKey])alertsData[dateKey]=[];alertsData[dateKey].splice(idx,0,saved);svAlerts();renderAlerts();checkOverdueTasks();}});if(saved)logActivity('Alerts','deleted task','"'+(saved.desc||'')+'"'+(saved.room?' (Rm '+saved.room+')':''));}
 function renderAlerts(){
@@ -8482,6 +8579,162 @@ function reapplyRoleHiding(){
   });
 }
 
+let presSelected={};
+let presContent={};
+function openPresentationBuilder(){
+  tsmLoad();
+  document.getElementById('presBuilderModal').classList.add('open');
+  renderPresChecklist();
+  renderPresEditors();
+}
+function renderPresChecklist(){
+  const el=document.getElementById('pres-tab-checklist');
+  const sorted=[...tsmTabs].sort((a,b)=>a.order-b.order);
+  el.innerHTML=sorted.map(t=>{
+    const checked=!!presSelected[t.id];
+    return '<label style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:'+(checked?'#f0eaff':'var(--white)')+';border:1.5px solid '+(checked?'#c5aee8':'var(--border)')+';border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;color:'+(checked?'#5c3d8f':'var(--ink)')+'">'
+      +'<input type="checkbox" '+(checked?'checked':'')+' onchange="presToggleTab(\''+t.id+'\',this.checked)" style="width:14px;height:14px;cursor:pointer;accent-color:#5c3d8f">'
+      +'<i class="ti '+t.icon+'" style="font-size:13px;color:'+t.color+'"></i>'+t.label+'</label>';
+  }).join('');
+}
+function presToggleTab(id,checked){
+  presSelected[id]=checked;
+  renderPresChecklist();
+  renderPresEditors();
+}
+function renderPresEditors(){
+  const el=document.getElementById('pres-content-editors');
+  const sorted=[...tsmTabs].sort((a,b)=>a.order-b.order).filter(t=>presSelected[t.id]);
+  if(!sorted.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">Επίλεξε ένα ή περισσότερα tabs από πάνω για να γράψεις το περιεχόμενο της παρουσίασης.</div>';return;}
+  el.innerHTML=sorted.map(t=>{
+    const c=presContent[t.id]||{heading:t.label,body:''};
+    const isBuffet=t.id==='breakfast'||t.id==='dinner';
+    const autoFillBlock=isBuffet?
+      '<div style="display:flex;gap:6px;align-items:center;margin-bottom:8px;padding:8px 10px;background:#fef3c7;border-radius:8px;border:1px solid #fde68a">'
+      +'<i class="ti ti-wand" style="font-size:14px;color:#92400e;flex-shrink:0"></i>'
+      +'<select id="pres-period-'+t.id+'" style="flex:1;padding:5px 7px;border:1.5px solid #fde68a;border-radius:6px;font-size:11px;font-family:var(--sans);outline:none;background:var(--white)">'
+        +'<option value="all">All Season</option>'
+        +'<option value="05">May</option><option value="06">June</option><option value="07">July</option>'
+        +'<option value="08">August</option><option value="09">September</option><option value="10">October</option>'
+      +'</select>'
+      +'<button onclick="presAutoFillBuffet(\''+t.id+'\')" style="padding:6px 12px;background:#92400e;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap">\u2728 Auto-fill from data</button>'
+      +'</div>':'';
+    return '<div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;background:var(--white)">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><i class="ti '+t.icon+'" style="color:'+t.color+';font-size:16px"></i><span style="font-size:13px;font-weight:700;color:var(--ink)">'+t.label+'</span></div>'
+      +autoFillBlock
+      +'<input class="tr-inp" style="width:100%;margin-bottom:8px;font-weight:700" value="'+esc(c.heading)+'" placeholder="Τίτλος σελίδας..." onchange="presSetContent(\''+t.id+'\',\'heading\',this.value)">'
+      +'<textarea id="pres-body-'+t.id+'" class="tr-inp" style="width:100%;min-height:90px;resize:vertical;font-family:var(--sans)" placeholder="Γράψε εδώ τι θέλεις να φαίνεται σε αυτή τη σελίδα της παρουσίασης..." onchange="presSetContent(\''+t.id+'\',\'body\',this.value)">'+esc(c.body)+'</textarea>'
+      +'</div>';
+  }).join('');
+}
+function presAutoFillBuffet(tabId){
+  const db=buffetGetData(tabId);
+  if(db&&db.days&&db.days.length){
+    presAutoFillBuffetWithData(tabId,db);
+    return;
+  }
+  showToast('Loading '+tabId+' data...','s');
+  buffetLoadIDB(tabId,function(d){
+    if(d&&d.days&&d.days.length>0){
+      if(tabId==='breakfast')BUFFET_DB_BK=d;else BUFFET_DB_DN=d;
+      presAutoFillBuffetWithData(tabId,d);
+    } else {
+      showToast('No saved '+tabId+' data found. Open the '+tabId+' tab and import data first.','w');
+    }
+  });
+}
+function presAutoFillBuffetWithData(tabId,db){
+  const periodSel=document.getElementById('pres-period-'+tabId);
+  const mFilter=periodSel?periodSel.value:'all';
+  const days=db.days.filter(d=>{
+    if(mFilter==='all')return true;
+    return (d.date||'').split('-')[1]===mFilter;
+  });
+  if(!days.length){showToast('No data for that period','w');return;}
+  const MNAMES={'05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','all':'Apr\u2013Nov Season'};
+  let totalRooms=0,arrivedRooms=0,guestsServed=0,totalAdults=0,extRev=0,occSum=0,occCount=0;
+  days.forEach(d=>{
+    const s=d.summary||{};
+    totalRooms+=s.totalRooms||0;
+    arrivedRooms+=s.arrivedRooms||0;
+    guestsServed+=s.guestsServed||0;
+    totalAdults+=s.totalAdults||0;
+    extRev+=s.externalRevenue||0;
+    if(s.occupancyPct!=null){occSum+=s.occupancyPct;occCount++;}
+  });
+  const avgOcc=occCount?Math.round(occSum/occCount):0;
+  const label=tabId==='breakfast'?'Breakfast':'Dinner';
+  const lines=[];
+  lines.push(MNAMES[mFilter]+' \u2014 '+days.length+' day'+(days.length>1?'s':'')+' recorded');
+  lines.push('Average occupancy: '+avgOcc+'%');
+  lines.push('Total rooms tracked: '+totalRooms);
+  lines.push('Guests served: '+guestsServed+(totalAdults?' / '+totalAdults+' expected':''));
+  if(extRev>0)lines.push('External revenue: \u20ac'+extRev);
+  const body=lines.join('\n');
+  const bodyEl=document.getElementById('pres-body-'+tabId);
+  if(bodyEl)bodyEl.value=body;
+  presSetContent(tabId,'body',body);
+  showToast(label+' stats filled in','s');
+}
+function presSetContent(id,field,val){
+  if(!presContent[id])presContent[id]={heading:'',body:''};
+  presContent[id][field]=val;
+}
+function presParseBody(body){
+  // Splits body into lines and classifies each as a KPI stat ("Label: Value") or a regular bullet line
+  const lines=(body||'').split('\n').map(l=>l.trim()).filter(l=>l.length);
+  const stats=[];const bullets=[];
+  lines.forEach(line=>{
+    const m=line.match(/^([^:]{3,40}):\s*(.+)$/);
+    if(m&&/[\d€%]/.test(m[2])&&m[2].length<28){
+      stats.push({label:m[1].trim(),value:m[2].trim()});
+    } else {
+      bullets.push(line);
+    }
+  });
+  return {stats,bullets};
+}
+function presGeneratePDF(){
+  const sorted=[...tsmTabs].sort((a,b)=>a.order-b.order).filter(t=>presSelected[t.id]);
+  if(!sorted.length){showToast('Επίλεξε τουλάχιστον ένα tab','w');return;}
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const total=sorted.length;
+
+  const cover='<div class="pres-page" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%">'
+    +'<div style="width:64px;height:64px;background:linear-gradient(135deg,#1a6ca8,#2d8fd5);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:24px"><i class="ti ti-building-fortress" style="font-size:32px;color:#fff"></i></div>'
+    +'<div style="font-size:30px;font-weight:800;color:#1a2535;margin-bottom:8px">White Rocks Hotel &amp; Bungalows</div>'
+    +'<div style="font-size:15px;color:#5c6b7a;margin-bottom:30px">Management Presentation \u00b7 Lassi, Kefalonia</div>'
+    +'<div style="font-size:12px;color:#aab2bd;letter-spacing:.5px;text-transform:uppercase;border-top:1px solid #e5e9ed;padding-top:16px;width:280px">'+esc(dateStr)+'</div>'
+    +'</div>';
+
+  const pages=sorted.map((t,idx)=>{
+    const c=presContent[t.id]||{heading:t.label,body:''};
+    const {stats,bullets}=presParseBody(c.body);
+    const kpiHtml=stats.length?'<div style="display:grid;grid-template-columns:repeat('+Math.min(stats.length,4)+',1fr);gap:12px;margin-bottom:'+(bullets.length?'22px':'0')+'">'
+      +stats.map(s=>'<div style="background:'+t.color+'12;border:1.5px solid '+t.color+'33;border-radius:10px;padding:14px 12px;text-align:center">'
+        +'<div style="font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:#7a8694;font-weight:700;margin-bottom:6px">'+esc(s.label)+'</div>'
+        +'<div style="font-size:21px;font-weight:800;color:'+t.color+'">'+esc(s.value)+'</div>'
+        +'</div>').join('')
+      +'</div>':'';
+    const bulletHtml=bullets.length?'<div style="display:flex;flex-direction:column;gap:9px">'
+      +bullets.map(b=>'<div style="display:flex;gap:10px;align-items:flex-start"><div style="width:6px;height:6px;border-radius:50%;background:'+t.color+';margin-top:7px;flex-shrink:0"></div><div style="font-size:14px;line-height:1.6;color:#2a3540">'+esc(b)+'</div></div>').join('')
+      +'</div>':'';
+    const empty=(!stats.length&&!bullets.length)?'<p style="color:#aaa;font-size:13px">No content added.</p>':'';
+    return '<div class="pres-page" style="display:flex;flex-direction:column">'
+      +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:22px;border-bottom:3px solid '+t.color+';padding-bottom:14px">'
+      +'<div style="width:40px;height:40px;background:'+t.color+'18;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti '+t.icon+'" style="font-size:20px;color:'+t.color+'"></i></div>'
+      +'<div style="flex:1"><div style="font-size:21px;font-weight:700;color:#1a2535">'+esc(c.heading||t.label)+'</div><div style="font-size:10px;color:#9aa4ad;margin-top:1px">White Rocks Hotel &amp; Bungalows \u00b7 '+esc(dateStr)+'</div></div>'
+      +'<div style="font-size:10px;color:#c2c9d0;font-weight:700">'+(idx+2)+' / '+(total+1)+'</div>'
+      +'</div>'
+      +'<div style="flex:1">'+kpiHtml+bulletHtml+empty+'</div>'
+      +'</div>';
+  }).join('');
+
+  const area=document.getElementById('pres-print-area');
+  area.innerHTML=cover+pages;
+  window.print();
+}
 function openTabSettings() {
   tsmLoad();
   document.getElementById('tsm-lock').style.display = 'block';
@@ -9612,6 +9865,25 @@ function bfMonthly(days,isBF,col,colLight){
     </div>
   </div>
 </div>
+
+<!-- FOLLOW-UP CONFIRM MODAL -->
+<div class="modal-bg" id="followup-modal" style="z-index:9999">
+  <div style="background:var(--white);border-radius:var(--r);padding:24px;width:380px;max-width:calc(100vw - 32px);box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="width:36px;height:36px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-check" style="font-size:18px;color:#16a34a"></i></div>
+      <div style="font-size:15px;font-weight:700;color:var(--ink)">Marked as done</div>
+    </div>
+    <div style="font-size:13px;color:var(--ink2);margin-bottom:6px">Do you need a follow up tomorrow?</div>
+    <div id="followup-modal-desc" style="font-size:13px;font-weight:600;color:var(--ink);background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:18px"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="followUpModalResolve('yes')" style="flex:1;padding:10px;border:none;border-radius:9px;background:#16a34a;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer">Yes</button>
+      <button onclick="followUpModalResolve('no')" style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:9px;background:var(--white);color:var(--ink);font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer">No</button>
+      <button onclick="followUpModalResolve('cancel')" style="flex:1;padding:10px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer">Cancel</button>
+    </div>
+  </div>
+</div>
 </div><!-- end .app -->
+<div id="rev-print-area"></div>
+<div id="pres-print-area"></div>
 </body>
 </html>
