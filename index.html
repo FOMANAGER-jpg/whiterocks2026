@@ -2415,7 +2415,7 @@ function expPrintDaily(){
   if(typeof massageData!=='undefined'){
     var _md=massageData[date],_ms=[];
     if(_md){Object.keys(_md).forEach(function(sl){
-      if(sl==='__customSlots')return;
+      if(sl==='__customSlots'||sl==='__removedSlots')return;
       var b=_md[sl];
       if(b&&b.name)_ms.push({time:sl,name:b.name,room:b.room||'',duration:b.dur||b.duration||60,status:b.status||'waiting'});
     });}
@@ -2497,7 +2497,7 @@ function expDailyView(){
   if(typeof massageData!=='undefined'){
     var _mmd=massageData[date],_mms=[];
     if(_mmd){Object.keys(_mmd).forEach(function(sl){
-      if(sl==='__customSlots')return;
+      if(sl==='__customSlots'||sl==='__removedSlots')return;
       var b=_mmd[sl];
       if(b&&b.name)_mms.push({time:sl,name:b.name,room:b.room||'',duration:b.dur||b.duration||60,cost:b.cost||'',status:b.status||'waiting'});
     });}
@@ -3023,7 +3023,7 @@ function renderExpStats(){
     const m=date.slice(5,7);
     if(expStatMonth==='all'){if(!SEASON_M.includes(m))return;}else if(m!==expStatMonth)return;
     Object.keys(massageData[date]||{}).forEach(slot=>{
-      if(slot==='__customSlots')return;
+      if(slot==='__customSlots'||slot==='__removedSlots')return;
       const b=massageData[date][slot];
       if(!b||!b.name||b.status==='cancelled')return;
       const cost=parseFloat(b.cost||0);
@@ -6556,7 +6556,7 @@ function renderAnalytics(){
     if(anMonthFilter==='all'&&!SEASON_MONTHS.includes(mDate))return;
     if(anMonthFilter!=='all'&&mDate!==anMonthFilter)return;
     Object.keys(massageData[date]||{}).forEach(slot=>{
-      if(slot==='__customSlots')return;
+      if(slot==='__customSlots'||slot==='__removedSlots')return;
       const b=massageData[date][slot];
       if(b&&b.name&&b.status!=='cancelled'){const cost=parseFloat(b.cost||0);if(cost>0){msRev+=cost;msCount++;}}
     });
@@ -7175,7 +7175,7 @@ const MASSAGE_SCHEDULE={
 };
 function timeToMins(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
 function minsToTime(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
-function getSlots(dateKey){const windows=MASSAGE_SCHEDULE[dateKey]||[];const slots=[];windows.forEach(w=>{let cur=Math.round(timeToMins(w.start)/30)*30;const end=Math.round(timeToMins(w.end)/30)*30;while(cur+60<=end){slots.push(minsToTime(cur));cur+=60;}});return[...new Set(slots)];}
+function getSlots(dateKey){const windows=MASSAGE_SCHEDULE[dateKey]||[];const slots=[];windows.forEach(w=>{let cur=Math.round(timeToMins(w.start)/30)*30;const end=Math.round(timeToMins(w.end)/30)*30;while(cur+60<=end){slots.push(minsToTime(cur));cur+=60;}});const removed=(massageData[dateKey]&&massageData[dateKey].__removedSlots)||[];return[...new Set(slots)].filter(s=>!removed.includes(s));}
 let msMFilter='all'; // month filter: 'all' or '05','06',...
 let msSFilter='all'; // status filter: 'all','waiting','confirmed','commission','cancelled'
 
@@ -7207,7 +7207,7 @@ function renderMsStats(){
     if(!byMonth[m])byMonth[m]={sessions:0,rev:0,comm:0,slots:0};
     byMonth[m].slots+=slots.length;
     Object.keys(massageData[date]||{}).forEach(slot=>{
-      if(slot==='__customSlots')return;
+      if(slot==='__customSlots'||slot==='__removedSlots')return;
       const b=massageData[date][slot];
       if(!b||!b.name)return;
       const cost=parseFloat(b.cost||0);
@@ -7310,7 +7310,7 @@ function msSumRender(){
   Object.keys(massageData||{}).forEach(date=>{
     const month=date.slice(0,7);
     Object.keys(massageData[date]||{}).forEach(slot=>{
-      if(slot==='__customSlots')return;
+      if(slot==='__customSlots'||slot==='__removedSlots')return;
       const b=massageData[date][slot];
       if(!b||!b.name)return;
       const cost=parseFloat(b.cost||0);
@@ -7537,20 +7537,36 @@ function msEmailDraft(dateKey,slotTime){
 
 let _msUndoData=null;
 function msClear(dateKey,slotTime){
-  if(!massageData[dateKey])return;
-  _msUndoData={dateKey,slotTime,booking:{...massageData[dateKey][slotTime]}};
-  const clearedName=massageData[dateKey][slotTime]?.name||'';
-  delete massageData[dateKey][slotTime];
-  if(!Object.keys(massageData[dateKey]).filter(k=>k!=='__customSlots').length&&!massageData[dateKey].__customSlots)delete massageData[dateKey];
-  svMassage();renderMassage();
-  showToast('Cleared · <button onclick="msUndo()" style="background:none;border:none;color:#1a6644;font-weight:700;cursor:pointer;text-decoration:underline;font-size:12px">Undo</button>','w',6000);
-  if(clearedName)logActivity('Massage','cleared booking','"'+clearedName+'" at '+slotTime+' on '+dateKey);
+  const hasBooking=!!(massageData[dateKey]&&massageData[dateKey][slotTime]&&(massageData[dateKey][slotTime].name||massageData[dateKey][slotTime].room));
+  if(hasBooking){
+    _msUndoData={dateKey,slotTime,mode:'booking',booking:{...massageData[dateKey][slotTime]}};
+    const clearedName=massageData[dateKey][slotTime]?.name||'';
+    delete massageData[dateKey][slotTime];
+    if(!Object.keys(massageData[dateKey]).filter(k=>k!=='__customSlots'&&k!=='__removedSlots').length&&!massageData[dateKey].__customSlots)delete massageData[dateKey];
+    svMassage();renderMassage();
+    showToast('Cleared · <button onclick="msUndo()" style="background:none;border:none;color:#1a6644;font-weight:700;cursor:pointer;text-decoration:underline;font-size:12px">Undo</button>','w',6000);
+    if(clearedName)logActivity('Massage','cleared booking','"'+clearedName+'" at '+slotTime+' on '+dateKey);
+  } else {
+    // Empty/available slot: hide this specific time for this specific date only
+    if(!massageData[dateKey])massageData[dateKey]={};
+    if(!massageData[dateKey].__removedSlots)massageData[dateKey].__removedSlots=[];
+    if(!massageData[dateKey].__removedSlots.includes(slotTime))massageData[dateKey].__removedSlots.push(slotTime);
+    delete massageData[dateKey][slotTime];
+    _msUndoData={dateKey,slotTime,mode:'slot'};
+    svMassage();renderMassage();
+    showToast('Slot removed for this day · <button onclick="msUndo()" style="background:none;border:none;color:#1a6644;font-weight:700;cursor:pointer;text-decoration:underline;font-size:12px">Undo</button>','w',6000);
+    logActivity('Massage','removed available slot',slotTime+' on '+dateKey);
+  }
 }
 function msUndo(){
   if(!_msUndoData)return;
-  const{dateKey,slotTime,booking}=_msUndoData;
+  const{dateKey,slotTime,booking,mode}=_msUndoData;
   if(!massageData[dateKey])massageData[dateKey]={};
-  massageData[dateKey][slotTime]=booking;
+  if(mode==='slot'){
+    if(massageData[dateKey].__removedSlots)massageData[dateKey].__removedSlots=massageData[dateKey].__removedSlots.filter(s=>s!==slotTime);
+  } else {
+    massageData[dateKey][slotTime]=booking;
+  }
   svMassage();renderMassage();
   showToast('Restored!','s');
   _msUndoData=null;
