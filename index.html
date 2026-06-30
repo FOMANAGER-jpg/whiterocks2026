@@ -4151,7 +4151,6 @@ function waUpdatePreview(){
   if(bodyEl)bodyEl.value=body;
 }
 function waSendToWhatsApp(){
-  waUpdatePreview();
   const phoneRaw=(document.getElementById('wa-phone')?.value||'').trim();
   const phone=phoneRaw.replace(/[^0-9]/g,'');
   if(!phone){showToast('Please enter the guest\u2019s phone number','w');return;}
