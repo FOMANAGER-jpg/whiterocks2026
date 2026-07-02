@@ -7607,22 +7607,56 @@ function msUndo(){
   showToast('Restored!','s');
   _msUndoData=null;
 }
+function _msCommCalc(c){if(c<=0)return 0;if(c<=105)return 30;if(c<=145)return 55;return Math.round(c*0.38);}
 function msExportExcel(){
   const MN={'01':'January','02':'February','03':'March','04':'April','05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','11':'November','12':'December'};
-  const headers=['Month','Date','Time','Room','Guest Name','Duration (min)','Cost (€)'];
+  // Get available months from data
+  const months=[...new Set(Object.keys(massageData||{}).filter(dk=>{
+    const d=massageData[dk];
+    return d&&Object.keys(d).some(s=>s!=='__customSlots'&&s!=='__removedSlots'&&d[s]&&(d[s].name||d[s].room));
+  }).map(dk=>dk.slice(0,7)))].sort();
+  if(!months.length){showToast('No massage bookings to export','w');return;}
+  // Show a small picker overlay
+  let ov=document.getElementById('ms-export-ov');
+  if(ov)ov.remove();
+  ov=document.createElement('div');ov.id='ms-export-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center';
+  const opts='<option value="all">All Months</option>'+months.map(m=>'<option value="'+m+'">'+MN[m.split('-')[1]]||m+' '+m.split('-')[0]+'</option>').join('');
+  ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:24px;width:320px;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
+    +'<div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px"><i class="ti ti-file-spreadsheet" style="color:#b45309"></i> Export Massage Bookings</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px">Select Period</div>'
+    +'<select id="ms-export-period" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);outline:none;margin-bottom:16px">'+opts+'</select>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="document.getElementById(\'ms-export-ov\').remove()" style="flex:1;padding:9px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:var(--bg);color:var(--muted)">Cancel</button>'
+    +'<button onclick="msDoExport()" style="flex:1;padding:9px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);background:#b45309;color:#fff"><i class="ti ti-download"></i> Download</button>'
+    +'</div></div>';
+  document.body.appendChild(ov);
+  ov.onclick=e=>{if(e.target===ov)ov.remove();};
+}
+function msDoExport(){
+  const MN={'01':'January','02':'February','03':'March','04':'April','05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','11':'November','12':'December'};
+  const mFilter=document.getElementById('ms-export-period')?.value||'all';
+  document.getElementById('ms-export-ov')?.remove();
+  const headers=['Month','Date','Time','Room','Guest Name','Duration (min)','Cost (€)','Therapist Amount (€)','WR Amount (€)'];
   const rows=[];
   Object.keys(massageData||{}).sort().forEach(dateKey=>{
+    if(mFilter!=='all'&&!dateKey.startsWith(mFilter))return;
     const dayData=massageData[dateKey];if(!dayData)return;
     Object.keys(dayData).sort().forEach(slot=>{
       if(slot==='__customSlots'||slot==='__removedSlots')return;
       const b=dayData[slot];
-      if(!b||(!b.name&&!b.room))return; // skip empty slots
+      if(!b||(!b.name&&!b.room))return;
+      const cost=parseFloat(b.cost||0);
+      const wr=_msCommCalc(cost);
+      const therapist=cost>0?cost-wr:'';
       const mo=dateKey.split('-')[1];
-      rows.push([MN[mo]||mo,dateKey,slot,b.room||'',b.name||'',b.dur||60,b.cost||'']);
+      rows.push([MN[mo]||mo,dateKey,slot,b.room||'',b.name||'',b.dur||60,cost||'',therapist!==''?therapist:'',wr||'']);
     });
   });
-  if(!rows.length){showToast('No massage bookings to export','w');return;}
-  downloadCSV('massage-bookings-'+new Date().toISOString().split('T')[0]+'.csv',headers,rows);
+  if(!rows.length){showToast('No bookings for that period','w');return;}
+  const periodLabel=mFilter==='all'?'all':mFilter;
+  downloadCSV('massage-'+periodLabel+'-'+new Date().toISOString().split('T')[0]+'.csv',headers,rows);
+  showToast('Exported '+rows.length+' booking'+(rows.length>1?'s':''),'s');
 }
 function msToggleAddForm(){const f=document.getElementById('ms-add-form');const open=f.style.display==='none';f.style.display=open?'block':'none';if(open){const inp=document.getElementById('ms-new-date');if(!inp.value)inp.value=new Date().toISOString().split('T')[0];document.getElementById('ms-new-room').focus();}}
 function msNewDateChange(){}
