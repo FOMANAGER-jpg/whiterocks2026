@@ -1491,6 +1491,7 @@ canvas.an-chart{width:100%!important;height:220px!important}
       <div style="margin-left:auto;display:flex;gap:8px">
         <button id="ms-tab-sched" onclick="msSetView('schedule')" style="padding:7px 16px;background:#b45309;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:5px"><i class="ti ti-calendar"></i> Schedule</button>
         <button id="ms-tab-stats" onclick="msSetView('stats')" style="padding:7px 16px;background:var(--white);color:#b45309;border:1.5px solid #b45309;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:5px"><i class="ti ti-chart-bar"></i> Stats &amp; History</button>
+        <button onclick="msExportExcel()" style="padding:7px 16px;background:var(--white);color:#b45309;border:1.5px solid #b45309;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:5px"><i class="ti ti-file-spreadsheet"></i> Export to Excel</button>
         <button onclick="msToggleAddForm()" id="ms-add-toggle-btn" style="display:flex;align-items:center;gap:7px;padding:9px 16px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans)"><i class="ti ti-plus"></i> Add Booking</button>
       </div>
     </div>
@@ -6992,27 +6993,60 @@ function renderClsStats(type){
   const col=type==='yoga'?'#6b2d8f':'#7a1a3a';
   const lightBg=type==='yoga'?'#fdf8ff':'#fff5f8';
   const data=clsData[type]||{};
-  const allDates=Object.keys(data).filter(dk=>data[dk]&&data[dk].length>0).sort();
-  if(!allDates.length){panel.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted)">No history yet</div>';return;}
+  // Weekdays this class runs (0=Sun..6=Sat): yoga=Mon/Wed/Fri, pilates=Tue/Thu
+  const CLASS_DAYS=type==='yoga'?[1,3,5]:[2,4];
+  const today=new Date();today.setHours(23,59,59,999);
+  const seasonStart=new Date(2026,4,1); // 1 May 2026
+  const seasonEnd=new Date(2026,9,31);  // 31 Oct 2026
+  const cap=today<seasonEnd?today:seasonEnd;
+  // Scheduled dates per month (weekday schedule, up to today)
   const byMonth={};
-  let totalBooked=0,totalAttended=0,totalClasses=0;
+  for(let d=new Date(seasonStart);d<=cap;d.setDate(d.getDate()+1)){
+    if(CLASS_DAYS.includes(d.getDay())){
+      const dk=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      const mk=dk.slice(0,7);
+      if(!byMonth[mk])byMonth[mk]={scheduledSet:{},withBookings:0,booked:0,attended:0,full:0};
+      byMonth[mk].scheduledSet[dk]=true;
+    }
+  }
+  // Fold in booking data; manually added days (with data, not on schedule) also count as scheduled
+  const allDates=Object.keys(data).filter(dk=>data[dk]&&data[dk].length>0).sort();
+  const _tn=new Date();const todayKey=_tn.getFullYear()+'-'+String(_tn.getMonth()+1).padStart(2,'0')+'-'+String(_tn.getDate()).padStart(2,'0');
+  // Manual days list (added via Add Day) — count them as scheduled even with zero bookings
+  (clsData[type+'_extra']||[]).forEach(dk=>{
+    if(dk>todayKey)return; // future manual days don't count yet
+    const mk=dk.slice(0,7);
+    if(!byMonth[mk])byMonth[mk]={scheduledSet:{},withBookings:0,booked:0,attended:0,full:0};
+    byMonth[mk].scheduledSet[dk]=true;
+  });
   allDates.forEach(dk=>{
     const entries=data[dk]||[];if(!entries.length)return;
-    const month=dk.slice(0,7);
-    if(!byMonth[month])byMonth[month]={classes:0,booked:0,attended:0,full:0};
-    byMonth[month].classes++;byMonth[month].booked+=entries.length;
-    byMonth[month].attended+=entries.filter(e=>e.attended).length;
-    if(entries.length>=15)byMonth[month].full++;
-    totalBooked+=entries.length;totalAttended+=entries.filter(e=>e.attended).length;totalClasses++;
+    const mk=dk.slice(0,7);
+    if(!byMonth[mk])byMonth[mk]={scheduledSet:{},withBookings:0,booked:0,attended:0,full:0};
+    // Manual day: count it as a scheduled class too (only up to today, same rule as schedule)
+    if(!byMonth[mk].scheduledSet[dk]&&dk<=todayKey)byMonth[mk].scheduledSet[dk]=true;
+    if(byMonth[mk].scheduledSet[dk])byMonth[mk].withBookings++;
+    byMonth[mk].booked+=entries.length;
+    byMonth[mk].attended+=entries.filter(e=>e.attended).length;
+    if(entries.length>=15)byMonth[mk].full++;
   });
-  const avgBooking=totalClasses?(totalBooked/totalClasses).toFixed(1):'0';
+  const sortedMonths=Object.keys(byMonth).sort().filter(m=>Object.keys(byMonth[m].scheduledSet).length>0||byMonth[m].booked>0);
+  if(!sortedMonths.length){panel.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted)">No history yet</div>';return;}
+  let totalScheduled=0,totalWithBookings=0,totalBooked=0,totalAttended=0;
+  sortedMonths.forEach(m=>{
+    const d=byMonth[m];
+    totalScheduled+=Object.keys(d.scheduledSet).length;
+    totalWithBookings+=d.withBookings;
+    totalBooked+=d.booked;
+    totalAttended+=d.attended;
+  });
+  const avgBooking=totalWithBookings?(totalBooked/totalWithBookings).toFixed(1):'0';
   const attendRate=totalBooked?((totalAttended/totalBooked)*100).toFixed(0):'0';
-  const fillRate=totalClasses?((totalBooked/(totalClasses*15))*100).toFixed(0):'0';
+  const fillRate=totalScheduled?((totalWithBookings/totalScheduled)*100).toFixed(0):'0';
   const guestMap={};
   allDates.forEach(dk=>{(data[dk]||[]).forEach(e=>{const k=(e.name||'').toUpperCase().trim();if(!k)return;if(!guestMap[k])guestMap[k]={name:e.name||'',room:e.room||'',count:0,attended:0};guestMap[k].count++;if(e.attended)guestMap[k].attended++;});});
   const topGuests=Object.values(guestMap).sort((a,b)=>b.count-a.count).slice(0,10);
   const MN={'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
-  const sortedMonths=Object.keys(byMonth).sort();
 
   const div=document.createElement('div');
   div.style.cssText='background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);margin-bottom:14px';
@@ -7030,7 +7064,7 @@ function renderClsStats(type){
   // KPIs
   const kpiDiv=document.createElement('div');
   kpiDiv.style.cssText='display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px';
-  [{l:'Total Classes',v:totalClasses},{l:'Total Bookings',v:totalBooked},{l:'Avg / Class',v:avgBooking+'/15'},{l:'Fill Rate',v:fillRate+'%'},{l:'Attendance',v:attendRate+'%'}].forEach(k=>{
+  [{l:'Classes Held',v:totalWithBookings+'/'+totalScheduled},{l:'Total Bookings',v:totalBooked},{l:'Avg / Class',v:avgBooking+'/15'},{l:'Fill Rate',v:fillRate+'%'},{l:'Attendance',v:attendRate+'%'}].forEach(k=>{
     kpiDiv.innerHTML+=`<div style="background:${lightBg};border-radius:10px;padding:12px 14px;text-align:center"><div style="font-size:22px;font-weight:700;color:${col};font-family:var(--serif)">${k.v}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px">${k.l}</div></div>`;
   });
   div.appendChild(kpiDiv);
@@ -7042,10 +7076,11 @@ function renderClsStats(type){
     const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px';
     sortedMonths.forEach(m=>{
       const d=byMonth[m];const[yr,mo]=m.split('-');
-      const fillPct=Math.round((d.booked/(d.classes*15))*100);
+      const schedCount=Object.keys(d.scheduledSet).length;
+      const fillPct=schedCount?Math.round((d.withBookings/schedCount)*100):0;
       const attPct=d.booked?Math.round((d.attended/d.booked)*100):0;
       const card=document.createElement('div');card.style.cssText=`background:${lightBg};border-radius:9px;padding:10px 12px`;
-      card.innerHTML=`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:6px">${MN[mo]||mo} ${yr}</div><div style="font-size:11px;color:var(--ink2);margin-bottom:4px">Classes: <b>${d.classes}</b> &middot; Booked: <b>${d.booked}</b> &middot; Full: <b>${d.full}</b></div><div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="font-size:10px;color:var(--muted);width:50px">Fill</span><div style="flex:1;background:#e0e0e0;border-radius:20px;height:6px"><div style="width:${fillPct}%;background:${col};border-radius:20px;height:6px"></div></div><span style="font-size:10px;font-weight:700;color:${col};width:32px;text-align:right">${fillPct}%</span></div><div style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--muted);width:50px">Attend</span><div style="flex:1;background:#e0e0e0;border-radius:20px;height:6px"><div style="width:${attPct}%;background:${attPct>=80?'#1a6644':col};border-radius:20px;height:6px"></div></div><span style="font-size:10px;font-weight:700;color:${attPct>=80?'#1a6644':col};width:32px;text-align:right">${attPct}%</span></div>`;
+      card.innerHTML=`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:6px">${MN[mo]||mo} ${yr}</div><div style="font-size:11px;color:var(--ink2);margin-bottom:4px">Classes: <b>${d.withBookings}/${schedCount}</b> &middot; Booked: <b>${d.booked}</b> &middot; Full: <b>${d.full}</b></div><div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="font-size:10px;color:var(--muted);width:50px">Fill</span><div style="flex:1;background:#e0e0e0;border-radius:20px;height:6px"><div style="width:${fillPct}%;background:${col};border-radius:20px;height:6px"></div></div><span style="font-size:10px;font-weight:700;color:${col};width:32px;text-align:right">${fillPct}%</span></div><div style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--muted);width:50px">Attend</span><div style="flex:1;background:#e0e0e0;border-radius:20px;height:6px"><div style="width:${attPct}%;background:${attPct>=80?'#1a6644':col};border-radius:20px;height:6px"></div></div><span style="font-size:10px;font-weight:700;color:${attPct>=80?'#1a6644':col};width:32px;text-align:right">${attPct}%</span></div>`;
       grid.appendChild(card);
     });
     mDiv.appendChild(grid);div.appendChild(mDiv);
@@ -7571,6 +7606,57 @@ function msUndo(){
   svMassage();renderMassage();
   showToast('Restored!','s');
   _msUndoData=null;
+}
+function _msCommCalc(c){if(c<=0)return 0;if(c<=105)return 30;if(c<=145)return 55;return Math.round(c*0.38);}
+function msExportExcel(){
+  const MN={'01':'January','02':'February','03':'March','04':'April','05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','11':'November','12':'December'};
+  // Get available months from data
+  const months=[...new Set(Object.keys(massageData||{}).filter(dk=>{
+    const d=massageData[dk];
+    return d&&Object.keys(d).some(s=>s!=='__customSlots'&&s!=='__removedSlots'&&d[s]&&(d[s].name||d[s].room));
+  }).map(dk=>dk.slice(0,7)))].sort();
+  if(!months.length){showToast('No massage bookings to export','w');return;}
+  // Show a small picker overlay
+  let ov=document.getElementById('ms-export-ov');
+  if(ov)ov.remove();
+  ov=document.createElement('div');ov.id='ms-export-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center';
+  const opts='<option value="all">All Months</option>'+months.map(m=>'<option value="'+m+'">'+MN[m.split('-')[1]]||m+' '+m.split('-')[0]+'</option>').join('');
+  ov.innerHTML='<div style="background:var(--white);border-radius:14px;padding:24px;width:320px;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
+    +'<div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px"><i class="ti ti-file-spreadsheet" style="color:#b45309"></i> Export Massage Bookings</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px">Select Period</div>'
+    +'<select id="ms-export-period" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);outline:none;margin-bottom:16px">'+opts+'</select>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="document.getElementById(\'ms-export-ov\').remove()" style="flex:1;padding:9px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);background:var(--bg);color:var(--muted)">Cancel</button>'
+    +'<button onclick="msDoExport()" style="flex:1;padding:9px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);background:#b45309;color:#fff"><i class="ti ti-download"></i> Download</button>'
+    +'</div></div>';
+  document.body.appendChild(ov);
+  ov.onclick=e=>{if(e.target===ov)ov.remove();};
+}
+function msDoExport(){
+  const MN={'01':'January','02':'February','03':'March','04':'April','05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','11':'November','12':'December'};
+  const mFilter=document.getElementById('ms-export-period')?.value||'all';
+  document.getElementById('ms-export-ov')?.remove();
+  const headers=['Month','Date','Time','Room','Guest Name','Duration (min)','Cost (€)','Therapist Amount (€)','WR Amount (€)'];
+  const rows=[];
+  Object.keys(massageData||{}).sort().forEach(dateKey=>{
+    if(mFilter!=='all'&&!dateKey.startsWith(mFilter))return;
+    const dayData=massageData[dateKey];if(!dayData)return;
+    Object.keys(dayData).sort().forEach(slot=>{
+      if(slot==='__customSlots'||slot==='__removedSlots')return;
+      const b=dayData[slot];
+      if(!b||(!b.name&&!b.room))return;
+      const cost=parseFloat(b.cost||0);
+      const wr=_msCommCalc(cost);
+      const therapist=cost>0?cost-wr:'';
+      const mo=dateKey.split('-')[1];
+      rows.push([MN[mo]||mo,dateKey,slot,b.room||'',b.name||'',b.dur||60,cost||'',therapist!==''?therapist:'',wr||'']);
+    });
+  });
+  if(!rows.length){showToast('No bookings for that period','w');return;}
+  const periodLabel=mFilter==='all'?'all':mFilter;
+  downloadCSV('massage-'+periodLabel+'-'+new Date().toISOString().split('T')[0]+'.csv',headers,rows);
+  showToast('Exported '+rows.length+' booking'+(rows.length>1?'s':''),'s');
 }
 function msToggleAddForm(){const f=document.getElementById('ms-add-form');const open=f.style.display==='none';f.style.display=open?'block':'none';if(open){const inp=document.getElementById('ms-new-date');if(!inp.value)inp.value=new Date().toISOString().split('T')[0];document.getElementById('ms-new-room').focus();}}
 function msNewDateChange(){}
