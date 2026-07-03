@@ -2751,16 +2751,17 @@ function renderGenTab(tab){
           +bwReturnFields
           +epStatus('transfers',i,r.status,4)
           +'<div style="grid-column:1/-1;margin-top:8px;padding:10px 14px;background:#f5f0ff;border:1px solid #c4b5fd;border-radius:9px">'
-          +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
-          +'<input type="checkbox" '+(r.transfer2?'checked':'')+' style="width:15px;height:15px;accent-color:#7c3aed" onchange="trToggle2ndTransfer('+i+',this.checked)">'
-          +'<span style="font-size:13px;font-weight:600;color:#7c3aed">➕ 2nd Independent Transfer</span>'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+          +'<span style="font-size:13px;font-weight:600;color:#7c3aed">➕ Additional Transfers</span>'
+          +'<button onclick="event.stopPropagation();trAddExtra('+i+')" style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:#7c3aed;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)"><i class="ti ti-plus" style="font-size:12px"></i> Add</button>'
           +'</div>'
-          +(r.transfer2?'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px">'
-          +epField('2nd Route','#7c3aed',epInp('transfers',i,'route2',r.route2,'WR → Katavothres'))
-          +epField('Date 2','#7c3aed',epDate('transfers',i,'date2',r.date2))
-          +epField('Time 2','#7c3aed',epTime('transfers',i,'time2',r.time2))
-          +epField('Price','#7c3aed','<div style="padding:7px 10px;background:#ede9fe;border-radius:8px;font-size:12px;color:#7c3aed;font-weight:600">Shared with 1st transfer (€'+(r.cost||0)+')</div>')
-          +'</div>':'')
+          +(r.extraTransfers&&r.extraTransfers.length?r.extraTransfers.map((et,ei)=>'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px;padding:8px 10px;background:#ede9fe;border-radius:8px">'
+            +'<div><div style="font-size:10px;color:#7c3aed;font-weight:700;margin-bottom:3px">Route</div><input class="tr-inp" value="'+esc(et.route||'')+'" placeholder="e.g. WR → Airport" oninput="trUpdateExtra('+i+','+ei+',\'route\',this.value)"></div>'
+            +'<div><div style="font-size:10px;color:#7c3aed;font-weight:700;margin-bottom:3px">Date</div><input class="tr-inp" type="date" value="'+(et.date||'')+'" onchange="trUpdateExtra('+i+','+ei+',\'date\',this.value)"></div>'
+            +'<div><div style="font-size:10px;color:#7c3aed;font-weight:700;margin-bottom:3px">Time</div><input class="tr-inp" type="time" value="'+(et.time||'')+'" onchange="trUpdateExtra('+i+','+ei+',\'time\',this.value)"></div>'
+            +'<div style="padding:7px 8px;background:#fff;border-radius:7px;font-size:11px;color:#7c3aed;font-weight:600;white-space:nowrap">€'+(r.cost||0)+' shared</div>'
+            +'<button onclick="event.stopPropagation();trRemoveExtra('+i+','+ei+')" style="width:28px;height:28px;background:#fce8e8;border:none;border-radius:7px;cursor:pointer;color:#b91c1c;display:flex;align-items:center;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i></button>'
+            +'</div>').join(''):'<div style="font-size:12px;color:#a78bfa;padding:4px 0">No additional transfers — click Add.</div>')
           +'</div>'
           +'</div></td></tr>';
       }
@@ -3372,6 +3373,22 @@ function gmTransfer2Toggle(){
   var chk=document.getElementById('gm-transfer2');
   var rf=document.getElementById('gm-transfer2-fields');
   if(rf)rf.style.display=(chk&&chk.checked)?'grid':'none';
+}
+function trAddExtra(i){
+  const r=GEN_DATA['transfers'][i];if(!r)return;
+  if(!r.extraTransfers)r.extraTransfers=[];
+  r.extraTransfers.push({route:'',date:'',time:''});
+  svGen('transfers');renderGenTab('transfers');
+}
+function trRemoveExtra(i,ei){
+  const r=GEN_DATA['transfers'][i];if(!r||!r.extraTransfers)return;
+  r.extraTransfers.splice(ei,1);
+  svGen('transfers');renderGenTab('transfers');
+}
+function trUpdateExtra(i,ei,field,val){
+  const r=GEN_DATA['transfers'][i];if(!r||!r.extraTransfers||!r.extraTransfers[ei])return;
+  r.extraTransfers[ei][field]=val;
+  svGen('transfers');
 }
 function trToggle2ndTransfer(i,val){
   GEN_DATA['transfers'][i].transfer2=val;
